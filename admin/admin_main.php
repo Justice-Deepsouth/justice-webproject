@@ -129,8 +129,8 @@
 							<ul class="sidebar-navigation">
 								<li class="active"><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
 								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
-								<li><a href="#"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
+								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
