@@ -9,12 +9,12 @@
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
 
-	<!-- 
+	<!--
 	//////////////////////////////////////////////////////
 
-	FREE HTML5 TEMPLATE 
+	FREE HTML5 TEMPLATE
 	DESIGNED & DEVELOPED by FreeHTML5.co
-		
+
 	Website: 		http://freehtml5.co/
 	Email: 			info@freehtml5.co
 	Twitter: 		http://twitter.com/fh5co
@@ -38,7 +38,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
 
 	<link href="https://fonts.googleapis.com/css?family=Chakra+Petch" rel="stylesheet">
-	
+
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="../css/animate.css">
 	<!-- Icomoon Icon Fonts-->
@@ -64,9 +64,9 @@
 
 	</head>
 	<body>
-		
+
 	<div class="fh5co-loader"></div>
-	
+
 	<div id="page">
 	<nav class="fh5co-nav" role="navigation">
 		<div class="container-wrap">
@@ -93,7 +93,7 @@
 						</ul>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 	</nav>
@@ -113,10 +113,10 @@
 				   			</div>
 				   		</div>
 			   		</div>
-			   	</li>		   	
+			   	</li>
 			  	</ul>
 		  	</div>
-		</aside>		
+		</aside>
 		<div id="fh5co-contact">
 			<div class="row">
 				<!-- sidebar -->
@@ -127,7 +127,7 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
+								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
 								<li class="active"><a href="#"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="#"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
 								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
@@ -138,27 +138,38 @@
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ชื่อ - นามสกุล">
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="อีเมล">
-							</div>
-						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<textarea name="" class="form-control" id="" cols="30" rows="7" placeholder="รายละเอียดการติดต่อ"></textarea>
+								<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline">
 							</div>
 						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<input type="submit" value="ส่งข้อความ" class="btn btn-primary btn-modify">
-							</div>
-						</div>
-					</div>
+					</div><!-- /.row -->
+					<div class="row">
+						<div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>ประเภทข้อร้องเรียน</th>
+                                    <th>สถานะ</th>
+                                    <th class="text-center">แก้ไขข้อมูล</th>
+                                    <th class="text-center">ลบข้อมูล</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ประเภทข้อร้องเรียน 1</td>
+                                        <td>ใช้งาน</td>
+                                        <td class="text-center">
+                                            <a href="#" class="edit"><i class="icon-pencil2"></i></a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="#" class="delete disabled" data-href="#" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.table-responsive -->
+					</div><!-- /.row -->
 				</div>
 			</div>
 		</div>
@@ -182,7 +193,7 @@
 						<li><a href="#">ดูบทความทั้งหมด</a></li>
 					</ul>
 				</div>
-	
+
 				<div class="col-md-3 col-md-push-1">
 					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
 					<ul class="fh5co-footer-links">
@@ -193,7 +204,7 @@
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
 					</ul>
 				</div>
-	
+
 				<div class="col-md-3">
 					<h4>ติดต่อโครงการ</h4>
 					<ul class="fh5co-footer-links">
@@ -204,7 +215,7 @@
 					</ul>
 				</div>
 			</div> -->
-	
+
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
@@ -228,7 +239,26 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
-	
+
+	<!-- Modal Dialog -->
+	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
+				</div>
+				<div class="modal-body">
+				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
+					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -249,4 +279,3 @@
 
 	</body>
 </html>
-
