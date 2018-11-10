@@ -1,32 +1,3 @@
-<?php
-    session_start();
-
-    /* if (!isset($_SESSION['email'])) {
-        header("Location: ../index.php");
-    } */
-
-    include_once '../php/dbconnect.php';
-    include_once '../php/complaint_type.php';
-
-    // get connection
-    $database = new Database();
-    $db = $database->getConnection();
-
-    // pass connection to property_types table
-    $complaint_type = new Complaint_type($db);
-
-	// read all records
-	$active = false;
-    $result = $complaint_type->readall($active);
-    $total_rows = $complaint_type->getTotalRows();
-
-    if (isset($_GET['type_id'])) {
-        $complaint_type->complaint_type_id = $_GET['type_id'];
-        if ($complaint_type->delete()) {
-            header("Location: complaint_types_list.php");
-        }
-    }
-?>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -38,12 +9,12 @@
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
 
-	<!--
+	<!-- 
 	//////////////////////////////////////////////////////
 
-	FREE HTML5 TEMPLATE
+	FREE HTML5 TEMPLATE 
 	DESIGNED & DEVELOPED by FreeHTML5.co
-
+		
 	Website: 		http://freehtml5.co/
 	Email: 			info@freehtml5.co
 	Twitter: 		http://twitter.com/fh5co
@@ -67,7 +38,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
 
 	<link href="https://fonts.googleapis.com/css?family=Chakra+Petch" rel="stylesheet">
-
+	
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="../css/animate.css">
 	<!-- Icomoon Icon Fonts-->
@@ -93,9 +64,9 @@
 
 	</head>
 	<body>
-
+		
 	<div class="fh5co-loader"></div>
-
+	
 	<div id="page">
 	<nav class="fh5co-nav" role="navigation">
 		<div class="container-wrap">
@@ -122,7 +93,7 @@
 						</ul>
 					</div>
 				</div>
-
+				
 			</div>
 		</div>
 	</nav>
@@ -142,10 +113,10 @@
 				   			</div>
 				   		</div>
 			   		</div>
-			   	</li>
+			   	</li>		   	
 			  	</ul>
 		  	</div>
-		</aside>
+		</aside>		
 		<div id="fh5co-contact">
 			<div class="row">
 				<!-- sidebar -->
@@ -156,10 +127,10 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li class="active"><a href="#"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
-								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
+								<li class="active"><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
+								<li><a href="#"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
+								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -168,40 +139,28 @@
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="form-group">
-								<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline" onclick="location.href='complaint_types_add.php';">
-							</div>
+							<h3>เพิ่มประเภทข้อร้องเรียน</h3>
 						</div>
 					</div><!-- /.row -->
 					<div class="row">
-						<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>ประเภทข้อร้องเรียน</th>
-                                    <th>สถานะ</th>
-                                    <th class="text-center">แก้ไขข้อมูล</th>
-                                    <th class="text-center">ลบข้อมูล</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-								<?php while ($row = mysqli_fetch_array($result)) { ?>
-                                    <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['complaint_type_desc']; ?></td>
-                                        <td><?php if ($row['complaint_type_status']) {
-                                            echo "ใช้งานปกติ";
-                                        } else { echo "ยกเลิกการใช้งาน"; } ?></td>
-                                        <td class="text-center">
-                                            <a href="complaint_types_update.php?type_id=<?php echo $row['complaint_type_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="#" class="delete" data-href="complaint_types_list.php?type_id=<?php echo $row['complaint_type_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
-                                        </td>
-                                    </tr>
-								<?php } ?>
-                                </tbody>
-                            </table>
-                        </div><!-- /.table-responsive -->
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="ประเภทข้อร้องเรียน">
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<select class="form-control">
+									<option value="1" selected>ใช้งาน</option>
+									<option value="0">ยกเลิก</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="submit" value="เพิ่มข้อมูล" class="btn btn-primary btn-modify">
+							</div>
+						</div>
 					</div><!-- /.row -->
 				</div>
 			</div>
@@ -210,6 +169,45 @@
 
 	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
+			<!-- <div class="row">
+				<div class="col-md-3 fh5co-widget">
+					<h4>ยุติธรรมคืออะไร?</h4>
+					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto
+						culpa amet.</p>
+				</div>
+				<div class="col-md-3 col-md-push-1">
+					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
+					<ul class="fh5co-footer-links">
+						<li><a href="#">บทความอื่นๆ 1</a></li>
+						<li><a href="#">บทความอื่นๆ 2</a></li>
+						<li><a href="#">บทความอื่นๆ 3</a></li>
+						<li><a href="#">บทความอื่นๆ 4</a></li>
+						<li><a href="#">ดูบทความทั้งหมด</a></li>
+					</ul>
+				</div>
+	
+				<div class="col-md-3 col-md-push-1">
+					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
+					<ul class="fh5co-footer-links">
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
+					</ul>
+				</div>
+	
+				<div class="col-md-3">
+					<h4>ติดต่อโครงการ</h4>
+					<ul class="fh5co-footer-links">
+						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
+						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
+						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
+						<li><a href="">gettemplates.co</a></li>
+					</ul>
+				</div>
+			</div> -->
+	
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
@@ -233,26 +231,7 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
-
-	<!-- Modal Dialog -->
-	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
-				</div>
-				<div class="modal-body">
-				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
-					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -270,11 +249,7 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
-	<script>
-		$('#confirm-delete').on('show.bs.modal', function(e) {
-			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
-		});
-	</script>
 
 	</body>
 </html>
+

@@ -1,32 +1,35 @@
 <?php
     session_start();
 
-    /* if (!isset($_SESSION['email'])) {
+    /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
-    } */
+	} */
 
-    include_once '../php/dbconnect.php';
-    include_once '../php/complaint_type.php';
+    // form is submitted
+    if (isset($_POST['complaint-type-submit'])) {
+        include_once '../php/dbconnect.php';
+		include_once '../php/complaint_type.php';
 
-    // get connection
-    $database = new Database();
-    $db = $database->getConnection();
+        // get connection
+        $database = new Database();
+        $db = $database->getConnection();
 
-    // pass connection to property_types table
-    $complaint_type = new Complaint_type($db);
+        // pass connection to property_types table
+        $complaint_type = new Complaint_type($db);
+        $complaint_type->complaint_type_desc = $_POST['complaint-type-desc'];
+        $complaint_type->complaint_type_status = $_POST['complaint-type-status'];
 
-	// read all records
-	$active = false;
-    $result = $complaint_type->readall($active);
-    $total_rows = $complaint_type->getTotalRows();
-
-    if (isset($_GET['type_id'])) {
-        $complaint_type->complaint_type_id = $_GET['type_id'];
-        if ($complaint_type->delete()) {
-            header("Location: complaint_types_list.php");
-        }
+        // insert
+        if ($complaint_type->create()) {
+			$success = true;
+			header("Location: complaint_types_list.php");
+        } else {
+			
+            $success = false;
+		}
     }
 ?>
+
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -38,12 +41,12 @@
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
 
-	<!--
+	<!-- 
 	//////////////////////////////////////////////////////
 
-	FREE HTML5 TEMPLATE
+	FREE HTML5 TEMPLATE 
 	DESIGNED & DEVELOPED by FreeHTML5.co
-
+		
 	Website: 		http://freehtml5.co/
 	Email: 			info@freehtml5.co
 	Twitter: 		http://twitter.com/fh5co
@@ -67,7 +70,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
 
 	<link href="https://fonts.googleapis.com/css?family=Chakra+Petch" rel="stylesheet">
-
+	
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="../css/animate.css">
 	<!-- Icomoon Icon Fonts-->
@@ -93,9 +96,9 @@
 
 	</head>
 	<body>
-
+		
 	<div class="fh5co-loader"></div>
-
+	
 	<div id="page">
 	<nav class="fh5co-nav" role="navigation">
 		<div class="container-wrap">
@@ -122,7 +125,7 @@
 						</ul>
 					</div>
 				</div>
-
+				
 			</div>
 		</div>
 	</nav>
@@ -142,10 +145,10 @@
 				   			</div>
 				   		</div>
 			   		</div>
-			   	</li>
+			   	</li>		   	
 			  	</ul>
 		  	</div>
-		</aside>
+		</aside>		
 		<div id="fh5co-contact">
 			<div class="row">
 				<!-- sidebar -->
@@ -157,7 +160,7 @@
 						<aside>
 							<ul class="sidebar-navigation">
 								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li class="active"><a href="#"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
+								<li class="active"><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
 								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 							</ul>
@@ -168,41 +171,42 @@
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="form-group">
-								<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline" onclick="location.href='complaint_types_add.php';">
-							</div>
+							<h3>เพิ่มประเภทข้อร้องเรียน</h3>
 						</div>
 					</div><!-- /.row -->
+					<form role="form" id="complaint-types" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					<div class="row">
-						<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>ประเภทข้อร้องเรียน</th>
-                                    <th>สถานะ</th>
-                                    <th class="text-center">แก้ไขข้อมูล</th>
-                                    <th class="text-center">ลบข้อมูล</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-								<?php while ($row = mysqli_fetch_array($result)) { ?>
-                                    <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['complaint_type_desc']; ?></td>
-                                        <td><?php if ($row['complaint_type_status']) {
-                                            echo "ใช้งานปกติ";
-                                        } else { echo "ยกเลิกการใช้งาน"; } ?></td>
-                                        <td class="text-center">
-                                            <a href="complaint_types_update.php?type_id=<?php echo $row['complaint_type_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="#" class="delete" data-href="complaint_types_list.php?type_id=<?php echo $row['complaint_type_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
-                                        </td>
-                                    </tr>
-								<?php } ?>
-                                </tbody>
-                            </table>
-                        </div><!-- /.table-responsive -->
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="ประเภทข้อร้องเรียน" maxlength="100" name="complaint-type-desc">
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<select class="form-control" name="complaint-type-status">
+									<option value="1" selected>ใช้งานปกติ</option>
+									<option value="0">ยกเลิกการใช้งาน</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="submit" value="เพิ่มข้อมูล" class="btn btn-primary btn-modify" name="complaint-type-submit">
+							</div>
+						</div>
+						<div class="col-md-12">
+						<?php
+                            if (isset($success)) {
+    							if ($success) {
+        							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+    							} else {
+        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+    							}
+							}
+						?>
+						</div>
 					</div><!-- /.row -->
+					</form>
 				</div>
 			</div>
 		</div>
@@ -233,26 +237,7 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
-
-	<!-- Modal Dialog -->
-	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
-				</div>
-				<div class="modal-body">
-				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
-					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
-				</div>
-			</div>
-		</div>
-	</div>
-
+	
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -270,11 +255,7 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
-	<script>
-		$('#confirm-delete').on('show.bs.modal', function(e) {
-			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
-		});
-	</script>
 
 	</body>
 </html>
+

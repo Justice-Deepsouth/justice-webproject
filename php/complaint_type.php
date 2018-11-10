@@ -69,7 +69,7 @@ class Complaint_type {
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameter
-        mysqli_stmt_bind_param($stmt, 's', $this->prop_type_id);
+        mysqli_stmt_bind_param($stmt, 's', $this->complaint_type_id);
 
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
@@ -85,12 +85,7 @@ class Complaint_type {
         $result = mysqli_query($this->conn, $query);
         return mysqli_num_rows($result);
     }
-
-
-
-
-
-
+    
 }
 
 ?>
