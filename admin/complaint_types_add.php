@@ -1,8 +1,10 @@
 <?php
     session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
+    /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_type'])) {
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
 	} */
 
     // form is submitted
@@ -178,7 +180,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ประเภทข้อร้องเรียน" maxlength="100" name="complaint-type-desc">
+								<input type="text" class="form-control" placeholder="ประเภทข้อร้องเรียน" maxlength="100" name="complaint-type-desc" required>
 							</div>
 						</div>
 						<div class="col-md-4">
