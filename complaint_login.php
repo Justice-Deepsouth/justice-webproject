@@ -3,25 +3,11 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Neat Project</title>
+	<title>เข้าสู่ระบบ | Justice Project</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
-	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
-	<meta name="author" content="freehtml5.co" />
-
-	<!-- 
-	//////////////////////////////////////////////////////
-
-	FREE HTML5 TEMPLATE 
-	DESIGNED & DEVELOPED by FreeHTML5.co
-		
-	Website: 		http://freehtml5.co/
-	Email: 			info@freehtml5.co
-	Twitter: 		http://twitter.com/fh5co
-	Facebook: 		https://www.facebook.com/fh5co
-
-	//////////////////////////////////////////////////////
-	 -->
+	<meta name="description" content="Justice Project" />
+	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
+	<meta name="author" content="Ruchdee" />
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -73,13 +59,13 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="index.php">ชื่อโครงการ</a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="index.html">หน้าแรก</a></li>
+							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-								<a href="blog.html">บทความ</a>
+								<a href="#">บทความ</a>
 								<ul class="dropdown">
 									<li><a href="#">ประเภทบทความ 1</a></li>
 									<li><a href="#">ประเภทบทความ 2</a></li>
@@ -87,13 +73,12 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li class="active"><a href="work.html">ร้องเรียน</a></li>
+							<li class="active"><a href="#">ร้องเรียน</a></li>
 							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.html">ติดต่อ</a></li>
 						</ul>
 					</div>
-				</div>
-				
+				</div><!-- /.row -->
 			</div>
 		</div>
 	</nav>
@@ -117,31 +102,40 @@
 			  	</ul>
 		  	</div>
 		</aside>
-		<form action="complaint_add.html" method="POST">		
+		<form role="form" id="user-login" action="php/user_login.php" method="POST">		
 		<div id="fh5co-contact">
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3 animate-box">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="รหัสผู้ใช้งาน">
+								<input type="text" class="form-control" placeholder="รหัสผู้ใช้งาน" name="txt-user-id">
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="password" class="form-control" placeholder="รหัสผ่าน">
+								<input type="password" class="form-control" placeholder="รหัสผ่าน" name="txt-user-passwd">
 							</div>
 						</div>
 						<div class="col-md-5"></div>
 						<div class="col-md-2">
 							<div class="form-group">
-								<input type="submit" value="เข้าสู่ระบบ" class="btn btn-primary btn-modify">
+								<input type="submit" value="เข้าสู่ระบบ" class="btn btn-primary btn-modify" name="login-submit">
 							</div>
 						</div>
 						<div class="col-md-5"></div>
-					</div>
+						<div class="col-md-12">
+						<?php
+                            if (isset($_GET['result'])) {
+								if ($_GET['result'] == 'fail') {
+									echo "<div class='alert alert-danger text-center'>รหัสผู้ใช้งานหรือรหัสผ่าน ไม่ถูกต้อง!</div>";
+								}
+							}
+						?>
+						</div>
+					</div><!-- /.row -->
 				</div>
-			</div>
+			</div><!-- /.row --> 
 		</div>
 		</form>
 	</div><!-- END container-wrap -->
