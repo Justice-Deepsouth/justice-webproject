@@ -179,8 +179,17 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<select class="form-control" name="complaint-state-status">
+								<?php if($row['complaint_state_status'] == 1){
+									echo '
 									<option value="1" selected>ใช้งานปกติ</option>
-									<option value="0">ยกเลิกการใช้งาน</option>
+									<option value="0">ยกเลิกการใช้งาน</option> ';
+								}else{
+									echo '
+									<option value="1">ใช้งานปกติ</option>
+									<option value="0" selected>ยกเลิกการใช้งาน</option> ';									
+								}
+
+								?>
 								</select>
 							</div>
 						</div>
