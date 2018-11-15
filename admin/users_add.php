@@ -3,38 +3,40 @@
 
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
-    } */
+	} */
 
-    include_once '../php/dbconnect.php';
-    include_once '../php/complaint_type.php';
+    // form is submitted
+    if (isset($_POST['user-submit'])) {
+        include_once '../php/dbconnect.php';
+		include_once '../php/user.php';
 
-    // get connection
-    $database = new Database();
-    $db = $database->getConnection();
+        // get connection
+        $database = new Database();
+        $db = $database->getConnection();
 
-    // pass connection to property_types table
-    $complaint_type = new Complaint_type($db);
+        // pass connection to property_types table
+        $user = new User($db);
+        $user->user_name = $_POST['user-name'];
+        $user->user_passwd = $_POST['user-password'];
+		$user->user_email = $_POST['user-email'];
+        $user->user_type = $_POST['user-type'];
+        $user->user_status = $_POST['user-status'];
 
-	// read all records
-	$active = $complaint_type->complaint_type_id = $_GET['type_id'];
-	$result = $complaint_type->readone($active);
-	// $total_rows = $complaint_type->getTotalRows();
+        if($_POST['user-password'] != $_POST["user-Cpassword"])
+        {
+            echo "รหัสผ่านไม่ถูกต้อง กรุณากรอกใหม่";
+            header("Location: users_add.php");
+        }
 
-
-	if (isset($_POST['complaint-type-submit'])) {
-        $complaint_type->complaint_type_id = $_POST['complaint_type_id'];
-		$complaint_type->complaint_type_desc = $_POST['complaint-type-desc'];
-		$complaint_type->complaint_type_status = $_POST['complaint-type-status'];
-		if ($complaint_type->update()) {
+        // insert
+        if ($user->create()) {
 			$success = true;
-			header("Location: complaint_types_list.php");
+			header("Location: users_list.php");
         } else {
 			
             $success = false;
 		}
-		
-	}
-	
+    }
 ?>
 
 <!DOCTYPE HTML>
@@ -47,7 +49,6 @@
 	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
-
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -153,10 +154,10 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li class="active"><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
-								<li><a href="#"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
+								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
+								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
+								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -165,40 +166,54 @@
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
-							<h3>เพิ่มประเภทข้อร้องเรียน</h3>
+							<h3>เพิ่มผู้ใช้งาน</h3>
 						</div>
 					</div><!-- /.row -->
-					<form role="form" id="complaint-types" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-				
-					<?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
-					<input type="hidden" name="complaint_type_id" value="<?php echo $row['complaint_type_id']; ?>">
+					<form role="form" id="users" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control"  maxlength="100" name="complaint-type-desc" value="<?php echo $row['complaint_type_desc']; ?>">
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<select class="form-control" name="complaint-type-status">
-									<option value="1" selected>ใช้งานปกติ</option>
-									<option value="0">ยกเลิกการใช้งาน</option>
-								</select>
+								<input type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน" maxlength="100" name="user-name" required>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="submit" value="บันทึกการเปลี่ยนแปลง" class="btn btn-primary btn-modify" name="complaint-type-submit">
+								<input type="email" class="form-control" placeholder="Email" maxlength="100" name="user-email" required>
 							</div>
 						</div>
-						
+						<div class="col-md-6">
+							<div class="form-group">
+								<input type="password" class="form-control" placeholder="รหัสผ่าน"  name="user-password" required>
+							</div>
+						</div>
+                        <div class="col-md-6">
+							<div class="form-group">
+								<input type="password" class="form-control" placeholder="ยืนยันรหัสผ่าน"  name="user-Cpassword" required>
+							</div>
+						</div>
+                     
+						<div class="col-md-4">
+							<div class="form-group">
+								<select class="form-control" name="user-type">
+									<option value="2" selected>ผู้ร้องเรียน</option>
+									<option value="1">หน่วยงานยุติธรรม</option>
+                                    <option value="0">ผู้ดูแลระบบ</option>
+								</select>
+							</div>
+						</div>
+                        <input type="hidden" class="form-control"   name="user-status" value="1" >
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="submit" value="เพิ่มข้อมูล" class="btn btn-primary btn-modify" name="user-submit">
+							</div>
+						</div>
 						<div class="col-md-12">
 						<?php
                             if (isset($success)) {
     							if ($success) {
-        							echo "<div class='alert alert-success text-center'>อัพเดตข้อมูลเรียบร้อยแล้ว</div>";
+        							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
     							} else {
-        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถอัพเดตข้อมูลได้</div>";
+        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
     							}
 							}
 						?>
@@ -212,45 +227,6 @@
 
 	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
-			<!-- <div class="row">
-				<div class="col-md-3 fh5co-widget">
-					<h4>ยุติธรรมคืออะไร?</h4>
-					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto
-						culpa amet.</p>
-				</div>
-				<div class="col-md-3 col-md-push-1">
-					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
-					<ul class="fh5co-footer-links">
-						<li><a href="#">บทความอื่นๆ 1</a></li>
-						<li><a href="#">บทความอื่นๆ 2</a></li>
-						<li><a href="#">บทความอื่นๆ 3</a></li>
-						<li><a href="#">บทความอื่นๆ 4</a></li>
-						<li><a href="#">ดูบทความทั้งหมด</a></li>
-					</ul>
-				</div>
-	
-				<div class="col-md-3 col-md-push-1">
-					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
-					<ul class="fh5co-footer-links">
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
-					</ul>
-				</div>
-	
-				<div class="col-md-3">
-					<h4>ติดต่อโครงการ</h4>
-					<ul class="fh5co-footer-links">
-						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
-						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
-						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
-						<li><a href="">gettemplates.co</a></li>
-					</ul>
-				</div>
-			</div> -->
-	
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
