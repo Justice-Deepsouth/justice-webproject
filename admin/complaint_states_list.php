@@ -256,6 +256,11 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<script>
+		$('#confirm-delete').on('show.bs.modal', function(e) {
+			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
+		});
+	</script>
 
 	</body>
 </html>
