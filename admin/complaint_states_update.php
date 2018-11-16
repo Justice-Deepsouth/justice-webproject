@@ -1,35 +1,40 @@
 <?php
     session_start();
 
-    /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_state'])) {
-		if ($_SESSION['user_state'] != 0) {
-			header("Location: ../index.php");
-		}
-	} */
+    /* if (!isset($_SESSION['user_session_id'])) {
+        header("Location: ../index.php");
+    } */
 
-    // form is submitted
-    if (isset($_POST['complaint-state-submit'])) {
-        include_once '../php/dbconnect.php';
-		include_once '../php/complaint_state.php';
+    include_once '../php/dbconnect.php';
+    include_once '../php/complaint_state.php';
 
-        // get connection
-        $database = new Database();
-        $db = $database->getConnection();
+    // get connection
+    $database = new Database();
+    $db = $database->getConnection();
 
-        // pass connection to property_states table
-        $complaint_state = new Complaint_state($db);
-        $complaint_state->complaint_state_desc = $_POST['complaint-state-desc'];
-        $complaint_state->complaint_state_status = $_POST['complaint-state-status'];
+    // pass connection to property_states table
+    $complaint_state = new Complaint_state($db);
 
-        // insert
-        if ($complaint_state->create()) {
+	// read all records
+	$active = $complaint_state->complaint_state_id = $_GET['state_id'];
+	$result = $complaint_state->readone($active);
+	// $total_rows = $complaint_state->getTotalRows();
+
+
+	if (isset($_POST['complaint-state-submit'])) {
+        $complaint_state->complaint_state_id = $_POST['complaint_state_id'];
+		$complaint_state->complaint_state_desc = $_POST['complaint-state-desc'];
+		$complaint_state->complaint_state_status = $_POST['complaint-state-status'];
+		if ($complaint_state->update()) {
 			$success = true;
 			header("Location: complaint_states_list.php");
         } else {
 			
             $success = false;
 		}
-    }
+		
+	}
+	
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -146,10 +151,10 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
-								<li class="active"><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
+								<li class="#"><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
+								<li><a href="active"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
+								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -162,32 +167,45 @@
 						</div>
 					</div><!-- /.row -->
 					<form role="form" id="complaint-states" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+				
+					<?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
+					<input type="hidden" name="complaint_state_id" value="<?php echo $row['complaint_state_id']; ?>">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="สถานะข้อร้องเรียน" maxlength="100" name="complaint-state-desc" required>
+								<input type="text" class="form-control"  maxlength="100" name="complaint-state-desc" value="<?php echo $row['complaint_state_desc']; ?>">
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
 								<select class="form-control" name="complaint-state-status">
+								<?php if($row['complaint_state_status'] == 1){
+									echo '
 									<option value="1" selected>ใช้งานปกติ</option>
-									<option value="0">ยกเลิกการใช้งาน</option>
+									<option value="0">ยกเลิกการใช้งาน</option> ';
+								}else{
+									echo '
+									<option value="1">ใช้งานปกติ</option>
+									<option value="0" selected>ยกเลิกการใช้งาน</option> ';									
+								}
+
+								?>
 								</select>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="submit" value="เพิ่มข้อมูล" class="btn btn-primary btn-modify" name="complaint-state-submit">
+								<input type="submit" value="บันทึกการเปลี่ยนแปลง" class="btn btn-primary btn-modify" name="complaint-state-submit">
 							</div>
 						</div>
+						
 						<div class="col-md-12">
 						<?php
                             if (isset($success)) {
     							if ($success) {
-        							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+        							echo "<div class='alert alert-success text-center'>อัพเดตข้อมูลเรียบร้อยแล้ว</div>";
     							} else {
-        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถอัพเดตข้อมูลได้</div>";
     							}
 							}
 						?>
@@ -201,6 +219,45 @@
 
 	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
+			<!-- <div class="row">
+				<div class="col-md-3 fh5co-widget">
+					<h4>ยุติธรรมคืออะไร?</h4>
+					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto
+						culpa amet.</p>
+				</div>
+				<div class="col-md-3 col-md-push-1">
+					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
+					<ul class="fh5co-footer-links">
+						<li><a href="#">บทความอื่นๆ 1</a></li>
+						<li><a href="#">บทความอื่นๆ 2</a></li>
+						<li><a href="#">บทความอื่นๆ 3</a></li>
+						<li><a href="#">บทความอื่นๆ 4</a></li>
+						<li><a href="#">ดูบทความทั้งหมด</a></li>
+					</ul>
+				</div>
+	
+				<div class="col-md-3 col-md-push-1">
+					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
+					<ul class="fh5co-footer-links">
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
+					</ul>
+				</div>
+	
+				<div class="col-md-3">
+					<h4>ติดต่อโครงการ</h4>
+					<ul class="fh5co-footer-links">
+						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
+						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
+						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
+						<li><a href="">gettemplates.co</a></li>
+					</ul>
+				</div>
+			</div> -->
+	
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
