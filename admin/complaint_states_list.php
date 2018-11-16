@@ -1,3 +1,32 @@
+<?php
+    session_start();
+
+    /* if (!isset($_SESSION['user_session_id'])) {
+        header("Location: ../index.php");
+    } */
+
+    include_once '../php/dbconnect.php';
+    include_once '../php/complaint_state.php';
+
+    // get connection
+    $database = new Database();
+    $db = $database->getConnection();
+
+    // pass connection to property_states table
+    $complaint_state = new Complaint_state($db);
+
+	// read all records
+	$active = false;
+    $result = $complaint_state->readall($active);
+    $total_rows = $complaint_state->getTotalRows();
+
+    if (isset($_GET['state_id'])) {
+        $complaint_state->complaint_state_id = $_GET['state_id'];
+        if ($complaint_state->delete()) {
+            header("Location: complaint_states_list.php");
+        }
+    }
+?>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -8,20 +37,6 @@
 	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
-
-	<!--
-	//////////////////////////////////////////////////////
-
-	FREE HTML5 TEMPLATE
-	DESIGNED & DEVELOPED by FreeHTML5.co
-
-	Website: 		http://freehtml5.co/
-	Email: 			info@freehtml5.co
-	Twitter: 		http://twitter.com/fh5co
-	Facebook: 		https://www.facebook.com/fh5co
-
-	//////////////////////////////////////////////////////
-	 -->
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -149,23 +164,27 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>สถานะข้อร้องเรียน</th>
+                                    <th>ชื่อสถานะข้อร้องเรียน</th>
                                     <th>สถานะ</th>
                                     <th class="text-center">แก้ไขข้อมูล</th>
                                     <th class="text-center">ลบข้อมูล</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+								<?php while ($row = mysqli_fetch_array($result)) { ?>
                                     <tr>
-                                        <td>สถานะข้อร้องเรียน 1</td>
-                                        <td>ใช้งาน</td>
+                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['complaint_state_desc']; ?></td>
+                                        <td><?php if ($row['complaint_state_status']) {
+                                            echo "ใช้งานปกติ";
+                                        } else { echo "ยกเลิกการใช้งาน"; } ?></td>
                                         <td class="text-center">
-                                            <a href="#" class="edit"><i class="icon-pencil2"></i></a>
+                                            <a href="complaint_states_update.php?state_id=<?php echo $row['complaint_state_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
                                         <td class="text-center">
-                                            <a href="#" class="delete disabled" data-href="#" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
+                                            <a href="#" class="delete" data-href="complaint_states_list.php?state_id=<?php echo $row['complaint_state_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
+								<?php } ?>
                                 </tbody>
                             </table>
                         </div><!-- /.table-responsive -->
@@ -237,6 +256,11 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<script>
+		$('#confirm-delete').on('show.bs.modal', function(e) {
+			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
+		});
+	</script>
 
 	</body>
 </html>
