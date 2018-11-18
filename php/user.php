@@ -33,8 +33,8 @@ class User {
 
     //read one record
     function readone(){
-        // $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "' and user_passwd = '" . md5($this->user_passwd) . "' and user_status = 1";
-        $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = " . $this->user_id;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "' and user_passwd = '" . md5($this->user_passwd) . "' and user_status = 1";
+        // $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = " . $this->user_id;
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
