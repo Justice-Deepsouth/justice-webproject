@@ -1,3 +1,37 @@
+<?php
+    session_start();
+
+    /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_type'])) {
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} */
+
+    // form is submitted
+    if (isset($_POST['contact-info-submit'])) {
+        include_once 'php/dbconnect.php';
+		include_once 'php/contact_info.php';
+
+        // get connection
+        $database = new Database();
+        $db = $database->getConnection();
+
+        // pass connection to contact_info table
+		$contact_info = new Contact_info($db);
+		$contact_info->contact_info_name = $_POST['contact-info-name'];
+		$contact_info->contact_info_email = $_POST['contact-info-email'];
+        $contact_info->contact_info_desc = $_POST['contact-info-desc'];
+
+        // insert
+        if ($contact_info->create()) {
+			$success = true;
+
+        } else {
+			
+            $success = false;
+		}
+    }
+?>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -8,20 +42,6 @@
 	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
-
-	<!-- 
-	//////////////////////////////////////////////////////
-
-	FREE HTML5 TEMPLATE 
-	DESIGNED & DEVELOPED by FreeHTML5.co
-		
-	Website: 		http://freehtml5.co/
-	Email: 			info@freehtml5.co
-	Twitter: 		http://twitter.com/fh5co
-	Facebook: 		https://www.facebook.com/fh5co
-
-	//////////////////////////////////////////////////////
-	 -->
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -135,28 +155,41 @@
 					</ul>
 				</div>
 				<div class="col-md-7 col-md-push-1 animate-box">
+				<div class="col-md-12">
+						<?php
+                            if (isset($success)) {
+    							if ($success) {
+        							echo "<div class='alert alert-success text-center'>ส่งข้อความเรียบร้อยแล้ว</div>";
+    							} else {
+        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถส่งข้อความได้</div>";
+    							}
+							}
+						?>
+						</div>
+				<form role="form" id="contact-info" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ชื่อ - นามสกุล">
+								<input type="text" class="form-control" placeholder="ชื่อ - นามสกุล" name="contact-info-name" required>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="อีเมล">
+								<input type="email" class="form-control" placeholder="อีเมล" name="contact-info-email" required>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<textarea name="" class="form-control" id="" cols="30" rows="7" placeholder="รายละเอียดการติดต่อ"></textarea>
+								<textarea class="form-control" id="" cols="30" rows="7" placeholder="รายละเอียดการติดต่อ" name="contact-info-desc" required></textarea>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="submit" value="ส่งข้อความ" class="btn btn-primary btn-modify">
+								<input type="submit" value="ส่งข้อความ" class="btn btn-primary btn-modify" name="contact-info-submit">
 							</div>
 						</div>
 					</div>
+				</form>
 				</div>
 			</div>
 		</div>
