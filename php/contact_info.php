@@ -27,13 +27,6 @@ class Contact_info {
         return $result;
     }
 
-    //read one record
-    function readone(){
-        $query = "SELECT * FROM " . $this->table_name . " WHERE contact_info_id = " . $this->complaint_type_id;
-        $result = mysqli_query($this->conn, $query);
-        return $result;
-    }
-
     // create contact information
     function create(){
         // write statement
@@ -56,22 +49,6 @@ class Contact_info {
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameters
         mysqli_stmt_bind_param($stmt, 'ss', $this->check_read, $this->contact_info_id);
-
-        /* execute prepared statement */
-        if (mysqli_stmt_execute($stmt)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // delete record
-    function delete(){
-        $query = "DELETE FROM " . $this->table_name . " WHERE contact_info_id = ?";
-        // statement
-        $stmt = mysqli_prepare($this->conn, $query);
-        // bind parameter
-        mysqli_stmt_bind_param($stmt, 's', $this->contact_info_id);
 
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
