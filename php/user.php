@@ -110,6 +110,55 @@ class User {
         }
     }
 
+    //search all
+    function search($act){
+        if ($act) {
+            $query = "SELECT * FROM " . $this->table_name . " WHERE user_name like'%".$this->user_name."%' ";
+        
+        } else {
+            $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
+        }
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }//search all
+
+        //read all admins
+        function readall_admin($act)
+        {
+            if ($act) {
+                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 0 ORDER BY user_id";
+            } else {
+                $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
+            }
+            $result_admin = mysqli_query($this->conn, $query);
+            return $result_admin;
+        }//read all admins
+
+        //read all justics
+        function  readall_ju($act)
+        {
+            if ($act) {
+                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id";
+            } else {
+                $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
+            }
+            $result_ju = mysqli_query($this->conn, $query);
+            return $result_ju;
+        }//read all justics
+
+
+        //read all complainant
+        function readall_complainant($act)
+        {
+            if ($act) {
+                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 2 ORDER BY user_id";
+            } else {
+                $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
+            }
+            $result_complainant = mysqli_query($this->conn, $query);
+            return $result_complainant;
+        }//read all complainant
+
 
 }
 

@@ -4,7 +4,7 @@ session_start();
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
     } */
-
+    
 include_once '../php/dbconnect.php';
 include_once '../php/user.php';
 
@@ -15,17 +15,13 @@ $db = $database->getConnection();
     // pass connection to property_types table
 $user = new User($db);
 
-	// read all records
-$active = false;
-$result = $user->readall($active);
+if (isset($_POST['name-search'])) {
+	$user->user_name = $_POST['name-search'];
+	$active = true;
+$result = $user->search($active);
 $total_rows = $user->getTotalRows();
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
 }
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -158,9 +154,7 @@ if (isset($_GET['user_id'])) {
 							<div class="form-group">
 								<input type="button" value="เพิ่มผู้ใช้งาน" class="btn btn-outline" onclick="location.href='users_add.php';">
 							</div>
-
-						</div>
-						<form role="form" id="search" action="users_search.php" method="post">
+					<form role="form" id="search" action="users_search.php" method="post">
 							<div class="col-md-8" >
 							<div class="form-group">
 							<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ป้อนข้อมูลที่ต้องการจะค้น" autocomplete="off">
@@ -172,34 +166,21 @@ if (isset($_GET['user_id'])) {
 							</div>
 						</div>
 						</form>
+						</div>
+
 					</div><!-- /.row -->
-					<ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#type-2">ผู้ร้องเรียน</a></li>
-    <li><a data-toggle="tab" href="#type-1">หน่วยงานยุติธรรม</a></li>
-    <li><a data-toggle="tab" href="#type-0">ผู้ดูแลระบบ</a></li>
-  </ul>
 
-  <div class="tab-content">
+
+   <div class="tab-content">
     <div id="type-2" class="tab-pane fade in active">
-<?php
-$active = true;
-$result_admin = $user->readall_admin($active);
-$total_rows = $user->getTotalRows();
 
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th>ชื่อผู้ใช้งาน</th>
                                     <th>อีเมล์</th>
+									<th>ประเภทผู้ใช้งาน</th>
                                     <th>สถานะ</th>
                                     <th class="text-center">แก้ไขข้อมูล</th>
 									<th class="text-center">แก้ไขรหัสผ่าน</th>
@@ -207,17 +188,27 @@ if (isset($_GET['user_id'])) {
                                 </tr>
                                 </thead>
                                 <tbody>
-								<?php while ($row = mysqli_fetch_array($result_admin)) { ?>
+								<?php while ($row = mysqli_fetch_array($result)) { ?>
 
                                     <tr>
                                         <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
+										<td><?php if ($row['user_type'] == 0) {
+											echo "ผู้ดูแลระบบ";
+											} elseif($row['user_type'] == 1) {
+											echo "หน่วยงานยุติธรรม";
+											}else{
+												echo "ผู้ร้องเรียน";
+											}
+											?>
+											</td>
                                         <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
+											echo "ยกเลิกการใช้งาน";
+											} else {
+											echo "ใช้งานปกติ";
+											}
+											?>
+											</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -235,119 +226,31 @@ if (isset($_GET['user_id'])) {
                         </div><!-- /.table-responsive -->
 
     </div>
-    <div id="type-1" class="tab-pane fade">
-<?php
-$active = true;
-$result_ju = $user->readall_ju($active);
-$total_rows = $user->getTotalRows();
 
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
-						<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>ชื่อผู้ใช้งาน</th>
-                                    <th>อีเมล์</th>
-                                    <th>สถานะ</th>
-                                    <th class="text-center">แก้ไขข้อมูล</th>
-									<th class="text-center">แก้ไขรหัสผ่าน</th>
-                                    <th class="text-center">ลบข้อมูล</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-								<?php while ($row = mysqli_fetch_array($result_ju)) { ?>
-
-                                    <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
-                                        <td><?php echo $row['user_email'] ?></td>
-                                        <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
-                                        <td class="text-center">
-                                            <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
-                                        </td>
-										<td class="text-center">
-                                            <a href="user_pwd_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-key2"></i></a>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
-                                        </td>
-                                    </tr>
-								<?php 
-						} ?>
-                                </tbody>
-                            </table>
-    </div>
-	</div>
-    <div id="type-0" class="tab-pane fade">
-	<?php
-$active = true;
-$result_complainant = $user->readall_complainant($active);
-$total_rows = $user->getTotalRows();
-
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
-						<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>ชื่อผู้ใช้งาน</th>
-                                    <th>อีเมล์</th>
-                                    <th>สถานะ</th>
-                                    <th class="text-center">แก้ไขข้อมูล</th>
-									<th class="text-center">แก้ไขรหัสผ่าน</th>
-                                    <th class="text-center">ลบข้อมูล</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-								<?php while ($row = mysqli_fetch_array($result_complainant)) { ?>
-
-                                    <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
-                                        <td><?php echo $row['user_email'] ?></td>
-                                        <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
-                                        <td class="text-center">
-                                            <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
-                                        </td>
-										<td class="text-center">
-                                            <a href="user_pwd_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-key2"></i></a>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
-                                        </td>
-                                    </tr>
-								<?php 
-						} ?>
-                                </tbody>
-                            </table>
-    </div>
-    </div>
   </div>
 </div>
 
-    </body>
-
+	<div class="container-wrap">
+		<footer id="fh5co-footer" role="contentinfo">
+			<div class="row copyright">
+				<div class="col-md-12 text-center">
+					<p>
+						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
+						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
+					</p>
+					<p>
+						<ul class="fh5co-social-icons">
+							<li><a href="#"><i class="icon-twitter"></i></a></li>
+							<li><a href="#"><i class="icon-facebook"></i></a></li>
+							<li><a href="#"><i class="icon-linkedin"></i></a></li>
+							<li><a href="#"><i class="icon-dribbble"></i></a></li>
+						</ul>
+					</p>
+				</div>
+			</div>
+		</footer>
+	</div><!-- END container-wrap -->
+	</div>
 
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
