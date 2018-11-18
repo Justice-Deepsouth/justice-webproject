@@ -107,7 +107,7 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="complaint_login.html">ร้องเรียน</a></li>
+							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
 							<li class="active"><a href="contact.html">ติดต่อ</a></li>
 						</ul>
