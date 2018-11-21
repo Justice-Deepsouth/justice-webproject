@@ -1,42 +1,28 @@
 <?php
-    session_start();
+session_start();
 
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
     } */
-
-    include_once '../php/dbconnect.php';
-    include_once '../php/complaint_type.php';
+    
+include_once '../php/dbconnect.php';
+include_once '../php/user.php';
 
     // get connection
-    $database = new Database();
-    $db = $database->getConnection();
+$database = new Database();
+$db = $database->getConnection();
 
     // pass connection to property_types table
-    $complaint_type = new Complaint_type($db);
+$user = new User($db);
 
-	// read all records
-	$active = $complaint_type->complaint_type_id = $_GET['type_id'];
-	$result = $complaint_type->readone($active);
-	// $total_rows = $complaint_type->getTotalRows();
+if (isset($_POST['name-search'])) {
+	$user->user_name = $_POST['name-search'];
+	$active = true;
+$result = $user->search($active);
+$total_rows = $user->getTotalRows();
+}
 
-
-	if (isset($_POST['complaint-type-submit'])) {
-        $complaint_type->complaint_type_id = $_POST['complaint_type_id'];
-		$complaint_type->complaint_type_desc = $_POST['complaint-type-desc'];
-		$complaint_type->complaint_type_status = $_POST['complaint-type-status'];
-		if ($complaint_type->update()) {
-			$success = true;
-			header("Location: complaint_types_list.php");
-        } else {
-			
-            $success = false;
-		}
-		
-	}
-	
 ?>
-
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -64,7 +50,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
 
 	<link href="https://fonts.googleapis.com/css?family=Chakra+Petch" rel="stylesheet">
-	
+
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="../css/animate.css">
 	<!-- Icomoon Icon Fonts-->
@@ -90,20 +76,20 @@
 
 	</head>
 	<body>
-		
+
 	<div class="fh5co-loader"></div>
-	
+
 	<div id="page">
 	<nav class="fh5co-nav" role="navigation">
 		<div class="container-wrap">
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.php">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.php">หน้าแรก</a></li>
+							<li><a href="../index.html">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -113,13 +99,13 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
+							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.html">ติดต่อ</a></li>
 						</ul>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 	</nav>
@@ -139,10 +125,10 @@
 				   			</div>
 				   		</div>
 			   		</div>
-			   	</li>		   	
+			   	</li>
 			  	</ul>
 		  	</div>
-		</aside>		
+		</aside>
 		<div id="fh5co-contact">
 			<div class="row">
 				<!-- sidebar -->
@@ -154,9 +140,9 @@
 						<aside>
 							<ul class="sidebar-navigation">
 								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li class="active"><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
+								<li><a href="#"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -164,93 +150,88 @@
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
-						<div class="col-md-12">
-							<h3>เพิ่มประเภทข้อร้องเรียน</h3>
+						<div class="col-md-6">
+							<div class="form-group">
+								<input type="button" value="เพิ่มผู้ใช้งาน" class="btn btn-outline" onclick="location.href='users_add.php';">
+							</div>
+					<form role="form" id="search" action="users_search.php" method="post">
+							<div class="col-md-8" >
+							<div class="form-group">
+							<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ป้อนข้อมูลที่ต้องการจะค้น" autocomplete="off">
+							</div>
 						</div>
+						<div class="col-md-4 ">
+							<div class="form-group">
+							<input type="submit" value="ค้นหา" class="btn btn-primary btn-modify" name="search-submit">
+							</div>
+						</div>
+						</form>
+						</div>
+
 					</div><!-- /.row -->
-					<form role="form" id="complaint-types" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-				
-					<?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
-					<input type="hidden" name="complaint_type_id" value="<?php echo $row['complaint_type_id']; ?>">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-								<input type="text" class="form-control"  maxlength="100" name="complaint-type-desc" value="<?php echo $row['complaint_type_desc']; ?>">
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<select class="form-control" name="complaint-type-status">
-									<option value="1" selected>ใช้งานปกติ</option>
-									<option value="0">ยกเลิกการใช้งาน</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<input type="submit" value="บันทึกการเปลี่ยนแปลง" class="btn btn-primary btn-modify" name="complaint-type-submit">
-							</div>
-						</div>
-						
-						<div class="col-md-12">
-						<?php
-                            if (isset($success)) {
-    							if ($success) {
-        							echo "<div class='alert alert-success text-center'>อัพเดตข้อมูลเรียบร้อยแล้ว</div>";
-    							} else {
-        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถอัพเดตข้อมูลได้</div>";
-    							}
-							}
-						?>
-						</div>
-					</div><!-- /.row -->
-					</form>
-				</div>
-			</div>
-		</div>
-	</div><!-- END container-wrap -->
+
+
+   <div class="tab-content">
+    <div id="type-2" class="tab-pane fade in active">
+
+						<div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>ชื่อผู้ใช้งาน</th>
+                                    <th>อีเมล์</th>
+									<th>ประเภทผู้ใช้งาน</th>
+                                    <th>สถานะ</th>
+                                    <th class="text-center">แก้ไขข้อมูล</th>
+									<th class="text-center">แก้ไขรหัสผ่าน</th>
+                                    <th class="text-center">ลบข้อมูล</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+								<?php while ($row = mysqli_fetch_array($result)) { ?>
+
+                                    <tr>
+                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
+                                        <td><?php echo $row['user_email'] ?></td>
+										<td><?php if ($row['user_type'] == 0) {
+											echo "ผู้ดูแลระบบ";
+											} elseif($row['user_type'] == 1) {
+											echo "หน่วยงานยุติธรรม";
+											}else{
+												echo "ผู้ร้องเรียน";
+											}
+											?>
+											</td>
+                                        <td><?php if ($row['user_status'] == 0) {
+											echo "ยกเลิกการใช้งาน";
+											} else {
+											echo "ใช้งานปกติ";
+											}
+											?>
+											</td>
+                                        <td class="text-center">
+                                            <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
+                                        </td>
+										<td class="text-center">
+                                            <a href="user_pwd_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-key2"></i></a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
+                                        </td>
+                                    </tr>
+								<?php 
+						} ?>
+                                </tbody>
+                            </table>
+                        </div><!-- /.table-responsive -->
+
+    </div>
+
+  </div>
+</div>
 
 	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
-			<!-- <div class="row">
-				<div class="col-md-3 fh5co-widget">
-					<h4>ยุติธรรมคืออะไร?</h4>
-					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto
-						culpa amet.</p>
-				</div>
-				<div class="col-md-3 col-md-push-1">
-					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
-					<ul class="fh5co-footer-links">
-						<li><a href="#">บทความอื่นๆ 1</a></li>
-						<li><a href="#">บทความอื่นๆ 2</a></li>
-						<li><a href="#">บทความอื่นๆ 3</a></li>
-						<li><a href="#">บทความอื่นๆ 4</a></li>
-						<li><a href="#">ดูบทความทั้งหมด</a></li>
-					</ul>
-				</div>
-	
-				<div class="col-md-3 col-md-push-1">
-					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
-					<ul class="fh5co-footer-links">
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
-					</ul>
-				</div>
-	
-				<div class="col-md-3">
-					<h4>ติดต่อโครงการ</h4>
-					<ul class="fh5co-footer-links">
-						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
-						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
-						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
-						<li><a href="">gettemplates.co</a></li>
-					</ul>
-				</div>
-			</div> -->
-	
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
@@ -274,7 +255,26 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
-	
+
+	<!-- Modal Dialog -->
+	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
+				</div>
+				<div class="modal-body">
+				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
+					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -292,7 +292,11 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<script>
+		$('#confirm-delete').on('show.bs.modal', function(e) {
+			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
+		});
+	</script>
 
 	</body>
 </html>
-

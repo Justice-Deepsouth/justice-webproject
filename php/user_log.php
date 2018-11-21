@@ -44,7 +44,9 @@ class User_log {
         } else {
             return false;
         }
-    }
+    }//update()
+
+    
 
 
 }
