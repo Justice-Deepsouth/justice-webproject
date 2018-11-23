@@ -15,11 +15,10 @@
     // pass connection to property_types table
     $complaint_type = new Complaint_type($db);
 
-	// read all records
-	$active = $complaint_type->complaint_type_id = $_GET['type_id'];
-	$result = $complaint_type->readone($active);
-	// $total_rows = $complaint_type->getTotalRows();
-
+	// read one records
+	$complaint_type->complaint_type_id = $_GET['type_id'];
+	$result = $complaint_type->readone();
+	$row = mysqli_fetch_array($result);
 
 	if (isset($_POST['complaint-type-submit'])) {
         $complaint_type->complaint_type_id = $_POST['complaint_type_id'];
@@ -32,8 +31,7 @@
 			
             $success = false;
 		}	
-	}
-	
+	}	
 ?>
 
 <!DOCTYPE HTML>
@@ -168,8 +166,6 @@
 						</div>
 					</div><!-- /.row -->
 					<form role="form" id="complaint-types" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-				
-					<?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
 					<input type="hidden" name="complaint_type_id" value="<?php echo $row['complaint_type_id']; ?>">
 					<div class="row">
 						<div class="col-md-12">
