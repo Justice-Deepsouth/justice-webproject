@@ -31,8 +31,7 @@
         } else {
 			
             $success = false;
-		}
-		
+		}	
 	}
 	
 ?>
@@ -181,8 +180,12 @@
 						<div class="col-md-4">
 							<div class="form-group">
 								<select class="form-control" name="complaint-type-status">
-									<option value="1" selected>ใช้งานปกติ</option>
-									<option value="0">ยกเลิกการใช้งาน</option>
+									<option value="1" <?php if ($row['complaint_type_status']) {
+										echo "selected";
+									} ?>>ใช้งานปกติ</option>
+									<option value="0" <?php if (!$row['complaint_type_status']) {
+										echo "selected";
+									} ?>>ยกเลิกการใช้งาน</option>
 								</select>
 							</div>
 						</div>
