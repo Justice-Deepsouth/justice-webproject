@@ -164,7 +164,7 @@
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
-							<h3>เพิ่มประเภทข้อร้องเรียน</h3>
+							<h3>แก้ไขประเภทข้อร้องเรียน</h3>
 						</div>
 					</div><!-- /.row -->
 					<form role="form" id="complaint-types" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
