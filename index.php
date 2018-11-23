@@ -79,7 +79,7 @@
 							</li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="contact.html">ติดต่อ</a></li>
+							<li><a href="contact.php">ติดต่อ</a></li>
 						</ul>
 					</div>
 				</div>

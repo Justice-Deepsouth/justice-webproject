@@ -1,3 +1,33 @@
+<?php
+    session_start();
+
+    /* if (!isset($_SESSION['user_session_id'])) {
+        header("Location: ../index.php");
+    } */
+
+    include_once '../php/dbconnect.php';
+    include_once '../php/contact_info.php';
+
+    // get connection
+    $database = new Database();
+    $db = $database->getConnection();
+
+    // pass connection to contact_info table
+    $contact_info = new Contact_info($db);
+
+	// read all records
+	$active = false;
+    $result = $contact_info->readall($active);
+    $total_rows = $contact_info->getTotalRows();
+
+    if (isset($_GET['con_id'])) {
+		$contact_info->contact_info_id = $_GET['con_id'];
+		$contact_info->check_read = "1";
+        if ($contact_info->update()) {
+            header("Location: admin_main.php");
+        }
+    }
+?>
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -8,20 +38,6 @@
 	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
-
-	<!-- 
-	//////////////////////////////////////////////////////
-
-	FREE HTML5 TEMPLATE 
-	DESIGNED & DEVELOPED by FreeHTML5.co
-		
-	Website: 		http://freehtml5.co/
-	Email: 			info@freehtml5.co
-	Twitter: 		http://twitter.com/fh5co
-	Facebook: 		https://www.facebook.com/fh5co
-
-	//////////////////////////////////////////////////////
-	 -->
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -73,11 +89,11 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php">ชื่อโครงการ</a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.html">หน้าแรก</a></li>
+							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -87,9 +103,9 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
+							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="../contact.html">ติดต่อ</a></li>
+							<li><a href="../contact.php">ติดต่อ</a></li>
 						</ul>
 					</div>
 				</div>
@@ -137,28 +153,44 @@
 				</div><!-- /.col-md-3 -->
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ชื่อ - นามสกุล">
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="อีเมล">
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<textarea name="" class="form-control" id="" cols="30" rows="7" placeholder="รายละเอียดการติดต่อ"></textarea>
-							</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<input type="submit" value="ส่งข้อความ" class="btn btn-primary btn-modify">
-							</div>
-						</div>
-					</div>
+				<div class="row">
+						<div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>ชื่อผู้ร้องเรียน</th>
+									<th>อีเมลผู้ร้องเรียน</th>
+									<th class="text-center">รายละเอียดการร้องเรียน</th>
+									<th class="text-center">อ่านแล้ว</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+								<?php while ($row = mysqli_fetch_array($result)) { ?>
+                                    <tr>
+										<td><?php echo $row['contact_info_name']; ?></td>
+										<td><?php echo $row['contact_info_email']; ?></td>
+										<?php
+										if($row['check_read'] == 0){
+											?>
+												<td class="text-center"><a href="admin_main.php?con_id=<?php echo $row['contact_info_id']; ?>" >อ่านข้อความ</a></td>
+												<td class="text-center"></td>
+											<?php
+										}else {
+											?><td class="text-center"><?php echo $row['contact_info_desc']; ?></td>
+                                        <td class="text-center">
+											<i class="icon-checkmark"></i>
+                                        </td>											
+											<?php
+										}
+										?>
+
+                                    </tr>
+								<?php } ?>
+                                </tbody>
+                            </table>
+                        </div><!-- /.table-responsive -->
+					</div><!-- /.row -->
 				</div>
 			</div>
 		</div>
@@ -228,6 +260,25 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
+
+	<!-- Modal Dialog -->
+	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
+				</div>
+				<div class="modal-body">
+				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
+					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
+				</div>
+			</div>
+		</div>
+	</div>	
 	
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
@@ -246,6 +297,11 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<script>
+		$('#confirm-delete').on('show.bs.modal', function(e) {
+			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
+		});
+	</script>
 
 	</body>
 </html>
