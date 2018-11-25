@@ -59,6 +59,28 @@ Class Setting {
         }
     }
 
+    // get last complaint_id
+    function getLast_Complaint_ID() {
+        $query = "SELECT complaint_id_last FROM	" . $this->table_name;
+        $result = mysqli_query($this->conn, $query);
+        $row = mysqli_fetch_array($result);
+        $cComplaint_ID = $row['complaint_id_last'];
+        // check whether same year
+        if (substr($cComplaint_ID, 0, 4) == date("Y")) {
+            //check whether same month
+            if (substr($cComplaint_ID, 5, 2) == date("m")) {
+                $running_no = (int)substr($cComplaint_ID, 8, 2) + 1;
+                $nComplaint_ID = substr($cComplaint_ID, 0, 8) . str_pad($running_no, 2, '0', STR_PAD_LEFT);
+            } else {        // start new month, running no is 01
+                $cmonth = date("m");
+                $nComplaint_ID = substr($cComplaint_ID, 0, 5) . str_pad($cmonth, 2, '0', STR_PAD_LEFT) . "-01";
+            }
+        } else {                // start new year, then month is 01 and running no is also 01 
+            $cyear = date("Y");
+            $nComplaint_ID = $cyear . "-01-01"; 
+        }
+        return $nComplaint_ID;
+    }
 }
 
 ?>
