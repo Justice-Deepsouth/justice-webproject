@@ -144,9 +144,10 @@ if (isset($_GET['user_id'])) {
 						<aside>
 							<ul class="sidebar-navigation">
 								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li><a href="#"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
+								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -181,26 +182,25 @@ if (isset($_GET['user_id'])) {
 
   <div class="tab-content">
     <div id="type-2" class="tab-pane fade in active">
-<?php
-$active = true;
-$result_admin = $user->readall_admin($active);
-$total_rows = $user->getTotalRows();
+	<?php
+		$active = true;
+		$result_admin = $user->readall_admin($active);
+		$total_rows = $user->getTotalRows();
 
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
+		if (isset($_GET['user_id'])) {
+			$user->user_id = $_GET['user_id'];
+			if ($user->delete()) {
+				header("Location: users_list.php");
+			}
+		}
+	?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th>ชื่อผู้ใช้งาน</th>
                                     <th>อีเมล์</th>
-                                    <th>สถานะ</th>
+                                    <th class="text-center">สถานะ</th>
                                     <th class="text-center">แก้ไขข้อมูล</th>
 									<th class="text-center">แก้ไขรหัสผ่าน</th>
                                     <th class="text-center">ลบข้อมูล</th>
@@ -208,16 +208,15 @@ if (isset($_GET['user_id'])) {
                                 </thead>
                                 <tbody>
 								<?php while ($row = mysqli_fetch_array($result_admin)) { ?>
-
                                     <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
+                                        <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
-                                        <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
+                                        <td class="text-center"><?php if ($row['user_status'] == 0) {
+													echo "ยกเลิกการใช้งาน";
+												} else {
+													echo "ใช้งานปกติ";
+												}
+											?>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -228,8 +227,7 @@ if (isset($_GET['user_id'])) {
                                             <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
-								<?php 
-						} ?>
+								<?php } ?>
                                 </tbody>
                             </table>
                         </div><!-- /.table-responsive -->
