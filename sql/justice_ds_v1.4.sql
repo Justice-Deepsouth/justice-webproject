@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 25, 2018 at 03:16 AM
+-- Generation Time: Nov 26, 2018 at 12:47 AM
 -- Server version: 10.1.22-MariaDB
 -- PHP Version: 7.1.4
 
@@ -35,6 +35,7 @@ CREATE TABLE `activities` (
   `activity_place` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `activity_sdate` date NOT NULL,
   `activity_edate` date NOT NULL,
+  `activity_image` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `user_id` char(20) COLLATE utf8_unicode_ci NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -51,7 +52,7 @@ CREATE TABLE `complaints` (
   `complaint_title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `complaint_type_id` tinyint(4) NOT NULL,
   `complaint_desc` text COLLATE utf8_unicode_ci NOT NULL,
-  `complaint_state_id` tinyint(4) NOT NULL,
+  `complaint_state_id` tinyint(4) NOT NULL DEFAULT '1',
   `user_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -64,7 +65,7 @@ CREATE TABLE `complaints` (
 --
 
 CREATE TABLE `complaint_photos` (
-  `complaint_photo_id` int(10) UNSIGNED NOT NULL,
+  `complaint_photo_id` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `complaint_photo_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `complaint_id` char(10) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -153,7 +154,8 @@ INSERT INTO `contact_info` (`contact_info_id`, `contact_info_name`, `contact_inf
 --
 
 CREATE TABLE `settings` (
-  `project_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `project_name_th` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `project_name_en` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `project_address` text COLLATE utf8_unicode_ci NOT NULL,
   `project_phone` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `project_email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -168,8 +170,8 @@ CREATE TABLE `settings` (
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`project_name`, `project_address`, `project_phone`, `project_email`, `project_website`, `project_twitter`, `project_facebook`, `project_youtube`, `complaint_id_last`) VALUES
-('Justice Deep South Project', 'คณะมนุษยศาสตร์และสังคมศาสตร์ มหาวิทยาลัยสงขลานครินทร์', '+ 1235 2355 98', 'info@justicedeepsouth.in.th', 'https://www.justicedeepsouth.in.th', '#', '#', '#', '2018-11-01');
+INSERT INTO `settings` (`project_name_th`, `project_name_en`, `project_address`, `project_phone`, `project_email`, `project_website`, `project_twitter`, `project_facebook`, `project_youtube`, `complaint_id_last`) VALUES
+('Justice Deep South Project', '', 'คณะมนุษยศาสตร์และสังคมศาสตร์ มหาวิทยาลัยสงขลานครินทร์', '+ 1235 2355 98', 'info@justicedeepsouth.in.th', 'https://www.justicedeepsouth.in.th', '#', '#', '#', '2018-11-05');
 
 -- --------------------------------------------------------
 

@@ -20,7 +20,8 @@
     $row = mysqli_fetch_array($result);
 
 	if (isset($_POST['setting-submit'])) {
-        $setting->project_name = $_POST['project-name'];
+		$setting->project_name_th = $_POST['project-name-th'];
+		$setting->project_name_en = $_POST['project-name-en'];
 		$setting->project_address = $_POST['project-address'];
         $setting->project_phone = $_POST['project-phone'];
         $setting->project_email = $_POST['project-email'];
@@ -177,7 +178,12 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control"  maxlength="100" placeholder="ชื่อโครงการ" name="project-name" value="<?php echo $row['project_name']; ?>">
+								<input type="text" class="form-control"  maxlength="100" placeholder="ชื่อโครงการ (ไทย)" name="project-name-th" value="<?php echo $row['project_name_th']; ?>">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control"  maxlength="100" placeholder="่ชื่อโครงการ (English)" name="project-name-en" value="<?php echo $row['project_name_en']; ?>">
 							</div>
                         </div>
                         <div class="col-md-12">

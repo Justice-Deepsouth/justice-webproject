@@ -6,7 +6,8 @@ Class Setting {
     private $table_name = "settings";
 
     //table properties
-    public $project_name;
+    public $project_name_th;
+    public $project_name_en;
     public $project_address;
     public $project_phone;
     public $project_email;
@@ -29,11 +30,11 @@ Class Setting {
 
     // update record
     function update(){
-        $query = "UPDATE " . $this->table_name . " SET project_name = ?, project_address = ?, project_phone = ?, project_email = ?, project_website = ?, project_twitter = ?, project_facebook = ?, project_youtube = ?, complaint_id_last = ?";
+        $query = "UPDATE " . $this->table_name . " SET project_name_th = ?, project_name_en = ?, project_address = ?, project_phone = ?, project_email = ?, project_website = ?, project_twitter = ?, project_facebook = ?, project_youtube = ?, complaint_id_last = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameters
-        mysqli_stmt_bind_param($stmt, 'sssssssss', $this->project_name, $this->project_address, $this->project_phone, $this->project_email, $this->project_website, $this->project_twitter, $this->project_facebook, $this->project_youtube, $this->complaint_id_last);
+        mysqli_stmt_bind_param($stmt, 'ssssssssss', $this->project_name_th, $this->project_name_en, $this->project_address, $this->project_phone, $this->project_email, $this->project_website, $this->project_twitter, $this->project_facebook, $this->project_youtube, $this->complaint_id_last);
 
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
