@@ -3,9 +3,9 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Neat Project</title>
+	<title>Justice Deep South Project</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Justice Project" />
+	<meta name="description" content="Justice Deep South Project" />
 	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
 	<meta name="author" content="freehtml5.co" />
 
@@ -63,7 +63,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.php">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="index.php"><img src="images/logo_6.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -77,6 +77,7 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a><span class="badge">อัพเดต</span></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
@@ -323,8 +324,8 @@
 				<div class="col-md-3 col-md-push-1">
 					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
 					<ul class="fh5co-footer-links">
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
+						<li><a href="https://www.psu.ac.th/th/" target="_blank">มหาวิทยาลัยสงขลานครินทร์</a></li>
+						<li><a href="http://huso.pn.psu.ac.th/th/" target="_blank">คณะมนุษยศาสตร์และสังคมศาสตร์ ม.อ.</a></li>
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
