@@ -24,6 +24,7 @@
         $result = $user->readone();
 
         if ($row = mysqli_fetch_array($result)) {
+            session_regenerate_id();                // regenerate session id
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['user_session_id'] = session_id();
             // insert into user_logs table
