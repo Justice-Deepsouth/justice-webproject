@@ -1,5 +1,6 @@
 <?php
-class User_log {
+class User_log
+{
 
     //database connection and table name
     private $conn;
@@ -11,12 +12,14 @@ class User_log {
     public $login_date;
     public $logout_date;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
     // insert
-    function create(){
+    function create()
+    {
         // write statement
         $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (session_id, user_id, login_date) VALUES (?,?,?)");
         // bind parameters
@@ -31,7 +34,8 @@ class User_log {
     } //create()
 
     // update record
-    function update(){
+    function update_logout()
+    {
         $query = "UPDATE " . $this->table_name . " SET logout_date = ? WHERE session_id = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
@@ -44,9 +48,12 @@ class User_log {
         } else {
             return false;
         }
+
+
+        
     }//update()
 
-    
+
 
 
 }
