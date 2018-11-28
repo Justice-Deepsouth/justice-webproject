@@ -1,42 +1,43 @@
 <?php
-    session_start();
+session_start();
 
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
     } */
 
-    include_once '../php/dbconnect.php';
-    include_once '../php/user.php';
+include_once '../php/dbconnect.php';
+include_once '../php/user.php';
 
     // get connection
-    $database = new Database();
-    $db = $database->getConnection();
+$database = new Database();
+$db = $database->getConnection();
 
     // pass connection to property_types table
-    $user = new User($db);
+$user = new User($db);
 
 	// read all records
-	$active =  $user->user_id = $_GET['user_id'];
-	$result =  $user->readone($active);
-	// $total_rows = $complaint_type->getTotalRows();
+$active = $user->user_id = $_GET['user_id'];
+// $result = $user->readoneforupdate($active);
+$result = $user->readoneforupdate();
+// $total_rows = $user->getTotalRows();
 
 
-	if (isset($_POST['user-submit'])) {
-        $user->user_id = $_POST['user-id'];
-		$user->user_name = $_POST['user-name'];
-		$user->user_email = $_POST['user-email'];
-		$user->user_type = $_POST['user-type'];
-		$user->user_status = $_POST['user-status'];		
-		if ($user->update()) {
-			$success = true;
-			header("Location: users_list.php");
-        } else {
-			
-            $success = false;
-		}
-		
+if (isset($_POST['user-submit'])) {
+	$user->user_id = $_POST['user-id'];
+	$user->user_name = $_POST['user-name'];
+	$user->user_email = $_POST['user-email'];
+	$user->user_type = $_POST['user-type'];
+	$user->user_status = $_POST['user-status'];
+	if ($user->update()) {
+		$success = true;
+		header("Location: users_list.php");
+	} else {
+
+		$success = false;
 	}
-	
+
+}
+
 ?>
 
 <!DOCTYPE HTML>
@@ -170,7 +171,7 @@
 						</div>
 					</div><!-- /.row -->
 					<form role="form" id="users" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-                    <?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
+                    <?php $row = mysqli_fetch_array($result, MYSQLI_ASSOC); ?>
                     <input type="hidden" name="user-id" value="<?php echo $row['user_id']; ?>">
 					<div class="row">
 						<div class="col-md-12">
@@ -183,43 +184,30 @@
 								<input type="email" class="form-control" placeholder="Email" maxlength="100" name="user-email" value="<?php echo $row['user_email']; ?>" required>
 							</div>
 						</div>
-						<!-- <div class="col-md-6">
-							<div class="form-group">
-								<input type="password" class="form-control" placeholder="รหัสผ่าน"  name="user-password"  value="<?php echo $row['user_passwd']; ?>" required>
-							</div>
-						</div>
-                        <div class="col-md-6">
-							<div class="form-group">
-								<input type="password" class="form-control" placeholder="ยืนยันรหัสผ่าน"  name="user-Cpassword"  value="<?php echo $row['user_passwd']; ?>" required>
-							</div>
-						</div> -->
 
 								</select>
                       <div class="col-md-6">
 							<div class="form-group">
 							<select class="form-control" name="user-type">
-								<?php if($row['user_type'] == 2){
-									echo '
+								<?php if ($row['user_type'] == 2) {
+								echo '
 									<option value="2" selected>ผู้ร้องเรียน</option>
 									<option value="1">หน่วยงานยุติธรรม</option> 
-									<option value="0">ผู้ดูแลระบบ</option> '
-									;
+									<option value="0">ผู้ดูแลระบบ</option> ';
 
-								}elseif($row['user_type'] == 1){
-									echo '
+							} elseif ($row['user_type'] == 1) {
+								echo '
 									<option value="1" selected>หน่วยงานยุติธรรม</option> 
 									<option value="0">ผู้ดูแลระบบ</option> 
-									<option value="2">ผู้ร้องเรียน</option>'
-									;									
-								}else{
-									echo '
+									<option value="2">ผู้ร้องเรียน</option>';
+							} else {
+								echo '
 									<option value="0" selected>ผู้ดูแลระบบ</option>
 									<option value="1">หน่วยงานยุติธรรม</option> 
-									<option value="2">ผู้ร้องเรียน</option>'
-									;
-								}
+									<option value="2">ผู้ร้องเรียน</option>';
+							}
 
-								?>
+							?>
 								</select>
 							</div>
 						</div> 
@@ -227,19 +215,17 @@
 							<div class="form-group">
 
 								<select class="form-control" name="user-status">
-								<?php if($row['user_status'] == 1){
-									echo '
+								<?php if ($row['user_status'] == 1) {
+								echo '
 									<option value="1" selected>ใช้งานปกติ</option> 
-									<option value="0">ยกเลิกการใช้งาน</option> '
-									;								
-								}else{
-									echo '
+									<option value="0">ยกเลิกการใช้งาน</option> ';
+							} else {
+								echo '
 									<option value="0" selected>ยกเลิกการใช้งาน</option> 
-									<option value="1">ใช้งานปกติ</option> '
-									;
-								}
+									<option value="1">ใช้งานปกติ</option> ';
+							}
 
-								?>
+							?>
 								</select>
 							</div>
 						</div> 
@@ -250,14 +236,14 @@
 						</div>
 						<div class="col-md-12">
 						<?php
-                            if (isset($success)) {
-    							if ($success) {
-        							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
-    							} else {
-        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
-    							}
-							}
-						?>
+					if (isset($success)) {
+						if ($success) {
+							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+						} else {
+							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+						}
+					}
+					?>
 						</div>
 					</div><!-- /.row -->
 					</form>

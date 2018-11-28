@@ -1,42 +1,52 @@
 <?php
-    session_start();
+session_start();
 
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
 	} */
 
     // form is submitted
-    if (isset($_POST['user-submit'])) {
-        include_once '../php/dbconnect.php';
-		include_once '../php/user.php';
+
+include_once '../php/dbconnect.php';
+include_once '../php/user.php';
 
         // get connection
-        $database = new Database();
-        $db = $database->getConnection();
+$database = new Database();
+$db = $database->getConnection();
 
         // pass connection to property_types table
-        $user = new User($db);
-        $user->user_name = $_POST['user-name'];
-        $user->user_passwd = $_POST['user-password'];
-		$user->user_email = $_POST['user-email'];
-        $user->user_type = $_POST['user-type'];
-        $user->user_status = $_POST['user-status'];
+$user = new User($db);
 
-        if($_POST['user-password'] != $_POST["user-Cpassword"])
-        {
-            echo "รหัสผ่านไม่ถูกต้อง กรุณากรอกใหม่";
-            header("Location: users_add.php");
-        }
+	// read all records
+$active = false;
+$result = $user->readall($active);
+$total_rows = $user->getTotalRows();
 
-        // insert
-        if ($user->create()) {
-			$success = true;
-			header("Location: users_list.php");
-        } else {
-			
-            $success = false;
+if (isset($_POST['user-submit'])) {
+	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	$user->user_id = $_POST['user-id'];
+	$user->user_name = $_POST['user-name'];
+	$user->user_passwd = $_POST['user-password'];
+	$user->user_email = $_POST['user-email'];
+	$user->user_type = $_POST['user-type'];
+	$user->user_status = $_POST['user-status'];
+
+
+	if ($row['user_id'] != $_POST['user-id']) {
+		if ($_POST['user-password'] == $_POST['user-Cpassword']) {
+			$user->user_passwd = $_POST['user-password'];
+			if ($user->create()) {
+				$success = true;
+				header("Location: users_list.php");
+			} else {
+				echo "	create ไม่ผ่าน";
+			}
+		} else {
+			$success = false;
+			// header('Location: '.$_SERVER['PHP_SELF']);
 		}
-    }
+	}
+}
 ?>
 
 <!DOCTYPE HTML>
@@ -171,6 +181,11 @@
 					</div><!-- /.row -->
 					<form role="form" id="users" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					<div class="row">
+					<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="รหัสผู้ใช้งาน" maxlength="100" name="user-id" required>
+							</div>
+						</div>
 						<div class="col-md-12">
 							<div class="form-group">
 								<input type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน" maxlength="100" name="user-name" required>
@@ -209,14 +224,14 @@
 						</div>
 						<div class="col-md-12">
 						<?php
-                            if (isset($success)) {
-    							if ($success) {
-        							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
-    							} else {
-        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
-    							}
-							}
-						?>
+					if (isset($success)) {
+						if ($success) {
+							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+						} else {
+							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+						}
+					}
+					?>
 						</div>
 					</div><!-- /.row -->
 					</form>
