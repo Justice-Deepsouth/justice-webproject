@@ -4,7 +4,7 @@ session_start();
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
     } */
-    
+
 include_once '../php/dbconnect.php';
 include_once '../php/user.php';
 
@@ -18,8 +18,8 @@ $user = new User($db);
 if (isset($_POST['name-search'])) {
 	$user->user_name = $_POST['name-search'];
 	$active = true;
-$result = $user->search($active);
-$total_rows = $user->getTotalRows();
+	$result = $user->search($active);
+	$total_rows = $user->getTotalRows();
 }
 
 ?>
@@ -194,20 +194,20 @@ $total_rows = $user->getTotalRows();
                                         <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
 										<td><?php if ($row['user_type'] == 0) {
-											echo "ผู้ดูแลระบบ";
-											} elseif($row['user_type'] == 1) {
-											echo "หน่วยงานยุติธรรม";
-											}else{
-												echo "ผู้ร้องเรียน";
-											}
-											?>
+														echo "ผู้ดูแลระบบ";
+													} elseif ($row['user_type'] == 1) {
+														echo "หน่วยงานยุติธรรม";
+													} else {
+														echo "ผู้ร้องเรียน";
+													}
+													?>
 											</td>
                                         <td><?php if ($row['user_status'] == 0) {
-											echo "ยกเลิกการใช้งาน";
-											} else {
-											echo "ใช้งานปกติ";
-											}
-											?>
+																																												echo "ยกเลิกการใช้งาน";
+																																											} else {
+																																												echo "ใช้งานปกติ";
+																																											}
+																																											?>
 											</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>

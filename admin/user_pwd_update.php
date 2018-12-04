@@ -17,7 +17,7 @@
 
 	// read all records
 	$active =  $user->user_id = $_GET['user_id'];
-	$result =  $user->readone($active);
+	$result =  $user->readoneforupdate($active);
 	// $total_rows = $complaint_type->getTotalRows();
 
 

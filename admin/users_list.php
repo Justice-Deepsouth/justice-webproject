@@ -84,8 +84,23 @@ if (isset($_GET['user_id'])) {
 	<div class="fh5co-loader"></div>
 
 	<div id="page">
+	
 	<nav class="fh5co-nav" role="navigation">
+	<div class="col-xs-9 text-right">
+	<?php
+$result = $user->readone();
+$total_rows = $user->getTotalRows();
+$user->user_id = $_SESSION['user_id'];
+
+?> 
+<?php while ($row = mysqli_fetch_array($result)) { ?>
+	<h4>ชื่อผู้ใช้งาน:คุณ<?php echo $row['user_name']; ?> </h4>
+<?php }?>
+</div>
+	<button type="submit" class="btn btn-danger" name="logout-submit" data-toggle="modal" data-target="#confirm-logout">ออกจากระบบ</button>
+	
 		<div class="container-wrap">
+		
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
@@ -183,6 +198,7 @@ if (isset($_GET['user_id'])) {
 
   <div class="tab-content">
     <div id="type-2" class="tab-pane fade in active">
+<<<<<<< HEAD
 	<?php
 		$active = true;
 		$result_admin = $user->readall_admin($active);
@@ -195,10 +211,26 @@ if (isset($_GET['user_id'])) {
 			}
 		}
 	?>
+=======
+<?php
+$active = true;
+$result_admin = $user->readall_complainant($active);
+$total_rows = $user->getTotalRows();
+
+
+if (isset($_GET['user_id'])) {
+	$user->user_id = $_GET['user_id'];
+	if ($user->delete()) {
+		header("Location: users_list.php");
+	}
+}
+?>
+>>>>>>> 8314450aaea163014966c147c531e28ce77da03f
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
+							
                                     <th>ชื่อผู้ใช้งาน</th>
                                     <th>อีเมล์</th>
                                     <th class="text-center">สถานะ</th>
@@ -212,12 +244,21 @@ if (isset($_GET['user_id'])) {
                                     <tr>
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
+<<<<<<< HEAD
                                         <td class="text-center"><?php if ($row['user_status'] == 0) {
 													echo "ยกเลิกการใช้งาน";
 												} else {
 													echo "ใช้งานปกติ";
 												}
 											?>
+=======
+                                        <td><?php if ($row['user_status'] == 0) {
+													echo "ยกเลิกการใช้งาน";
+													} else {
+													echo "ใช้งานปกติ";
+													}
+													?>
+>>>>>>> 8314450aaea163014966c147c531e28ce77da03f
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -267,11 +308,11 @@ if (isset($_GET['user_id'])) {
                                         <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
+											echo "ยกเลิกการใช้งาน";
+											} else {
+											echo "ใช้งานปกติ";
+											}
+											?>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -282,8 +323,7 @@ if (isset($_GET['user_id'])) {
                                             <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
-								<?php 
-						} ?>
+								<?php } ?>
                                 </tbody>
                             </table>
     </div>
@@ -291,7 +331,7 @@ if (isset($_GET['user_id'])) {
     <div id="type-0" class="tab-pane fade">
 	<?php
 $active = true;
-$result_complainant = $user->readall_complainant($active);
+$result_complainant = $user->readall_admin($active);
 $total_rows = $user->getTotalRows();
 
 
@@ -321,11 +361,11 @@ if (isset($_GET['user_id'])) {
                                         <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
+										echo "ยกเลิกการใช้งาน";
+										} else {
+										echo "ใช้งานปกติ";
+										}
+										?>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -352,7 +392,7 @@ if (isset($_GET['user_id'])) {
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
 
-	<!-- Modal Dialog -->
+	<!-- Delete Dialog -->
 	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
@@ -371,6 +411,24 @@ if (isset($_GET['user_id'])) {
 		</div>
 	</div>
 
+	<!-- logout Dialog -->
+	<div class="modal fade" id="confirm-logout" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">ยืนยันการออกจากระบบ</h4>
+				</div>
+				<div class="modal-body">
+				<p>แน่ใจว่าต้องการออกจากระบบ?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
+					<a class="btn btn-danger" id="confirm-lgout">ยืนยัน</a>
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -391,6 +449,10 @@ if (isset($_GET['user_id'])) {
 	<script>
 		$('#confirm-delete').on('show.bs.modal', function(e) {
 			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
+		});
+
+		$('#confirm-logout').on('show.bs.modal', function(e) {
+			$(this).find('#confirm-lgout').attr('href', $(e.relatedTarget).data('href'));
 		});
 	</script>
 
