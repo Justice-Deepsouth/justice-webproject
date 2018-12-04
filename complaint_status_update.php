@@ -1,102 +1,46 @@
 <?php
-session_start();
+	session_start();
 	
     // set current timezone
-date_default_timezone_set("Asia/Bangkok");
+    date_default_timezone_set("Asia/Bangkok");
 
     /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_state'])) {
 		if ($_SESSION['user_state'] != 0) {
 			header("Location: ../index.php");
 		}
 	} */
-include_once 'php/dbconnect.php';
-include_once 'php/complaint_type.php';
-include_once 'php/complaint.php';
-include_once 'php/complaint_photo.php';
-include_once 'php/setting.php';
+	include_once 'php/dbconnect.php';
+	include_once 'php/complaint.php';
+	include_once 'php/complaint_type.php';
         // get connection
-$database = new Database();
-$db = $database->getConnection();
+        $database = new Database();
+		$db = $database->getConnection();
 
-$complaint_type = new Complaint_type($db);
-$complaint_photos = new Complaint_photo($db);
-	
+		$complaint = new Complaint($db);
+		$active = $complaint->complaint_id = $_GET['comp_id'];
+		$result = $complaint->readone($active);
 
-		// read all records
-$active = true;
-$result = $complaint_type->readall($active);
-$total_rows = $complaint_type->getTotalRows();
-
-$setting = new Setting($db);
-$mComplaint_ID = $setting->getLast_Complaint_ID();
+		$complaint_type = new Complaint_type($db);
+		$active = true;
+		$resulttype = $complaint_type->readall($active);
 
     // form is submitted
-if (isset($_POST['complaint-status-submit'])) {
+    if (isset($_POST['complaint-status-submit'])) {
 
+        $complaint->complaint_id = $_GET['comp_id'];
+		$complaint->complaint_title = $_POST['complaint-title'];
+		$complaint->complaint_type_id = $_POST['complaint-type-id'];
+		$complaint->complaint_desc = $_POST['complaint-desc'];
 
-	$complaint = new Complaint($db);
-	$complaint->complaint_id = $mComplaint_ID;
-	$complaint->complaint_title = $_POST['complaint-title'];
-	$complaint->complaint_type_id = $_POST['complaint-type-id'];
-	$complaint->complaint_desc = $_POST['complaint-desc'];
-	$complaint->user_id = $_SESSION['user_id'];
-	$complaint->created_date = date("Y/m/d H:i:s");
-	if ($complaint->create()) {
-		for ($i = 0; $i < count($_FILES['complaint_photo']['name']); $i++) {
-
-			$fileName = $_FILES['complaint_photo']['name'][$i];
-			$fileTmpName = $_FILES['complaint_photo']['tmp_name'][$i];
-			$fileSize = $_FILES['complaint_photo']['size'][$i];
-			$fileError = $_FILES['complaint_photo']['error'][$i];
-			$fileType = $_FILES['complaint_photo']['type'][$i];
-	
-			$fileExt = explode('.', $fileName);
-			$fileActualExt = strtolower(end($fileExt));
-			$count = $i + 1;
+        // insert
+		if ($complaint->update()) {
+			$success = true;
+			header("Location: complaint_status.php");
+        } else {
 			
-	//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
-			$type = strrchr($fileName, ".");
-	
-	//ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
-			$newname = $mComplaint_ID . "-img" . $count . $type;
-	
-	
-			$allowed = array('jpg', 'jpeg', 'png', 'JPG');
-	
-			if (in_array($fileActualExt, $allowed)) {
-				if ($fileError === 0) {
-					if ($fileSize <= 100000000) {
-	
-						$fileDestination = 'comp_img/' . $newname;
-						move_uploaded_file($fileTmpName, $fileDestination);
-	
-	
-					} else {
-						echo "<div class='alert alert-danger text-center' $fileName ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
-					}
-				} else {
-					echo "<div class='alert alert-danger text-center' $fileName มีปัญหาการอัพโหลดไฟล์</div>";
-				}
-			} else {
-				echo "<div class='alert alert-danger text-center' $fileName คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
-			}
-	
-	
-			$complaint_photos->complaint_id = $mComplaint_ID;
-			$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
-			// $complaint_photos->complaint_photo_id =  $mComplaint_ID. "-" .$fileName;
-			// $count = $i+1;
-			$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
-			if ($complaint_photos->create()) {
-				$setting->complaint_id_last = $mComplaint_ID;
-				$setting->update_complaint_id();
-				header("Location: complaint_status.php");
-			} else {
-				echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน</div>";
-			}
+            $success = false;
 		}
-	}
-}
+    }
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -147,20 +91,7 @@ if (isset($_POST['complaint-status-submit'])) {
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
-	<style type="text/css">
-    input[type=file]{
-      display: inline;
-    }
-    #image_preview{
-      /* border: 1px solid black; */
-      padding: 10px;
-    }
-    #image_preview img{
-      width: 200px;
-	  height: 200px;
-      padding: 5px;
-    }
-  	</style>
+
 	</head>
 	<body>
 		
@@ -241,58 +172,47 @@ if (isset($_POST['complaint-status-submit'])) {
 							<h3>ข้อร้องเรียน</h3>
 						</div>
 					</div><!-- /.row -->
-					<form role="form" id="complaint" action="<?php $_SERVER['PHP_SELF'] ?>" method="post" enctype="multipart/form-data">
+					<form role="form" id="complaint" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+					<?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
 					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="หัวข้อร้องเรียน" maxlength="100" name="complaint-title" required>
+								<input type="text" class="form-control" value="<?php echo $row['complaint_title']; ?>" maxlength="100" name="complaint-title" required>
 							</div>
 						</div>
 						<div class="col-md-4">
 							<div class="form-group">
 								<select class="form-control" name="complaint-type-id">
-									<?php while ($row = mysqli_fetch_array($result)) { ?>
-										
-										 <option value="<?php echo $row['complaint_type_id']; ?>" ><?php echo $row['complaint_type_desc']; ?></option>
-										
-									<?php
-
-							}
-							?>
+								<?php
+								 while ($rowtype = mysqli_fetch_array($resulttype)) {
+										echo '
+										<option value="'.$rowtype['complaint_type_id'].'" selected>'.$rowtype['complaint_type_desc'].'</option>
+										';
+								}
+								?>
 								</select>
 							</div>
 						</div>
                         <div class="col-md-12">
 							<div class="form-group">
-                            <textarea name="complaint-desc" class="form-control" id="" cols="30" rows="7" placeholder="รายละเอียดข้อร้องเรียน"></textarea>
+                            <textarea name="complaint-desc" class="form-control" id="" cols="30" rows="7" ><?php echo $row['complaint_desc']; ?></textarea>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-							<!-- <input type="file" class="btn btn-primary btn-modify" id= "complaint_photo" name="complaint_photo[]" multiple > -->
-							<input type="file"  id= "complaint_photo" name="complaint_photo[]" multiple >
-							</div>
-						</div>
-						<div class="col-md-12">
-						<div class="form-group">
-						<div id="image_preview">
-						</div>
-						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<input type="submit" value="ส่งคำร้องเรียน" class="btn btn-primary btn-modify" name="complaint-status-submit">
+								<input type="submit" value="ยืนยันการแก้ไข" class="btn btn-primary btn-modify" name="complaint-status-submit">
 							</div>
 						</div>
 						<div class="col-md-12">
 						<?php
-					if (isset($success)) {
-						if ($success) {
-							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
-						} else {
-							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
-						}
-					}
-					?>
+                            if (isset($success)) {
+    							if ($success) {
+        							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+    							} else {
+        							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+    							}
+							}
+						?>
 						</div>
 					</div><!-- /.row -->
 					</form>
@@ -344,24 +264,7 @@ if (isset($_POST['complaint-status-submit'])) {
 	<script src="js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="js/main.js"></script>
-    <script type="text/javascript">
-  
 
-  $("#complaint_photo").change(function(){
-     $('#image_preview').html("");
-     var total_file=document.getElementById("complaint_photo").files.length;
-
-
-     for(var i=0;i<total_file;i++)
-     {
-      $('#image_preview').append("<img src='"+URL.createObjectURL(event.target.files[i])+"'>");
-     }
-
-
-  });
-
-
-</script>
 	</body>
 </html>
 
