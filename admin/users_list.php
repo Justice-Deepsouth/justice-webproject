@@ -38,7 +38,6 @@
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
 	<meta name="author" content="freehtml5.co" />
 
-
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
 	<meta property="og:image" content=""/>
@@ -84,16 +83,7 @@
 	<div class="fh5co-loader"></div>
 
 	<div id="page">
-
-	<!-- <div class="col-xs-8 col-md-offset-3 text-right">
-		<h4>รหัสผู้ใช้งาน: <?php echo $_SESSION['user_id']; ?></h4>
-		
-		<button type="submit" class="btn btn-danger" name="logout-submit" data-toggle="modal" data-target="#confirm-logout" data-href="../php/user_logout.php">ออกจากระบบ</button>
-	</div> -->
-	
-	
-	<nav class="fh5co-nav" role="navigation">		
-
+	<nav class="fh5co-nav" role="navigation">
 		<div class="container-wrap">
 			<div class="top-menu">
 				<div class="row">
@@ -131,27 +121,26 @@
 						</ul>
 					</div>
 				</div>
-
 			</div>
-		</div>
+		</div><!-- /.container-wrap -->
 	</nav>
 	<div class="container-wrap">
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(../images/img_bg_3.jpg);">
-			   		<div class="overlay-gradient"></div>
-			   		<div class="container-fluids">
-			   			<div class="row">
-				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
-				   				<div class="slider-text-inner text-center">
-				   					<h1>การจัดการข้อมูล</h1>
+					<li style="background-image: url(../images/img_bg_3.jpg);">
+						<div class="overlay-gradient"></div>
+						<div class="container-fluids">
+							<div class="row">
+								<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
+									<div class="slider-text-inner text-center">
+										<h1>การจัดการข้อมูล</h1>
 										<h2>Data Management</h2>
-				   				</div>
-				   			</div>
-				   		</div>
-			   		</div>
-			   	</li>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
 			  	</ul>
 		  	</div>
 		</aside>
@@ -201,27 +190,23 @@
 						<li><a data-toggle="tab" href="#type-1">หน่วยงานยุติธรรม</a></li>
 						<li><a data-toggle="tab" href="#type-0">ผู้ดูแลระบบ</a></li>
   					</ul>
-
-  <div class="tab-content">
-    <div id="type-2" class="tab-pane fade in active">
-<?php
-$active = true;
-$result_admin = $user->readall_complainant($active);
-$total_rows = $user->getTotalRows();
-
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
+  					<div class="tab-content">
+    					<div id="type-2" class="tab-pane fade in active">
+						<?php
+							$active = true;
+							$result_admin = $user->readall_complainant($active);
+							$total_rows = $user->getTotalRows();
+							if (isset($_GET['user_id'])) {
+								$user->user_id = $_GET['user_id'];
+								if ($user->delete()) {
+									header("Location: users_list.php");
+								}
+							}
+						?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
-							
                                     <th>ชื่อผู้ใช้งาน</th>
                                     <th>อีเมล์</th>
                                     <th class="text-center">สถานะ</th>
@@ -235,12 +220,14 @@ if (isset($_GET['user_id'])) {
                                     <tr>
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
-                                        <td class="text-center"><?php if ($row['user_status'] == 0) {
+                                        <td class="text-center">
+											<?php if ($row['user_status'] == 0) {
 													echo "ยกเลิกการใช้งาน";
 												} else {
 													echo "ใช้งานปกติ";
 												}
 											?>
+										</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -255,22 +242,19 @@ if (isset($_GET['user_id'])) {
                                 </tbody>
                             </table>
                         </div><!-- /.table-responsive -->
-
-    </div>
-    <div id="type-1" class="tab-pane fade">
-<?php
-$active = true;
-$result_ju = $user->readall_ju($active);
-$total_rows = $user->getTotalRows();
-
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
+    				</div><!-- /.tab-content -->
+    				<div id="type-1" class="tab-pane fade">
+						<?php
+							$active = true;
+							$result_ju = $user->readall_ju($active);
+							$total_rows = $user->getTotalRows();
+							if (isset($_GET['user_id'])) {
+								$user->user_id = $_GET['user_id'];
+								if ($user->delete()) {
+									header("Location: users_list.php");
+								}
+							}
+						?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -290,11 +274,12 @@ if (isset($_GET['user_id'])) {
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
-											echo "ยกเลิกการใช้งาน";
+												echo "ยกเลิกการใช้งาน";
 											} else {
-											echo "ใช้งานปกติ";
+												echo "ใช้งานปกติ";
 											}
 											?>
+										</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -308,22 +293,20 @@ if (isset($_GET['user_id'])) {
 								<?php } ?>
                                 </tbody>
                             </table>
-    </div>
-	</div>
-    <div id="type-0" class="tab-pane fade">
-	<?php
-$active = true;
-$result_complainant = $user->readall_admin($active);
-$total_rows = $user->getTotalRows();
-
-
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
-	}
-}
-?>
+    					</div><!-- /.table-responsive -->
+					</div><!-- /.type-1 -->
+    				<div id="type-0" class="tab-pane fade">
+						<?php
+							$active = true;
+							$result_complainant = $user->readall_admin($active);
+							$total_rows = $user->getTotalRows();
+							if (isset($_GET['user_id'])) {
+								$user->user_id = $_GET['user_id'];
+								if ($user->delete()) {
+									header("Location: users_list.php");
+								}
+							}
+						?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -338,16 +321,16 @@ if (isset($_GET['user_id'])) {
                                 </thead>
                                 <tbody>
 								<?php while ($row = mysqli_fetch_array($result_complainant)) { ?>
-
                                     <tr>
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
-										echo "ยกเลิกการใช้งาน";
-										} else {
-										echo "ใช้งานปกติ";
-										}
-										?>
+												echo "ยกเลิกการใช้งาน";
+											} else {
+												echo "ใช้งานปกติ";
+											}
+											?>
+										</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -358,17 +341,15 @@ if (isset($_GET['user_id'])) {
                                             <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
-								<?php 
-						} ?>
+								<?php } ?>
                                 </tbody>
                             </table>
-    </div>
-    </div>
-  </div>
-</div>
-
-    </body>
-
+    					</div><!-- /.table-responsive -->
+    				</div><!-- /.type-0 -->
+  				</div>
+			</div><!--/.row -->
+		</div>
+	</div><!-- /.container-wrap -->
 
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
@@ -411,6 +392,7 @@ if (isset($_GET['user_id'])) {
 			</div>
 		</div>
 	</div>
+	</div><!--/.page -->
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
