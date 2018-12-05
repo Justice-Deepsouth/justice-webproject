@@ -1,7 +1,6 @@
 <?php
 class User
 {
-
     //database connection and table name
     private $conn;
     private $table_name = "users";
@@ -36,24 +35,21 @@ class User
     //read one record
     function readone()
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = " . $this->user_id . "' and user_passwd = '" . md5($this->user_passwd) . "' and user_status = 1";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "' and user_passwd = '" . md5($this->user_passwd) . "' and user_status = 1";
         // $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = " . $this->user_id;
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
 
-        //read one admin
-        function readoneforupdate()
-        {
-           
-        //    $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = ''" . $this->user_id;
-        $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
-            $result = mysqli_query($this->conn, $query);
-            return $result;
-        }
+    //read one admin
+    function readoneforupdate()
+    {       
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "'";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
     
-
-     // get number of total records
+    // get number of total records
     function getTotalRows()
     {
         $query = "SELECT * FROM " . $this->table_name;
@@ -61,33 +57,32 @@ class User
         return mysqli_num_rows($result);
     }
 
-        // create contact information
+    // create contact information
     function create()
     {
-            // write statement
+        // write statement
         $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (user_id,user_name, user_passwd, user_email, user_type, user_status, created_date , modified_date) VALUES (?,?,?,?,?,?,?,?)");
-            // bind parameters
+        // bind parameters
         mysqli_stmt_bind_param($stmt, 'ssssssss', $this->user_id, $this->user_name, md5($this->user_passwd), $this->user_email, $this->user_type, $this->user_status, $this->created_date, $this->modified_date);
     
-            /* execute prepared statement */
+        /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
-            return true;
-            
+            return true;    
         } else {
             return false;
         }
     }  //create()
 
-        // update user
+    // update user
     function update()
     {
         $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, user_type = ?, user_status = ?, created_date = ?, modified_date = ? WHERE  user_id = ?";
-            // statement
+        // statement
         $stmt = mysqli_prepare($this->conn, $query);
-            // bind parameters
+        // bind parameters
         mysqli_stmt_bind_param($stmt, 'sssssss', $this->user_name, $this->user_email, $this->user_type, $this->user_status, $this->created_date, $this->modified_date, $this->user_id);
     
-            /* execute prepared statement */
+        /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
             return true;
         } else {
@@ -95,16 +90,16 @@ class User
         }
     } // update()
 
-                // update user
+    // update user's password
     function update_pwd()
     {
-        $query = "UPDATE " . $this->table_name . " SET user_passwd = ? WHERE  user_id = ?";
-                    // statement
+        $query = "UPDATE " . $this->table_name . " SET user_passwd = ? WHERE user_id = ?";
+        // statement
         $stmt = mysqli_prepare($this->conn, $query);
-                    // bind parameters
+        // bind parameters
         mysqli_stmt_bind_param($stmt, 'ss', md5($this->user_passwd), $this->user_id);
             
-                    /* execute prepared statement */
+        /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
             return true;
         } else {
@@ -112,7 +107,7 @@ class User
         }
     } // update()
                 
-            // delete record
+    // delete record
     function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE user_id = ?";
@@ -134,7 +129,6 @@ class User
     {
         if ($act) {
             $query = "SELECT * FROM " . $this->table_name . " WHERE user_name like'%" . $this->user_name . "%' ";
-
         } else {
             $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
         }
@@ -142,7 +136,7 @@ class User
         return $result;
     }//search all
 
-        //read all admins
+    //read all admins
     function readall_admin($act)
     {
         if ($act) {
@@ -152,9 +146,9 @@ class User
         }
         $result_admin = mysqli_query($this->conn, $query);
         return $result_admin;
-    }//read all admins
+    } //read all admins
 
-        //read all justics
+    //read all justics
     function readall_ju($act)
     {
         if ($act) {
@@ -164,10 +158,10 @@ class User
         }
         $result_ju = mysqli_query($this->conn, $query);
         return $result_ju;
-    }//read all justics
+    } //read all justics
 
 
-        //read all complainant
+    //read all complainant
     function readall_complainant($act)
     {
         if ($act) {
@@ -177,8 +171,7 @@ class User
         }
         $result_complainant = mysqli_query($this->conn, $query);
         return $result_complainant;
-    }//read all complainant
-
+    } //read all complainant
 
 }
 

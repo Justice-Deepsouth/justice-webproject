@@ -1,52 +1,48 @@
 <?php
-session_start();
+	session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
+    if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
-	} */
+	}
 
-    // form is submitted
+	include_once '../php/dbconnect.php';
+	include_once '../php/user.php';
 
-include_once '../php/dbconnect.php';
-include_once '../php/user.php';
+    // get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
-        // get connection
-$database = new Database();
-$db = $database->getConnection();
-
-        // pass connection to property_types table
-$user = new User($db);
+    // pass connection to property_types table
+	$user = new User($db);
 
 	// read all records
-$active = false;
-$result = $user->readall($active);
-$total_rows = $user->getTotalRows();
+	$active = false;
+	$result = $user->readall($active);
+	$total_rows = $user->getTotalRows();
 
-if (isset($_POST['user-submit'])) {
-	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-	$user->user_id = $_POST['user-id'];
-	$user->user_name = $_POST['user-name'];
-	$user->user_passwd = $_POST['user-password'];
-	$user->user_email = $_POST['user-email'];
-	$user->user_type = $_POST['user-type'];
-	$user->user_status = $_POST['user-status'];
+	if (isset($_POST['user-submit'])) {
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		$user->user_id = $_POST['user-id'];
+		$user->user_name = $_POST['user-name'];
+		$user->user_passwd = $_POST['user-password_confirmation'];
+		$user->user_email = $_POST['user-email'];
+		$user->user_type = $_POST['user-type'];
+		$user->user_status = $_POST['user-status'];
 
-
-	if ($row['user_id'] != $_POST['user-id']) {
-		if ($_POST['user-password'] == $_POST['user-Cpassword']) {
-			$user->user_passwd = $_POST['user-password'];
-			if ($user->create()) {
-				$success = true;
-				header("Location: users_list.php");
+		if ($row['user_id'] != $_POST['user-id']) {
+			if ($_POST['user-password_confirmation'] == $_POST['user-password']) {
+				$user->user_passwd = $_POST['user-password_confirmation'];
+				if ($user->create()) {
+					$success = true;
+					header("Location: users_list.php");
+				} else {
+					$success = false;
+				}
 			} else {
-				echo "	create ไม่ผ่าน";
+				$success = false;
 			}
-		} else {
-			$success = false;
-			// header('Location: '.$_SERVER['PHP_SELF']);
 		}
 	}
-}
 ?>
 
 <!DOCTYPE HTML>
@@ -110,7 +106,7 @@ if (isset($_POST['user-submit'])) {
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -124,9 +120,22 @@ if (isset($_POST['user-submit'])) {
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="../contact.html">ติดต่อ</a></li>
+							<li><a href="../contact.php">ติดต่อ</a></li>
+							<?php 
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
@@ -168,6 +177,8 @@ if (isset($_POST['user-submit'])) {
 								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
 								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
+								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -181,42 +192,45 @@ if (isset($_POST['user-submit'])) {
 					</div><!-- /.row -->
 					<form role="form" id="users" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					<div class="row">
-					<div class="col-md-12">
+						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="รหัสผู้ใช้งาน" maxlength="100" name="user-id" required>
+								<input type="text" class="form-control" placeholder="รหัสผู้ใช้งาน" maxlength="20" name="user-id" data-validation="required" data-validation-error-msg="บันทึกรหัสผู้ใช้งาน">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน" maxlength="100" name="user-name" required>
+								<input type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน" maxlength="100" name="user-name" data-validation="required" data-validation-error-msg="บันทึกชื่อผู้ใช้งาน">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="email" class="form-control" placeholder="Email" maxlength="100" name="user-email" required>
+								<input type="email" class="form-control" placeholder="อีเมล" maxlength="50" name="user-email" data-validation="email" data-validation-error-msg="บันทึกอีเมล">
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="password" class="form-control" placeholder="รหัสผ่าน"  name="user-password" required>
+								<input type="password" class="form-control" placeholder="รหัสผ่าน"  maxlength="8" name="user-password_confirmation" data-validation="required" data-validation-error-msg="บันทึกรหัสผ่าน">
 							</div>
 						</div>
                         <div class="col-md-6">
 							<div class="form-group">
-								<input type="password" class="form-control" placeholder="ยืนยันรหัสผ่าน"  name="user-Cpassword" required>
+								<input type="password" class="form-control" placeholder="ยืนยันรหัสผ่าน" maxlength="8" name="user-password" data-validation="confirmation" data-validation-error-msg="ยืนยันรหัสผ่านไม่ถูกต้อง">
 							</div>
 						</div>
-                     
 						<div class="col-md-4">
 							<div class="form-group">
-								<select class="form-control" name="user-type">
+								<select class="form-control" name="user-type" data-validation="required">
 									<option value="2" selected>ผู้ร้องเรียน</option>
 									<option value="1">หน่วยงานยุติธรรม</option>
                                     <option value="0">ผู้ดูแลระบบ</option>
 								</select>
 							</div>
 						</div>
-                        <input type="hidden" class="form-control"   name="user-status" value="1" >
+						<div class="col-md-8">
+							<div class="form-group">
+								<input type="hidden" class="form-control" name="user-status" value="1" >
+							</div>
+						</div>
 						<div class="col-md-12">
 							<div class="form-group">
 								<input type="submit" value="เพิ่มข้อมูล" class="btn btn-primary btn-modify" name="user-submit">
@@ -224,14 +238,14 @@ if (isset($_POST['user-submit'])) {
 						</div>
 						<div class="col-md-12">
 						<?php
-					if (isset($success)) {
-						if ($success) {
-							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
-						} else {
-							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
-						}
-					}
-					?>
+							if (isset($success)) {
+								if ($success) {
+									echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+								} else {
+									echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+								}
+							}
+						?>
 						</div>
 					</div><!-- /.row -->
 					</form>
@@ -283,6 +297,13 @@ if (isset($_POST['user-submit'])) {
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<!-- jQuery Form Validator -->
+	<script src="../js/form-validator/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate({
+  			modules : 'security',
+		});
+	</script>
 
 	</body>
 </html>

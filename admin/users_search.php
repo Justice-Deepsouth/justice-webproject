@@ -1,27 +1,26 @@
 <?php
 session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
-    } */
+if (!isset($_SESSION['user_session_id'])) {
+    header("Location: ../index.php");
+}
 
 include_once '../php/dbconnect.php';
 include_once '../php/user.php';
 
-    // get connection
+// get connection
 $database = new Database();
 $db = $database->getConnection();
 
-    // pass connection to property_types table
+// pass connection to property_types table
 $user = new User($db);
 
 if (isset($_POST['name-search'])) {
-	$user->user_name = $_POST['name-search'];
-	$active = true;
-	$result = $user->search($active);
-	$total_rows = $user->getTotalRows();
+    $user->user_name = $_POST['name-search'];
+    $active = true;
+    $result = $user->search($active);
+    $total_rows = $user->getTotalRows();
 }
-
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -85,11 +84,11 @@ if (isset($_POST['name-search'])) {
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.html">หน้าแรก</a></li>
+							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -99,15 +98,27 @@ if (isset($_POST['name-search'])) {
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
+							<li><a href="#">กิจกรรม</a></li>
+							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="../contact.html">ติดต่อ</a></li>
+							<li><a href="../contact.php">ติดต่อ</a></li>
+							<?php
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
-					</div>
-				</div>
-
-			</div>
-		</div>
+					</div><!-- /.col-xs-10 -->
+				</div><!-- /.row -->
+			</div><!-- /.top-menu -->
+		</div><!-- /.container-wrap -->
 	</nav>
 	<div class="container-wrap">
 		<aside id="fh5co-hero">
@@ -143,6 +154,8 @@ if (isset($_POST['name-search'])) {
 								<li><a href="#"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
 								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
+								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -154,89 +167,83 @@ if (isset($_POST['name-search'])) {
 							<div class="form-group">
 								<input type="button" value="เพิ่มผู้ใช้งาน" class="btn btn-outline" onclick="location.href='users_add.php';">
 							</div>
-					<form role="form" id="search" action="users_search.php" method="post">
+						</div>
+						<form role="form" id="search" action="users_search.php" method="post">
 							<div class="col-md-8" >
-							<div class="form-group">
-							<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ป้อนข้อมูลที่ต้องการจะค้น" autocomplete="off">
+								<div class="form-group">
+									<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ค้นหาข้อมูลผู้ใช้งาน" autocomplete="off">
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4 ">
-							<div class="form-group">
-							<input type="submit" value="ค้นหา" class="btn btn-primary btn-modify" name="search-submit">
+							<div class="col-md-4 ">
+								<div class="form-group">
+									<input type="submit" value="ค้นหา" class="btn btn-primary btn-modify" name="search-submit">
+								</div>
 							</div>
-						</div>
-						</form>
-						</div>
-
+						</form>	
 					</div><!-- /.row -->
-
-
-   <div class="tab-content">
-    <div id="type-2" class="tab-pane fade in active">
-
-						<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>ชื่อผู้ใช้งาน</th>
-                                    <th>อีเมล์</th>
-									<th>ประเภทผู้ใช้งาน</th>
-                                    <th>สถานะ</th>
-                                    <th class="text-center">แก้ไขข้อมูล</th>
-									<th class="text-center">แก้ไขรหัสผ่าน</th>
-                                    <th class="text-center">ลบข้อมูล</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-								<?php while ($row = mysqli_fetch_array($result)) { ?>
-
-                                    <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
-                                        <td><?php echo $row['user_email'] ?></td>
-										<td><?php if ($row['user_type'] == 0) {
-														echo "ผู้ดูแลระบบ";
-													} elseif ($row['user_type'] == 1) {
-														echo "หน่วยงานยุติธรรม";
-													} else {
-														echo "ผู้ร้องเรียน";
-													}
-													?>
+   					<div class="tab-content">
+   						<div id="type-2" class="tab-pane fade in active">
+							<div class="table-responsive">
+                            	<table class="table">
+                                	<thead>
+                                		<tr>
+                                    		<th>ชื่อผู้ใช้งาน</th>
+											<!-- <th>อีเมล์</th> -->
+											<th class="text-center">ประเภท</th>
+											<th class="text-center">สถานะ</th>
+											<th class="text-center">แก้ไขข้อมูล</th>
+											<th class="text-center">แก้ไขรหัสผ่าน</th>
+											<th class="text-center">ลบข้อมูล</th>
+                                		</tr>
+                                	</thead>
+                                	<tbody>
+									<?php while ($row = mysqli_fetch_array($result)) {?>
+                                    	<tr>
+											<td><?php echo $row['user_name']; ?></td>
+											<!-- <td><?php echo $row['user_email'] ?></td> -->
+											<td class="text-center">
+												<?php if ($row['user_type'] == 0) {
+													echo "ผู้ดูแลระบบ";
+												} elseif ($row['user_type'] == 1) {
+													echo "หน่วยงานยุติธรรม";
+												} else {
+													echo "ผู้ร้องเรียน";
+												} ?>
 											</td>
-                                        <td><?php if ($row['user_status'] == 0) {
-																																												echo "ยกเลิกการใช้งาน";
-																																											} else {
-																																												echo "ใช้งานปกติ";
-																																											}
-																																											?>
+                                        	<td class="text-center">
+												<?php if ($row['user_status'] == 0) {
+													echo "ยกเลิกการใช้งาน";
+												} else {
+													echo "ใช้งานปกติ";
+												} ?>
 											</td>
-                                        <td class="text-center">
-                                            <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
-                                        </td>
-										<td class="text-center">
-                                            <a href="user_pwd_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-key2"></i></a>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
-                                        </td>
-                                    </tr>
-								<?php 
-						} ?>
-                                </tbody>
-                            </table>
-                        </div><!-- /.table-responsive -->
-
-    </div>
-
-  </div>
-</div>
-
+                                        	<td class="text-center">
+                                            	<a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
+                                        	</td>
+											<td class="text-center">
+                                            	<a href="user_pwd_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-key2"></i></a>
+                                        	</td>
+											<td class="text-center">
+												<a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
+											</td>
+                                    	</tr>
+									<?php } ?>
+                                	</tbody>
+								</table>
+							</div><!-- /.table-responsive -->
+						</div><!-- /.id="type-2" -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- END container-wrap -->
 	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
 						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
-						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
+							<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>
 						<ul class="fh5co-social-icons">
@@ -250,7 +257,7 @@ if (isset($_POST['name-search'])) {
 			</div>
 		</footer>
 	</div><!-- END container-wrap -->
-	</div>
+	</div><!-- /.id=page -->
 
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
@@ -261,19 +268,19 @@ if (isset($_POST['name-search'])) {
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
 				</div>
 				<div class="modal-body">
-				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
+					<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
 					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
 				</div>
-			</div>
-		</div>
-	</div>
+			</div>><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>><!-- /.modal -->
 
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>

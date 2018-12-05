@@ -47,15 +47,8 @@ class User_log
             return true;
         } else {
             return false;
-        }
-
-
-        
-    }//update()
-
-
-
-
+        }  
+    } //update()
 }
 
 ?>
