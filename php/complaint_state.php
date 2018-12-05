@@ -25,6 +25,12 @@ class Complaint_state {
         return $result;
     }
 
+    function readallforone(){
+        $query = "SELECT * FROM " . $this->table_name . " WHERE NOT complaint_state_id = 1";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
     //read one record
     function readone(){
         $query = "SELECT * FROM " . $this->table_name . " WHERE complaint_state_id = " . $this->complaint_state_id;

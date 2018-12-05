@@ -22,7 +22,7 @@ class Complaint {
     //read all records
     function readall($act){
         if ($act) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = $this->complaint_type_id ORDER BY complaint_id";
+            $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "' ORDER BY complaint_id";
         } else {
             $query = "SELECT * FROM " . $this->table_name . " ORDER BY complaint_id";
         }
@@ -32,23 +32,17 @@ class Complaint {
 
     //read one record
     function readone(){
-        $query = "SELECT * FROM " . $this->table_name . " WHERE complaint_type_id = " . $this->complaint_type_id;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE complaint_id = '" . $this->complaint_id . "'";
         $result = mysqli_query($this->conn, $query);
         return $result;
-    }
-
-    function readlast(){
-        $query = "SELECT * FROM " . $this->table_name . " ORDER BY complaint_id DESC LIMIT 1";
-        $result2 = mysqli_query($this->conn, $query);
-        return $result2;
     }
 
     // create coomplaint information
     function create(){
         // write statement
-        $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (complaint_title, complaint_type_id, complaint_desc, user_id, created_date) VALUES (?,?,?,?,?)");
+        $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (complaint_id, complaint_title, complaint_type_id, complaint_desc, user_id, created_date) VALUES (?,?,?,?,?,?)");
         // bind parameters
-        mysqli_stmt_bind_param($stmt, 'sssss', $this->complaint_title, $this->complaint_type_id, $this->complaint_desc, $this->user_id, $this->created_date);
+        mysqli_stmt_bind_param($stmt, 'ssssss', $this->complaint_id, $this->complaint_title, $this->complaint_type_id, $this->complaint_desc, $this->user_id, $this->created_date);
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
             return true;
@@ -59,11 +53,25 @@ class Complaint {
 
     // update record
     function update(){
-        $query = "UPDATE " . $this->table_name . " SET complaint_type_desc = ?, complaint_type_status = ? WHERE complaint_type_id = ?";
+        $query = "UPDATE " . $this->table_name . " SET complaint_title = ?, complaint_type_id = ?, complaint_desc = ? WHERE complaint_id = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameters
-        mysqli_stmt_bind_param($stmt, 'sss', $this->complaint_type_desc, $this->complaint_type_status, $this->complaint_type_id);
+        mysqli_stmt_bind_param($stmt, 'ssss', $this->complaint_title, $this->complaint_type_id, $this->complaint_desc, $this->complaint_id);
+        /* execute prepared statement */
+        if (mysqli_stmt_execute($stmt)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function updatestate(){
+        $query = "UPDATE " . $this->table_name . " SET complaint_state_id = ? WHERE complaint_id = ?";
+        // statement
+        $stmt = mysqli_prepare($this->conn, $query);
+        // bind parameters
+        mysqli_stmt_bind_param($stmt, 'ss', $this->complaint_state_id, $this->complaint_id);
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
             return true;
@@ -74,11 +82,12 @@ class Complaint {
 
     // delete record
     function delete(){
-        $query = "DELETE FROM " . $this->table_name . " WHERE complaint_type_id = ?";
+        
+        $query = "DELETE FROM " . $this->table_name . " WHERE complaint_id = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameter
-        mysqli_stmt_bind_param($stmt, 's', $this->complaint_type_id);
+        mysqli_stmt_bind_param($stmt, 's', $this->complaint_id);
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
             return true;
