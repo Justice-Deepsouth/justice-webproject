@@ -1,31 +1,31 @@
 <?php
-session_start();
+	session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
+    if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
-    } */
+    }
 
-include_once '../php/dbconnect.php';
-include_once '../php/user.php';
+	include_once '../php/dbconnect.php';
+	include_once '../php/user.php';
 
-    // get connection
-$database = new Database();
-$db = $database->getConnection();
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
     // pass connection to property_types table
-$user = new User($db);
+	$user = new User($db);
 
 	// read all records
-$active = false;
-$result = $user->readall($active);
-$total_rows = $user->getTotalRows();
+	$active = false;
+	$result = $user->readall($active);
+	$total_rows = $user->getTotalRows();
 
-if (isset($_GET['user_id'])) {
-	$user->user_id = $_GET['user_id'];
-	if ($user->delete()) {
-		header("Location: users_list.php");
+	if (isset($_GET['user_id'])) {
+		$user->user_id = $_GET['user_id'];
+		if ($user->delete()) {
+			header("Location: users_list.php");
+		}
 	}
-}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -84,31 +84,25 @@ if (isset($_GET['user_id'])) {
 	<div class="fh5co-loader"></div>
 
 	<div id="page">
-	
-	<nav class="fh5co-nav" role="navigation">
-	<div class="col-xs-9 text-right">
-	<?php
-$result = $user->readone();
-$total_rows = $user->getTotalRows();
-$user->user_id = $_SESSION['user_id'];
 
-?> 
-<?php while ($row = mysqli_fetch_array($result)) { ?>
-	<h4>ชื่อผู้ใช้งาน:คุณ<?php echo $row['user_name']; ?> </h4>
-<?php }?>
-</div>
-	<button type="submit" class="btn btn-danger" name="logout-submit" data-toggle="modal" data-target="#confirm-logout">ออกจากระบบ</button>
-	
-		<div class="container-wrap">
+	<!-- <div class="col-xs-8 col-md-offset-3 text-right">
+		<h4>รหัสผู้ใช้งาน: <?php echo $_SESSION['user_id']; ?></h4>
 		
+		<button type="submit" class="btn btn-danger" name="logout-submit" data-toggle="modal" data-target="#confirm-logout" data-href="../php/user_logout.php">ออกจากระบบ</button>
+	</div> -->
+	
+	
+	<nav class="fh5co-nav" role="navigation">		
+
+		<div class="container-wrap">
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.html">หน้าแรก</a></li>
+							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -118,9 +112,22 @@ $user->user_id = $_SESSION['user_id'];
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="../contact.html">ติดต่อ</a></li>
+							<li><a href="../contact.html">ติดต่อ</a></li>							
+							<?php 
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
@@ -175,43 +182,28 @@ $user->user_id = $_SESSION['user_id'];
 							<div class="form-group">
 								<input type="button" value="เพิ่มผู้ใช้งาน" class="btn btn-outline" onclick="location.href='users_add.php';">
 							</div>
-
 						</div>
 						<form role="form" id="search" action="users_search.php" method="post">
 							<div class="col-md-8" >
-							<div class="form-group">
-							<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ป้อนข้อมูลที่ต้องการจะค้น" autocomplete="off">
+								<div class="form-group">
+									<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ค้นหาข้อมูลผู้ใช้งาน" autocomplete="off">
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4 ">
-							<div class="form-group">
-							<input type="submit" value="ค้นหา" class="btn btn-primary btn-modify" name="search-submit">
+							<div class="col-md-4 ">
+								<div class="form-group">
+								<input type="submit" value="ค้นหา" class="btn btn-primary btn-modify" name="search-submit">
+								</div>
 							</div>
-						</div>
 						</form>
 					</div><!-- /.row -->
 					<ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#type-2">ผู้ร้องเรียน</a></li>
-    <li><a data-toggle="tab" href="#type-1">หน่วยงานยุติธรรม</a></li>
-    <li><a data-toggle="tab" href="#type-0">ผู้ดูแลระบบ</a></li>
-  </ul>
+						<li class="active"><a data-toggle="tab" href="#type-2">ผู้ร้องเรียน</a></li>
+						<li><a data-toggle="tab" href="#type-1">หน่วยงานยุติธรรม</a></li>
+						<li><a data-toggle="tab" href="#type-0">ผู้ดูแลระบบ</a></li>
+  					</ul>
 
   <div class="tab-content">
     <div id="type-2" class="tab-pane fade in active">
-<<<<<<< HEAD
-	<?php
-		$active = true;
-		$result_admin = $user->readall_admin($active);
-		$total_rows = $user->getTotalRows();
-
-		if (isset($_GET['user_id'])) {
-			$user->user_id = $_GET['user_id'];
-			if ($user->delete()) {
-				header("Location: users_list.php");
-			}
-		}
-	?>
-=======
 <?php
 $active = true;
 $result_admin = $user->readall_complainant($active);
@@ -225,7 +217,6 @@ if (isset($_GET['user_id'])) {
 	}
 }
 ?>
->>>>>>> 8314450aaea163014966c147c531e28ce77da03f
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -244,21 +235,12 @@ if (isset($_GET['user_id'])) {
                                     <tr>
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
-<<<<<<< HEAD
                                         <td class="text-center"><?php if ($row['user_status'] == 0) {
 													echo "ยกเลิกการใช้งาน";
 												} else {
 													echo "ใช้งานปกติ";
 												}
 											?>
-=======
-                                        <td><?php if ($row['user_status'] == 0) {
-													echo "ยกเลิกการใช้งาน";
-													} else {
-													echo "ใช้งานปกติ";
-													}
-													?>
->>>>>>> 8314450aaea163014966c147c531e28ce77da03f
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
@@ -305,7 +287,7 @@ if (isset($_GET['user_id'])) {
 								<?php while ($row = mysqli_fetch_array($result_ju)) { ?>
 
                                     <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
+                                        <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
 											echo "ยกเลิกการใช้งาน";
@@ -358,7 +340,7 @@ if (isset($_GET['user_id'])) {
 								<?php while ($row = mysqli_fetch_array($result_complainant)) { ?>
 
                                     <tr>
-                                        <td>&nbsp;&nbsp;&nbsp;<?php echo $row['user_name']; ?></td>
+                                        <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
 										echo "ยกเลิกการใช้งาน";

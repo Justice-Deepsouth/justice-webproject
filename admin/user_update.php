@@ -1,43 +1,38 @@
 <?php
-session_start();
+	session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
+    if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
-    } */
+    }
 
-include_once '../php/dbconnect.php';
-include_once '../php/user.php';
+	include_once '../php/dbconnect.php';
+	include_once '../php/user.php';
 
     // get connection
-$database = new Database();
-$db = $database->getConnection();
+	$database = new Database();
+	$db = $database->getConnection();
 
     // pass connection to property_types table
-$user = new User($db);
+	$user = new User($db);
 
 	// read all records
-$active = $user->user_id = $_GET['user_id'];
-// $result = $user->readoneforupdate($active);
-$result = $user->readoneforupdate();
-// $total_rows = $user->getTotalRows();
+	$user->user_id = $_GET['user_id'];
+	$result = $user->readoneforupdate();
 
+	if (isset($_POST['user-submit'])) {
+		$user->user_id = $_POST['user-id'];
+		$user->user_name = $_POST['user-name'];
+		$user->user_email = $_POST['user-email'];
+		$user->user_type = $_POST['user-type'];
+		$user->user_status = $_POST['user-status'];
+		if ($user->update()) {
+			$success = true;
+			header("Location: users_list.php");
+		} else {
 
-if (isset($_POST['user-submit'])) {
-	$user->user_id = $_POST['user-id'];
-	$user->user_name = $_POST['user-name'];
-	$user->user_email = $_POST['user-email'];
-	$user->user_type = $_POST['user-type'];
-	$user->user_status = $_POST['user-status'];
-	if ($user->update()) {
-		$success = true;
-		header("Location: users_list.php");
-	} else {
-
-		$success = false;
+			$success = false;
+		}
 	}
-
-}
-
 ?>
 
 <!DOCTYPE HTML>
@@ -101,11 +96,11 @@ if (isset($_POST['user-submit'])) {
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.html">หน้าแรก</a></li>
+							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -115,15 +110,27 @@ if (isset($_POST['user-submit'])) {
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
+							<li><a href="#">กิจกรรม</a></li>
+							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="../contact.html">ติดต่อ</a></li>
+							<li><a href="../contact.php">ติดต่อ</a></li>
+							<?php
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
-				</div>
-				
-			</div>
-		</div>
+				</div><!-- /.row -->
+			</div><!-- /.top-menu -->
+		</div><!-- /.container-wrap -->
 	</nav>
 	<div class="container-wrap">
 		<aside id="fh5co-hero">
@@ -158,7 +165,9 @@ if (isset($_POST['user-submit'])) {
 								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
 								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
+								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -176,59 +185,49 @@ if (isset($_POST['user-submit'])) {
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน" maxlength="100" name="user-name" value="<?php echo $row['user_name']; ?>" required>
+								<input type="text" class="form-control" placeholder="ชื่อผู้ใช้งาน" maxlength="100" name="user-name" value="<?php echo $row['user_name']; ?>" data-validation="required" data-validation-error-msg="บันทึกชื่อผู้ใช้งาน">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="email" class="form-control" placeholder="Email" maxlength="100" name="user-email" value="<?php echo $row['user_email']; ?>" required>
+								<input type="email" class="form-control" placeholder="อีเมล" maxlength="50" name="user-email" value="<?php echo $row['user_email']; ?>" data-validation="email" data-validation-error-msg="อีเมลไม่ถูกต้อง">
+							</div>
+						</div>			
+                      	<div class="col-md-4">
+							<div class="form-group">
+								<select class="form-control" name="user-type">
+									<?php if ($row['user_type'] == 2) {
+										echo '<option value="2" selected>ผู้ร้องเรียน</option>
+											<option value="1">หน่วยงานยุติธรรม</option> 
+											<option value="0">ผู้ดูแลระบบ</option>';
+										} elseif ($row['user_type'] == 1) {
+										echo '<option value="1" selected>หน่วยงานยุติธรรม</option> 
+											<option value="0">ผู้ดูแลระบบ</option> 
+											<option value="2">ผู้ร้องเรียน</option>';
+										} else {
+										echo '<option value="0" selected>ผู้ดูแลระบบ</option>
+											<option value="1">หน่วยงานยุติธรรม</option> 
+											<option value="2">ผู้ร้องเรียน</option>';
+										}
+									?>
+								</select>
+							</div>
+						</div> 
+                        <div class="col-md-4">
+							<div class="form-group">
+								<select class="form-control" name="user-status">
+									<?php if ($row['user_status'] == 1) {
+										echo '<option value="1" selected>ใช้งานปกติ</option> 
+											<option value="0">ยกเลิกการใช้งาน</option>';
+										} else {
+										echo '<option value="0" selected>ยกเลิกการใช้งาน</option> 
+											<option value="1">ใช้งานปกติ</option>';
+										}
+									?>
+								</select>
 							</div>
 						</div>
-
-								</select>
-                      <div class="col-md-6">
-							<div class="form-group">
-							<select class="form-control" name="user-type">
-								<?php if ($row['user_type'] == 2) {
-								echo '
-									<option value="2" selected>ผู้ร้องเรียน</option>
-									<option value="1">หน่วยงานยุติธรรม</option> 
-									<option value="0">ผู้ดูแลระบบ</option> ';
-
-							} elseif ($row['user_type'] == 1) {
-								echo '
-									<option value="1" selected>หน่วยงานยุติธรรม</option> 
-									<option value="0">ผู้ดูแลระบบ</option> 
-									<option value="2">ผู้ร้องเรียน</option>';
-							} else {
-								echo '
-									<option value="0" selected>ผู้ดูแลระบบ</option>
-									<option value="1">หน่วยงานยุติธรรม</option> 
-									<option value="2">ผู้ร้องเรียน</option>';
-							}
-
-							?>
-								</select>
-							</div>
-						</div> 
-                        <div class="col-md-6">
-							<div class="form-group">
-
-								<select class="form-control" name="user-status">
-								<?php if ($row['user_status'] == 1) {
-								echo '
-									<option value="1" selected>ใช้งานปกติ</option> 
-									<option value="0">ยกเลิกการใช้งาน</option> ';
-							} else {
-								echo '
-									<option value="0" selected>ยกเลิกการใช้งาน</option> 
-									<option value="1">ใช้งานปกติ</option> ';
-							}
-
-							?>
-								</select>
-							</div>
-						</div> 
+						<div class="col-md-offset-4"></div>
 						<div class="col-md-12">
 							<div class="form-group">
 								<input type="submit" value="บันทึกข้อมูล" class="btn btn-primary btn-modify" name="user-submit">
@@ -236,14 +235,14 @@ if (isset($_POST['user-submit'])) {
 						</div>
 						<div class="col-md-12">
 						<?php
-					if (isset($success)) {
-						if ($success) {
-							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
-						} else {
-							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
-						}
-					}
-					?>
+							if (isset($success)) {
+								if ($success) {
+									echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+								} else {
+									echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+								}
+							}
+						?>
 						</div>
 					</div><!-- /.row -->
 					</form>
@@ -272,7 +271,7 @@ if (isset($_POST['user-submit'])) {
 			</div>
 		</footer>
 	</div><!-- END container-wrap -->
-	</div>
+	</div><!-- /.page -->
 
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
@@ -295,6 +294,11 @@ if (isset($_POST['user-submit'])) {
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<!-- jQuery Form Validator -->
+	<script src="../js/form-validator/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate();
+	</script>
 
 	</body>
 </html>

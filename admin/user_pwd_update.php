@@ -1,9 +1,9 @@
 <?php
     session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
+    if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
-    } */
+    }
 
     include_once '../php/dbconnect.php';
     include_once '../php/user.php';
@@ -15,36 +15,27 @@
     // pass connection to property_types table
     $user = new User($db);
 
-	// read all records
-	$active =  $user->user_id = $_GET['user_id'];
-	$result =  $user->readoneforupdate($active);
-	// $total_rows = $complaint_type->getTotalRows();
-
+	// read one record
+	$user->user_id = $_GET['user_id'];
+	$result =  $user->readoneforupdate();
 
 	if (isset($_POST['user-submit'])) {
-		$row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-		// echo $_POST['user-password'];
-		// echo '<br>';
-		// echo  $_POST['user-Cpassword'];
-		// exit(0);
-
-	if($row['user_passwd'] == md5($_POST['user-oldpwd'])){
-        if($_POST['user-password'] == $_POST['user-Cpassword']){
-			$user->user_passwd = $_POST['user-password'];
-           if ($user->update_pwd()) {
-			$success = true;
-			header("Location: users_list.php");
-        } else {
-			echo "	update ไม่ผ่าน";
-        }
-    }else{		
-		$success = false;
-		// header('Location: '.$_SERVER['PHP_SELF']);
-	}
-
-}else{
-	echo "ไม่ผ่าน";
-}	
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		if($row['user_passwd'] == md5($_POST['user-oldpwd'])) {
+        	if($_POST['user-password_confirmation'] == $_POST['user-password']){
+				$user->user_passwd = $_POST['user-password'];
+           		if ($user->update_pwd()) {
+					$success = true;
+					header("Location: users_list.php");
+        		} else {
+					$success = false;
+       			}
+    		} else {		
+				$success = false;
+			}
+		} else {
+			$success = false;
+		}	
 	}
 ?>
 
@@ -109,11 +100,11 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.html">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.html">หน้าแรก</a></li>
+							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -123,33 +114,45 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
+							<li><a href="#">กิจกรรม</a></li>
+							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="../contact.html">ติดต่อ</a></li>
+							<li><a href="../contact.php">ติดต่อ</a></li>
+							<?php
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
-				</div>
-				
-			</div>
-		</div>
+				</div><!-- /.row -->
+			</div><!-- /.top-menu -->
+		</div><!-- /.container-wrap -->
 	</nav>
 	<div class="container-wrap">
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(../images/img_bg_3.jpg);">
-			   		<div class="overlay-gradient"></div>
-			   		<div class="container-fluids">
-			   			<div class="row">
-				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
-				   				<div class="slider-text-inner text-center">
-				   					<h1>การจัดการข้อมูล</h1>
+					<li style="background-image: url(../images/img_bg_3.jpg);">
+						<div class="overlay-gradient"></div>
+						<div class="container-fluids">
+							<div class="row">
+								<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
+									<div class="slider-text-inner text-center">
+										<h1>การจัดการข้อมูล</h1>
 										<h2>Data Management</h2>
-				   				</div>
-				   			</div>
-				   		</div>
-			   		</div>
-			   	</li>		   	
+									</div>
+								</div>
+							</div><!-- /.row -->
+						</div>
+					</li>		   	
 			  	</ul>
 		  	</div>
 		</aside>		
@@ -166,7 +169,9 @@
 								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
 								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li  class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li class="active"><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
+								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
+								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -182,26 +187,24 @@
                     <?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
                     <input type="hidden" name="user-id" value="<?php echo $row['user_id']; ?>">
 					<div class="row">
-					<div class="col-md-12">
+						<div class="col-md-12">
 							<div class="form-group">
-                            <p>ยืนยันรหัสผ่านเก่า</p>
-								<input type="password" class="form-control" placeholder="รหัสผ่าน"  name="user-oldpwd"   required>
+                            	<p>ยืนยันรหัสผ่านเดิม</p>
+								<input type="password" class="form-control" placeholder="รหัสผ่าน" name="user-oldpwd" maxlength="8" data-validation="required" data-validation-error-msg="บันทึกรหัสผ่านเดิม">
 							</div>
 						</div>
-					<div class="col-md-6">
+						<div class="col-md-6">
 							<div class="form-group">
-                            <p>ป้อนรหัสผ่านใหม่</p>
-								<input type="password" class="form-control" placeholder="รหัสผ่าน"  name="user-password"   required>
+                            	<p>ป้อนรหัสผ่านใหม่</p>
+								<input type="password" class="form-control" placeholder="รหัสผ่าน" name="user-password_confirmation" maxlength="8" data-validation="required" data-validation-error-msg="บันทึกรหัสผ่านใหม่">
 							</div>
 						</div>
                         <div class="col-md-6">
 							<div class="form-group">
-                            <p>ยืนยันรหัสผ่านใหม่</p>
-								<input type="password" class="form-control" placeholder="ยืนยันรหัสผ่าน"  name="user-Cpassword"   required>
+                            	<p>ยืนยันรหัสผ่านใหม่</p>
+								<input type="password" class="form-control" placeholder="ยืนยันรหัสผ่าน" name="user-password" maxlength="8" data-validation="confirmation" data-validation-error-msg="ยืนยันรหัสผ่านไม่ถูกต้อง">
 							</div>
 						</div> 
-
-							
 						<div class="col-md-12">
 							<div class="form-group">
 								<input type="submit" value="บันทึกข้อมูล" class="btn btn-primary btn-modify" name="user-submit">
@@ -220,8 +223,8 @@
 						</div>
 					</div><!-- /.row -->
 					</form>
-				</div>
-			</div>
+				</div><!-- /.col-md-7 -->
+			</div><!-- /.row -->
 		</div>
 	</div><!-- END container-wrap -->
 
@@ -245,7 +248,7 @@
 			</div>
 		</footer>
 	</div><!-- END container-wrap -->
-	</div>
+	</div><!-- /.id=page -->
 
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
@@ -268,7 +271,14 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
-<
+	<!-- jQuery Form Validator -->
+	<script src="../js/form-validator/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate({
+  			modules : 'security',
+		});
+	</script>
+
 	</body>
 </html>
 
