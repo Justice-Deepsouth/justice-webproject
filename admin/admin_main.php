@@ -1,9 +1,14 @@
 <?php
     session_start();
 
-    if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
-    }
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only admin type can access
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
+		header("Location: ../index.php");
+	}
 
     include_once '../php/dbconnect.php';
     include_once '../php/contact_info.php';
@@ -103,6 +108,7 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
@@ -121,7 +127,6 @@
 						</ul>
 					</div>
 				</div>
-				
 			</div>
 		</div>
 	</nav>
@@ -172,11 +177,10 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>ชื่อผู้ร้องเรียน</th>
-									<th>อีเมลผู้ร้องเรียน</th>
-									<th class="text-center">รายละเอียดการร้องเรียน</th>
+                                    <th>ชื่อผู้ติดต่อ</th>
+									<th>อีเมลผู้ติดต่อ</th>
+									<th class="text-center">รายละเอียดการติดต่อ</th>
 									<th class="text-center">อ่านแล้ว</th>
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -198,7 +202,6 @@
 											<?php
 										}
 										?>
-
                                     </tr>
 								<?php } ?>
                                 </tbody>

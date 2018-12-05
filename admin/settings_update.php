@@ -1,9 +1,14 @@
 <?php
     session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
-    } */
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only admin type can access
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
+		header("Location: ../index.php");
+	}
 
     include_once '../php/dbconnect.php';
     include_once '../php/setting.php';
@@ -103,7 +108,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.php">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -117,13 +122,25 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
+							<?php 
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
-				
 			</div>
 		</div>
 	</nav>
@@ -178,12 +195,12 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control"  maxlength="100" placeholder="ชื่อโครงการ (ไทย)" name="project-name-th" value="<?php echo $row['project_name_th']; ?>">
+								<input type="text" class="form-control" maxlength="100" placeholder="ชื่อโครงการ (ไทย)" name="project-name-th" value="<?php echo $row['project_name_th']; ?>" data-validation="required" data-validation-error-msg="บันทึกชื่อโครงการ (ไทย)">
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control"  maxlength="100" placeholder="่ชื่อโครงการ (English)" name="project-name-en" value="<?php echo $row['project_name_en']; ?>">
+								<input type="text" class="form-control" maxlength="100" placeholder="่ชื่อโครงการ (English)" name="project-name-en" value="<?php echo $row['project_name_en']; ?>">
 							</div>
                         </div>
                         <div class="col-md-12">
@@ -193,37 +210,37 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="20" placeholder="หมายเลขโทรศัพท์" name="project-phone" value="<?php echo $row['project_phone']; ?>">
+                                <input type="text" class="form-control" maxlength="20" placeholder="หมายเลขโทรศัพท์" name="project-phone" value="<?php echo $row['project_phone']; ?>">
 							</div>
                         </div>
                         <div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="50" placeholder="อีเมลโครงการ" name="project-email" value="<?php echo $row['project_email']; ?>">
+                                <input type="text" class="form-control" maxlength="50" placeholder="อีเมลโครงการ" name="project-email" value="<?php echo $row['project_email']; ?>">
 							</div>
                         </div>
                         <div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="50" placeholder="เว็บไซต์โครงการ" name="project-website" value="<?php echo $row['project_website']; ?>">
+                                <input type="text" class="form-control" maxlength="50" placeholder="เว็บไซต์โครงการ" name="project-website" value="<?php echo $row['project_website']; ?>">
 							</div>
                         </div>
                         <div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="50" placeholder="Facebook โครงการ" name="project-facebook" value="<?php echo $row['project_facebook']; ?>">
+                                <input type="text" class="form-control" maxlength="50" placeholder="Facebook โครงการ" name="project-facebook" value="<?php echo $row['project_facebook']; ?>">
 							</div>
                         </div>
                         <div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="50" placeholder="YouTube โครงการ" name="project-youtube" value="<?php echo $row['project_youtube']; ?>">
+                                <input type="text" class="form-control" maxlength="50" placeholder="YouTube โครงการ" name="project-youtube" value="<?php echo $row['project_youtube']; ?>">
 							</div>
                         </div>
                         <div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="50" placeholder="Twitter โครงการ" name="project-twitter" value="<?php echo $row['project_twitter']; ?>">
+                                <input type="text" class="form-control" maxlength="50" placeholder="Twitter โครงการ" name="project-twitter" value="<?php echo $row['project_twitter']; ?>">
 							</div>
                         </div>
                         <div class="col-md-6">
 							<div class="form-group">
-                                <input type="text" class="form-control"  maxlength="10" placeholder="รหัสข้อร้องเรียน" name="complaint-id-last" value="<?php echo $row['complaint_id_last']; ?>">
+                                <input type="text" class="form-control" maxlength="10" placeholder="รหัสข้อร้องเรียน" name="complaint-id-last" value="<?php echo $row['complaint_id_last']; ?>" data-validation="required" data-validation-error-msg="บันทึกรหัสข้อร้องเรียน">
 							</div>
                         </div>
                         <div class="col-md-offset-6"></div>
@@ -333,6 +350,10 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<script src="../js/form-validator/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate();
+	</script>
 
 	</body>
 </html>

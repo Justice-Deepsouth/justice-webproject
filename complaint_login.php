@@ -1,9 +1,16 @@
 <?php 
 	session_start();
 
-	if (isset($_SESSION['user_session_id'])) {
-        //header("Location: ../index.php");
-    }
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// admin
+		if ($_SESSION['user_type'] == 0) {
+			header("Location: admin/admin_main.php");
+		} else {	// justice unit or complainant
+			header("Location: complaint_status.php");
+		}
+	} else {
+		header("Location: ../index.php");
+	}
 ?>
 
 <!DOCTYPE HTML>
@@ -81,6 +88,7 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li class="active"><a href="#">ร้องเรียน</a></li>
 							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
