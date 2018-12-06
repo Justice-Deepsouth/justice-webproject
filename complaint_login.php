@@ -8,8 +8,6 @@
 		} else {	// justice unit or complainant
 			header("Location: complaint_status.php");
 		}
-	} else {
-		header("Location: ../index.php");
 	}
 ?>
 
@@ -90,7 +88,7 @@
 							</li>
 							<li><a href="#">กิจกรรม</a></li>
 							<li class="active"><a href="#">ร้องเรียน</a></li>
-							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
+							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
@@ -100,7 +98,7 @@
 									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
 									echo "<ul class='dropdown'>";
 									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
 									echo "</ul></li>";
 								}
 							?>
