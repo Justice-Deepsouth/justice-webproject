@@ -1,9 +1,15 @@
 <?php
     session_start();
 
-    /* if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
-	} */
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only complainant and justice unit can access
+		// user_type = 0 -> admin
+		if ($_SESSION['user_type'] == 0) {
+			header("Location: admin/admin_main.php");
+		}
+	} else {
+		header("Location: index.php");
+	}
 	
     // set current timezone
     date_default_timezone_set("Asia/Bangkok");
@@ -27,13 +33,12 @@
 		$active = false;
 		$result = $complaint->readall($active);
 		$total_rows = $complaint->getTotalRows();
-	}else{
+	} else {
 		// read all records for complainant
 		$active = true;
 		$result = $complaint->readall($active);
 		$total_rows = $complaint->getTotalRows();	
 	}
-
 
  	// delete complaint
     if (isset($_GET['comp_id'])) {
@@ -55,7 +60,6 @@
 				header("Location: complaint_status.php");
 			}
 		}
-
 	}
 
 	$complaint_progress = new Complaint_progress($db);
@@ -139,7 +143,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.php">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="index.php"><img src="images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -153,13 +157,25 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
+							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
+							<?php 
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</nav>
@@ -173,8 +189,8 @@
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>การจัดการข้อมูล</h1>
-										<h2>Data Management</h2>
+				   					<h1>การจัดการข้อร้องเรียน</h1>
+										<h2>Complaint Management</h2>
 				   				</div>
 				   			</div>
 				   		</div>
@@ -193,34 +209,27 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<!-- <li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li> -->
-								<li class="active"><a href="#"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<!-- <li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li> -->
+								<li class="active"><a href="#"><i class="icon-settings"></i><span> ข้อมูลข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
 				</div><!-- /.col-md-3 -->
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
-					
 					<!-- show add button for complainant -->
 					<?php
 						if ($_SESSION['user_type'] == 1) {
 
-						}else{
+						} else {
 					?>
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
-									<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline" onclick="location.href='complaint_status_add.php';">
+									<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline" onclick="location.href='complaint_add.php';">
 								</div>
 							</div>
 						</div><!-- /.row -->
-					<?php
-						}
-					?>
-
+					<?php } ?>
 					<div class="row">
 						<div class="table-responsive">
                             <table class="table">
@@ -412,7 +421,6 @@
 	<!-- Main -->
 	<script src="js/main.js"></script>
 
-	
 	<!-- for Modal delete -->
 	<script>
 		$('#confirm-delete').on('show.bs.modal', function(e) {
