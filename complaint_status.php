@@ -200,7 +200,7 @@
 		  	</div>
 		</aside>
 		<div id="fh5co-contact">
-		<div class="row">
+			<div class="row">
 				<!-- sidebar -->
 				<div class="col-md-3 col-sm-2">
 					<section id="sidebar">
@@ -242,9 +242,10 @@
 											  <th class="text-center">อัพเดทการเปลี่ยนแปลง</th>';
 									}else{
 										echo '<th class="text-center">สถานะ</th>
-											  <th class="text-center">แก้ไขรูปภาพ</th>
-											  <th class="text-center">แก้ไขข้อมูล</th>
-											  <th class="text-center">ลบข้อมูล</th>';
+										      <th class="text-center">วันที่ร้องเรียน</th>	
+											  <th class="text-center">รูปภาพ</th>
+											  <th class="text-center">แก้ไข</th>
+											  <th class="text-center">ลบ</th>';
 									}
 									?>
 									
@@ -260,21 +261,22 @@
 											
 											<?php
 											if ($_SESSION['user_type'] == 1) {
-												
 												// insert complaint_state_desc
+												$cdate = date_create($row['created_date']);
 												$complaint_state->complaint_state_id = $row['complaint_state_id'];
 												$resultstate = $complaint_state->readone();
 												$rowstate = mysqli_fetch_array($resultstate);
 											?>
-											<td><?php echo $row['user_id']?></td>
-											<td><?php echo $row['created_date']?></td>	
-												<!-- button for update complaint_state_id and insert complaint_progress modal -->
-												<td class="text-center">
-													<a href="" data-toggle="modal" data-target="#showstate" data-id="<?php echo $row['complaint_id']; ?>" id="getState_id"><?php echo $rowstate['complaint_state_desc']; ?></a>
-												</td>
+											<td><?php echo $row['user_id']; ?></td>
+											<td><?php echo date_format($cdate,'d/m/Y'); ?></td>	
+											<!-- button for update complaint_state_id and insert complaint_progress modal -->
+											<td class="text-center">
+												<a href="" data-toggle="modal" data-target="#showstate" data-id="<?php echo $row['complaint_id']; ?>" id="getState_id"><?php echo $rowstate['complaint_state_desc']; ?></a>
+											</td>
 											<?php
 
 											}else{	
+													$cdate = date_create($row['created_date']);
 													// insert complaint_state_desc											
 													$complaint_state->complaint_state_id = $row['complaint_state_id'];
 													$resultstate = $complaint_state->readone();
@@ -284,6 +286,7 @@
 												if ($row['complaint_state_id'] == 1) {
 
 												?>
+												<td class="text-center"><?php echo date_format($cdate,'d/m/Y'); ?></td>
 												<td class="text-center">
 													<a href="img_list.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-images"></i></a>
 												</td>
@@ -310,9 +313,8 @@
                         </div><!-- /.table-responsive -->
 					</div><!-- /.row -->
 				</div>
+			</div>
 		</div>
-		</div>
-
 	</div><!-- END container-wrap -->
 
 	<div class="container-wrap">
