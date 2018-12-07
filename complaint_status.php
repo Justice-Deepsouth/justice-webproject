@@ -237,8 +237,9 @@
                                     <th>หัวข้อร้องเรียน</th>
 									<?php
 									if ($_SESSION['user_type'] == 1) {
-										echo '<th class="text-center">ชื่อผู้แจ้ง</th>';
-										echo '<th class="text-center">อัพเดทการเปลี่ยนแปลง</th>';
+										echo '<th class="text-center">ชื่อผู้แจ้ง</th>
+											  <th class="text-center">วันที่ร้องเรียน</th>
+											  <th class="text-center">อัพเดทการเปลี่ยนแปลง</th>';
 									}else{
 										echo '<th class="text-center">สถานะ</th>
 											  <th class="text-center">แก้ไขรูปภาพ</th>
@@ -246,7 +247,7 @@
 											  <th class="text-center">ลบข้อมูล</th>';
 									}
 									?>
-									<th class="text-center">วันที่ร้องเรียน</th>
+									
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -254,20 +255,22 @@
 										<tr>
 											<td>
 											<!-- button for show complaint_desc modal -->
-											<button data-toggle="modal" data-target="#showdata" data-id="<?php echo $row['complaint_id']; ?>" id="getcomp_id" class="btn btn-sm btn-link"><?php echo $row['complaint_title'];?></button>
+											<a href="" data-toggle="modal" data-target="#showdata" data-id="<?php echo $row['complaint_id']; ?>" id="getcomp_id"><?php echo $row['complaint_title'];?></a>
 											</td>
-											<td><?php echo $row['user_id']?></td>
+											
 											<?php
 											if ($_SESSION['user_type'] == 1) {
+												
 												// insert complaint_state_desc
 												$complaint_state->complaint_state_id = $row['complaint_state_id'];
 												$resultstate = $complaint_state->readone();
 												$rowstate = mysqli_fetch_array($resultstate);
 											?>
+											<td><?php echo $row['user_id']?></td>
 											<td><?php echo $row['created_date']?></td>	
 												<!-- button for update complaint_state_id and insert complaint_progress modal -->
 												<td class="text-center">
-													<button data-toggle="modal" data-target="#showstate" data-id="<?php echo $row['complaint_id']; ?>" id="getState_id" class="btn btn-sm btn-link"><?php echo $rowstate['complaint_state_desc']; ?></button>
+													<a href="" data-toggle="modal" data-target="#showstate" data-id="<?php echo $row['complaint_id']; ?>" id="getState_id"><?php echo $rowstate['complaint_state_desc']; ?></a>
 												</td>
 											<?php
 
