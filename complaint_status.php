@@ -219,7 +219,6 @@
 					<!-- show add button for complainant -->
 					<?php
 						if ($_SESSION['user_type'] == 1) {
-
 						} else {
 					?>
 						<div class="row">
@@ -236,7 +235,6 @@
                                 <thead>
                                 <tr>
                                     <th>หัวข้อร้องเรียน</th>
-                                    
 									<?php
 									if ($_SESSION['user_type'] == 1) {
 										echo '<th class="text-center">ชื่อผู้แจ้ง</th>';
