@@ -1622,4 +1622,12 @@ input[type="text"] {
   display: none;
 }
 
+.modal-dialog {
+    overflow-y: initial !important
+}
+.modal-body {
+  height: 300px;
+  overflow-y: auto;
+}
+
 /*# sourceMappingURL=style.css.map */
