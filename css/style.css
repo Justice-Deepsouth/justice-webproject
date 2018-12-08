@@ -1622,10 +1622,17 @@ input[type="text"] {
   display: none;
 }
 
-.modal-dialog {
-    overflow-y: initial !important
+#showdata .modal-dialog {
+  overflow-y: initial !important
 }
-.modal-body {
+#showdata .modal-body {
+  height: 300px;
+  overflow-y: auto;
+}
+#showstate .modal-dialog {
+  overflow-y: initial !important
+}
+#showstate .modal-body {
   height: 300px;
   overflow-y: auto;
 }
