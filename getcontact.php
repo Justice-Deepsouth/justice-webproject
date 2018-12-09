@@ -14,7 +14,6 @@
     $complaint_type->complaint_type_id = $_POST['type_id'];
     $result = $complaint_type->readone();
     $row = mysqli_fetch_array($result);
-
 ?>
 
 <div class="table-responsive">
@@ -32,5 +31,4 @@
 			<td><?php echo $row['complaint_type_status']; ?></td>
 		</tr>
 	</table>
-
 </div>
