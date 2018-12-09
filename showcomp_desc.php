@@ -37,10 +37,9 @@
     $rowcomp = mysqli_fetch_array($resultcomp);
 
     $complaint_state = new Complaint_state($db);
-
 ?>
 <div class="table-responsive">
-<table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered">
 		<tr>
 			<th>เรื่อง</th>
 			<td><?php echo $rowcomp['complaint_title']; ?></td>
@@ -53,9 +52,7 @@
 			<th>รูปภาพ</th>
             <td>
             <?php while ($data = mysqli_fetch_array($img)) { ?>
-
-            <img src='comp_img/<?php echo $data['complaint_photo_name'] ?>' name='complaint-photo-name' class='img-thumbnail' width='250' height='250' />
-
+                <img src='comp_img/<?php echo $data['complaint_photo_name'] ?>' name='complaint-photo-name' class='img-thumbnail' width='250' height='250' />
             <?php } ?>
             </td>
 		</tr>
@@ -63,7 +60,7 @@
     <table class="table table-striped table-bordered">
 		<tr>
 			<th>ประวัติการดำเนินการ</th>
-            <td> <?php while ($row = mysqli_fetch_array($result)) {
+            <td><?php while ($row = mysqli_fetch_array($result)) {
             $complaint_state->complaint_state_id = $row['complaint_state_id'];
             $resultstate = $complaint_state->readone();
             $rowstate = mysqli_fetch_array($resultstate);

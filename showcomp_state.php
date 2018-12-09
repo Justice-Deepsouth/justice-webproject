@@ -16,10 +16,7 @@
     $db = $database->getConnection();
 
     $complaint_state = new Complaint_state($db);
-    
-    
 ?>
-
 
 <div class="table-responsive">
     <form role="form" id="complaint-states" method="post" action="complaint_status.php">

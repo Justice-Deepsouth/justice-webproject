@@ -216,7 +216,7 @@
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
 				   					<h1>การจัดการข้อร้องเรียน</h1>
-										<h2>Complaint Management</h2>
+									<h2>Complaint Management</h2>
 				   				</div>
 				   			</div>
 				   		</div>

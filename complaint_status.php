@@ -291,7 +291,7 @@
 													<a href="img_list.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-images"></i></a>
 												</td>
 												<td class="text-center">
-													<a href="complaint_status_update.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
+													<a href="complaint_update.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
 												</td>
 												<td class="text-center">
 													<a href="#" class="delete" data-href="complaint_status.php?comp_id=<?php echo $row['complaint_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
@@ -303,7 +303,6 @@
 													echo'<td class="text-center"><i class="icon-bin"></i></td>';
 												}
 											}
-
 											?>
 										</tr>
 
@@ -363,7 +362,7 @@
 	</div>
 
     <div id = "showdata" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
-         <div class = "modal-dialog"> 
+        <div class = "modal-dialog"> 
             <div class = "modal-content">       
                 <div class = "modal-header"> 
                     <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">×</button> 
@@ -383,9 +382,8 @@
             </div> 
         </div>
     </div><!-- /.modal -->
-
-	    <div id = "showstate" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
-         <div class = "modal-dialog"> 
+	<div id = "showstate" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
+        <div class = "modal-dialog"> 
             <div class = "modal-content">       
                 <div class = "modal-header"> 
                     <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">×</button> 
@@ -456,7 +454,7 @@
 	        });
         });
 
-		 $(document).ready(function(){	
+		$(document).ready(function(){	
 	        $(document).on('click', '#getState_id', function(e){
 		        e.preventDefault();
                 var comp_id = $(this).data('id');   // it will get id of clicked row

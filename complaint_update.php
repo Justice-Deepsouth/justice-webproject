@@ -4,40 +4,44 @@
     // set current timezone
     date_default_timezone_set("Asia/Bangkok");
 
-    /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_state'])) {
-		if ($_SESSION['user_state'] != 0) {
-			header("Location: ../index.php");
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only complainant and justice unit can access
+		// user_type = 0 -> admin
+		if ($_SESSION['user_type'] == 0) {
+			header("Location: admin/admin_main.php");
 		}
-	} */
+	} else {
+		header("Location: index.php");
+	}
+
 	include_once 'php/dbconnect.php';
 	include_once 'php/complaint.php';
 	include_once 'php/complaint_type.php';
-        // get connection
-        $database = new Database();
-		$db = $database->getConnection();
+		
+	// get connection
+    $database = new Database();
+	$db = $database->getConnection();
 
-		$complaint = new Complaint($db);
-		$active = $complaint->complaint_id = $_GET['comp_id'];
-		$result = $complaint->readone($active);
+	$complaint = new Complaint($db);
+	$complaint->complaint_id = $_GET['comp_id'];
+	$result = $complaint->readone();
+	$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
 
-		$complaint_type = new Complaint_type($db);
-		$active = true;
-		$resulttype = $complaint_type->readall($active);
+	$complaint_type = new Complaint_type($db);
+	$active = true;
+	$resulttype = $complaint_type->readall($active);
 
     // form is submitted
-    if (isset($_POST['complaint-status-submit'])) {
-
+    if (isset($_POST['complaint-update-submit'])) {
         $complaint->complaint_id = $_GET['comp_id'];
 		$complaint->complaint_title = $_POST['complaint-title'];
 		$complaint->complaint_type_id = $_POST['complaint-type-id'];
 		$complaint->complaint_desc = $_POST['complaint-desc'];
-
         // insert
 		if ($complaint->update()) {
 			$success = true;
 			header("Location: complaint_status.php");
         } else {
-			
             $success = false;
 		}
     }
@@ -103,7 +107,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.php">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="index.php"><img src="images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -117,9 +121,22 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
+							<?php 
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
@@ -137,8 +154,8 @@
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>การจัดการข้อมูล</h1>
-										<h2>Data Management</h2>
+				   					<h1>การจัดการข้อร้องเรียน</h1>
+									<h2>Complaint Management</h2>
 				   				</div>
 				   			</div>
 				   		</div>
@@ -157,10 +174,7 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<!-- <li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li> -->
-								<li class="active"><a href="complaint_status.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<!-- <li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li> -->
+								<li class="active"><a href="complaint_status.php"><i class="icon-settings"></i><span> ข้อมูลข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -169,38 +183,42 @@
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
-							<h3>ข้อร้องเรียน</h3>
+							<h3>แก้ไขข้อร้องเรียน</h3>
 						</div>
 					</div><!-- /.row -->
 					<form role="form" id="complaint" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-					<?php $row=mysqli_fetch_array($result,MYSQLI_ASSOC);?>
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" value="<?php echo $row['complaint_title']; ?>" maxlength="100" name="complaint-title" required>
+								<input type="text" class="form-control" value="<?php echo $row['complaint_title']; ?>" maxlength="100" name="complaint-title" placeholder="หัวข้อร้องเรียน" data-validation="required" data-validation-error-msg="บันทึกหัวข้อร้องเรียน">
 							</div>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-5">
 							<div class="form-group">
-								<select class="form-control" name="complaint-type-id">
+								<select class="form-control" name="complaint-type-id" data-validation-allowing="range[1;100]" data-validation-error-msg="บันทึกประเภทข้อร้องเรียน">
 								<?php
 								 while ($rowtype = mysqli_fetch_array($resulttype)) {
-										echo '
-										<option value="'.$rowtype['complaint_type_id'].'" selected>'.$rowtype['complaint_type_desc'].'</option>
+									 if ($row['complaint_type_id'] == $rowtype['complaint_type_id']) {
+										echo '<option value="'.$rowtype['complaint_type_id'].'" selected>'.$rowtype['complaint_type_desc'].'</option>
 										';
+									 } else {
+										echo '<option value="' . $rowtype['complaint_type_id'] . '">'.$rowtype['complaint_type_desc'].'</option>
+										';
+									 }
 								}
 								?>
 								</select>
 							</div>
 						</div>
+						<div class="col-md-offset-7"></div>
                         <div class="col-md-12">
 							<div class="form-group">
-                            <textarea name="complaint-desc" class="form-control" id="" cols="30" rows="7" ><?php echo $row['complaint_desc']; ?></textarea>
+                            <textarea name="complaint-desc" class="form-control" id="" cols="30" rows="7" placeholder="รายละเอียดข้อร้องเรียน" data-validation="required" data-validation-error-msg="บันทึกรายละเอียดข้อร้องเรียน"><?php echo $row['complaint_desc']; ?></textarea>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="submit" value="ยืนยันการแก้ไข" class="btn btn-primary btn-modify" name="complaint-status-submit">
+								<input type="submit" value="ยืนยันการแก้ไข" class="btn btn-primary btn-modify" name="complaint-update-submit">
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -264,7 +282,12 @@
 	<script src="js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="js/main.js"></script>
-
+	<!-- jQuery Form Validator -->
+	<script src="js/form-validator/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate();
+	</script>
+	
 	</body>
 </html>
 
