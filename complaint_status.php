@@ -239,7 +239,7 @@
 									if ($_SESSION['user_type'] == 1) {
 										echo '<th class="text-center">ชื่อผู้แจ้ง</th>
 											  <th class="text-center">วันที่ร้องเรียน</th>
-											  <th class="text-center">อัพเดทการเปลี่ยนแปลง</th>';
+											  <th class="text-center">การดำเนินการ</th>';
 									}else{
 										echo '<th class="text-center">สถานะ</th>
 										      <th class="text-center">วันที่ร้องเรียน</th>	
@@ -383,11 +383,12 @@
         </div>
     </div><!-- /.modal -->
 	<div id = "showstate" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
+	<form role="form" id="complaint-states" method="post" action="complaint_status.php">
         <div class = "modal-dialog"> 
             <div class = "modal-content">       
                 <div class = "modal-header"> 
                     <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">×</button> 
-                    <h4 class = "modal-title">อัพเดทการเปลี่ยนแปลง</h4> 
+                    <h4 class = "modal-title">การดำเนินการ</h4> 
                 </div> 
                 <div class = "modal-body">        
                     <div id = "modal-loader" style = "display: none; text-align: center;">
@@ -396,12 +397,13 @@
                     <!-- content will be load here -->                          
                     <div id = "dynamic1-content"></div>                             
                 </div> 
-                <!-- <div class = "modal-footer"> 
-				
-                </div>  -->
-                        
-            </div> 
-        </div>
+                <div class = "modal-footer"> 
+					<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+           			<input type="submit" class="btn btn-info" value="บันทึก" name="complaint-state-submit">
+                </div>     
+            </div>
+		</div>
+	</form>
     </div><!-- /.modal -->
 
 	<!-- jQuery -->
@@ -421,6 +423,11 @@
 	<script src="js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="js/main.js"></script>
+	<!-- jQuery Form Validator -->
+	<script src="js/form-validator/jquery.form-validator.min.js"></script>
+	<script>
+		$.validate();
+	</script>
 
 	<!-- for Modal delete -->
 	<script>
