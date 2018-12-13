@@ -282,11 +282,11 @@
 													$resultstate = $complaint_state->readone();
 													$rowstate = mysqli_fetch_array($resultstate);
 													echo '<td class="text-center">'.$rowstate['complaint_state_desc'].'</td>';
-													
+													echo '<td class="text-center">'.date_format($cdate,'d/m/Y').'</td>';
+
 												if ($row['complaint_state_id'] == 1) {
 
 												?>
-												<td class="text-center"><?php echo date_format($cdate,'d/m/Y'); ?></td>
 												<td class="text-center">
 													<a href="img_list.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-images"></i></a>
 												</td>
