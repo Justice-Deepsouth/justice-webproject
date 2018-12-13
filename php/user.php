@@ -136,43 +136,93 @@ class User
         return $result;
     }//search all
 
-    //read all admins
-    function readall_admin($act)
-    {
-        if ($act) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 0 ORDER BY user_id";
-        } else {
-            $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
-        }
-        $result_admin = mysqli_query($this->conn, $query);
-        return $result_admin;
-    } //read all admins
-
-    //read all justics
-    function readall_ju($act)
-    {
-        if ($act) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id";
-        } else {
-            $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
-        }
-        $result_ju = mysqli_query($this->conn, $query);
-        return $result_ju;
-    } //read all justics
 
 
-    //read all complainant
-    function readall_complainant($act)
+        //page
+    function readall_complainant()
     {
-        if ($act) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 2 ORDER BY user_id";
+
+        // define how many results you want per page
+        $results_per_page = 10;
+// determine which page number visitor is currently on
+        if (!isset($_GET['page'])) {
+            $page = 1;
         } else {
-            $query = "SELECT * FROM " . $this->table_name . " ORDER BY user_id";
-        }
-        $result_complainant = mysqli_query($this->conn, $query);
-        return $result_complainant;
+            $page = $_GET['page'];
+        } 
+        // determine the sql LIMIT starting number for the results on the displaying page
+        $this_page_first_result = ($page - 1) * $results_per_page;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 2 ORDER BY user_id LIMIT  $this_page_first_result , $results_per_page";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
     } //read all complainant
+
+
+     // get number of total records
+    function getTotalRows_complainant()
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 2 ORDER BY user_id";
+        $result = mysqli_query($this->conn, $query);
+        return mysqli_num_rows($result);
+    }
+
+
+            //page
+            function readall_ju()
+            {
+        
+                // define how many results you want per page
+                $results_per_page = 10;
+        // determine which page number visitor is currently on
+                if (!isset($_GET['page'])) {
+                    $page = 1;
+                } else {
+                    $page = $_GET['page'];
+                } 
+                // determine the sql LIMIT starting number for the results on the displaying page
+                $this_page_first_result = ($page - 1) * $results_per_page;
+                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id LIMIT  $this_page_first_result , $results_per_page";
+                $result = mysqli_query($this->conn, $query);
+                return $result;
+            } //read all complainant
+        
+        
+             // get number of total records
+            function getTotalRows_ju()
+            {
+                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id";
+                $result = mysqli_query($this->conn, $query);
+                return mysqli_num_rows($result);
+            }
+
+                    //page
+    function readall_admin()
+    {
+
+        // define how many results you want per page
+        $results_per_page = 10;
+// determine which page number visitor is currently on
+        if (!isset($_GET['page'])) {
+            $page = 1;
+        } else {
+            $page = $_GET['page'];
+        } 
+        // determine the sql LIMIT starting number for the results on the displaying page
+        $this_page_first_result = ($page - 1) * $results_per_page;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 0 ORDER BY user_id LIMIT  $this_page_first_result , $results_per_page";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    } //read all complainant
+
+
+     // get number of total records
+    function getTotalRows_admin()
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 0 ORDER BY user_id";
+        $result = mysqli_query($this->conn, $query);
+        return mysqli_num_rows($result);
+    }
 
 }
 
-?>
+?>      

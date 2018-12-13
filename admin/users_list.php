@@ -1,31 +1,20 @@
 <?php
-	session_start();
+session_start();
 
-    if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
-    }
+if (!isset($_SESSION['user_session_id'])) {
+	header("Location: ../index.php");
+}
 
-	include_once '../php/dbconnect.php';
-	include_once '../php/user.php';
+include_once '../php/dbconnect.php';
+include_once '../php/user.php';
 
 	// get connection
-	$database = new Database();
-	$db = $database->getConnection();
+$database = new Database();
+$db = $database->getConnection();
 
     // pass connection to property_types table
-	$user = new User($db);
+$user = new User($db);
 
-	// read all records
-	$active = false;
-	$result = $user->readall($active);
-	$total_rows = $user->getTotalRows();
-
-	if (isset($_GET['user_id'])) {
-		$user->user_id = $_GET['user_id'];
-		if ($user->delete()) {
-			header("Location: users_list.php");
-		}
-	}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -107,17 +96,17 @@
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.html">ติดต่อ</a></li>							
 							<?php 
-								if (!isset($_SESSION['user_session_id'])) {
-									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
-								} else {
-									echo "<li class='has-dropdown'>";
-									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
-									echo "<ul class='dropdown'>";
-									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
-									echo "</ul></li>";
-								}
-							?>
+						if (!isset($_SESSION['user_session_id'])) {
+							echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+						} else {
+							echo "<li class='has-dropdown'>";
+							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+							echo "<ul class='dropdown'>";
+							echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+							echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+							echo "</ul></li>";
+						}
+						?>
 						</ul>
 					</div>
 				</div>
@@ -193,16 +182,30 @@
   					<div class="tab-content">
     					<div id="type-2" class="tab-pane fade in active">
 						<?php
-							$active = true;
-							$result_admin = $user->readall_complainant($active);
-							$total_rows = $user->getTotalRows();
-							if (isset($_GET['user_id'])) {
-								$user->user_id = $_GET['user_id'];
-								if ($user->delete()) {
-									header("Location: users_list.php");
-								}
-							}
-						?>
+					$result_complainant = $user->readall_complainant();
+					$total_rows = $user->getTotalRows_complainant();
+					if (isset($_GET['user_id'])) {
+						$user->user_id = $_GET['user_id'];
+						if ($user->delete()) {
+							header("Location: users_list.php");
+						}
+					}
+
+// define how many results you want per page
+					$results_per_page = 10;
+    // determine number of total pages available
+					$number_of_pages = ceil($total_rows / $results_per_page);
+// determine which page number visitor is currently on
+					if (!isset($_GET['page'])) {
+						$page = 1;
+					} else {
+						$page = $_GET['page'];
+					}
+// determine the sql LIMIT starting number for the results on the displaying page
+					$this_page_first_result = ($page - 1) * $results_per_page;
+
+
+					?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -216,17 +219,18 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-								<?php while ($row = mysqli_fetch_array($result_admin)) { ?>
+								<?php while ($row = mysqli_fetch_array($result_complainant)) { ?>
                                     <tr>
+
                                         <td><?php echo $row['user_name']; ?></td>
-                                        <td><?php echo $row['user_email'] ?></td>
+                                        <td><?php echo $row['user_email']; ?></td>
                                         <td class="text-center">
 											<?php if ($row['user_status'] == 0) {
-													echo "ยกเลิกการใช้งาน";
-												} else {
-													echo "ใช้งานปกติ";
-												}
-											?>
+											echo "ยกเลิกการใช้งาน";
+										} else {
+											echo "ใช้งานปกติ";
+										}
+										?>
 										</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
@@ -238,23 +242,49 @@
                                             <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
-								<?php } ?>
+								<?php 
+						} ?>
                                 </tbody>
                             </table>
+							<?php
+							
+        // display the links to the pages
+						for ($page = 1; $page <= $number_of_pages; $page++) {
+							echo '
+							<ul class="pagination">
+							<li><a href="users_list.php?page=' . $page . '">' . $page . '</a></li>					
+							</ul>
+							 ';
+						}
+		// exit(0);
+						?>
                         </div><!-- /.table-responsive -->
     				</div><!-- /.tab-content -->
     				<div id="type-1" class="tab-pane fade">
 						<?php
-							$active = true;
-							$result_ju = $user->readall_ju($active);
-							$total_rows = $user->getTotalRows();
-							if (isset($_GET['user_id'])) {
-								$user->user_id = $_GET['user_id'];
-								if ($user->delete()) {
-									header("Location: users_list.php");
-								}
-							}
-						?>
+					$result_ju = $user->readall_ju();
+					$total_rows_ju = $user->getTotalRows_ju();
+					if (isset($_GET['user_id'])) {
+						$user->user_id = $_GET['user_id'];
+						if ($user->delete()) {
+							header("Location: users_list.php");
+						}
+					}
+
+// define how many results you want per page
+					$results_per_page = 10;
+    // determine number of total pages available
+					$number_of_pages = ceil($total_rows_ju / $results_per_page);
+// determine which page number visitor is currently on
+					if (!isset($_GET['page'])) {
+						$page = 1;
+					} else {
+						$page = $_GET['page'];
+					}
+// determine the sql LIMIT starting number for the results on the displaying page
+					$this_page_first_result = ($page - 1) * $results_per_page;
+
+					?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -274,11 +304,11 @@
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
-												echo "ยกเลิกการใช้งาน";
-											} else {
-												echo "ใช้งานปกติ";
-											}
-											?>
+																																												echo "ยกเลิกการใช้งาน";
+																																											} else {
+																																												echo "ใช้งานปกติ";
+																																											}
+																																											?>
 										</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
@@ -290,23 +320,49 @@
                                             <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
-								<?php } ?>
+								<?php 
+						} ?>
                                 </tbody>
                             </table>
+							<?php
+							
+							// display the links to the pages
+											for ($page = 1; $page <= $number_of_pages; $page++) {
+												echo '
+												<ul class="pagination">
+												<li><a href="users_list.php?page=' . $page . '">' . $page . '</a></li>					
+												</ul>
+												 ';
+											}
+							// exit(0);
+											?>
     					</div><!-- /.table-responsive -->
 					</div><!-- /.type-1 -->
     				<div id="type-0" class="tab-pane fade">
 						<?php
-							$active = true;
-							$result_complainant = $user->readall_admin($active);
-							$total_rows = $user->getTotalRows();
-							if (isset($_GET['user_id'])) {
-								$user->user_id = $_GET['user_id'];
-								if ($user->delete()) {
-									header("Location: users_list.php");
-								}
-							}
-						?>
+					$active = true;
+					$result_complainant = $user->readall_admin($active);
+					$total_rows_admin = $user->getTotalRows_admin();
+					if (isset($_GET['user_id'])) {
+						$user->user_id = $_GET['user_id'];
+						if ($user->delete()) {
+							header("Location: users_list.php");
+						}
+					}
+// define how many results you want per page
+					$results_per_page = 10;
+    // determine number of total pages available
+					$number_of_pages = ceil($total_rows_admin / $results_per_page);
+// determine which page number visitor is currently on
+					if (!isset($_GET['page'])) {
+						$page = 1;
+					} else {
+						$page = $_GET['page'];
+					}
+// determine the sql LIMIT starting number for the results on the displaying page
+					$this_page_first_result = ($page - 1) * $results_per_page;
+
+					?>
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -325,11 +381,11 @@
                                         <td><?php echo $row['user_name']; ?></td>
                                         <td><?php echo $row['user_email'] ?></td>
                                         <td><?php if ($row['user_status'] == 0) {
-												echo "ยกเลิกการใช้งาน";
-											} else {
-												echo "ใช้งานปกติ";
-											}
-											?>
+																																												echo "ยกเลิกการใช้งาน";
+																																											} else {
+																																												echo "ใช้งานปกติ";
+																																											}
+																																											?>
 										</td>
                                         <td class="text-center">
                                             <a href="user_update.php?user_id=<?php echo $row['user_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
@@ -341,10 +397,23 @@
                                             <a href="#" class="delete" data-href="users_list.php?user_id=<?php echo $row['user_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>
                                         </td>
                                     </tr>
-								<?php } ?>
+								<?php 
+						} ?>
                                 </tbody>
                             </table>
     					</div><!-- /.table-responsive -->
+						<?php
+							
+							// display the links to the pages
+											for ($page = 1; $page <= $number_of_pages; $page++) {
+												echo '
+												<ul class="pagination">
+												<li><a href="users_list.php?page=' . $page . '">' . $page . '</a></li>					
+												</ul>
+												 ';
+											}
+							// exit(0);
+											?>
     				</div><!-- /.type-0 -->
   				</div>
 			</div><!--/.row -->

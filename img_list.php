@@ -22,6 +22,7 @@ $complaint_photos = new Complaint_photo($db);
 	// read all records
 
 $complaint_photos->complaint_id = $_GET['comp_id'];
+$comp_ID = $_GET['comp_id'];
 $active = true;
 $result = $complaint_photos->readall($active);
 $total_rows = $complaint_photos->getTotalRows();
@@ -113,9 +114,9 @@ if (isset($_GET['complaint_photo_id'])) {
 	<nav class="fh5co-nav" role="navigation">
 		<div class="container-wrap">
 			<div class="top-menu">
-				<div class="row">
+			<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.php">ชื่อโครงการ</a></div>
+						<div id="fh5co-logo"><a href="index.php"><img src="images/logo_7.jpg"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -129,9 +130,22 @@ if (isset($_GET['complaint_photo_id'])) {
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
+							<li><a href="#">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
+							<?php 
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
@@ -180,10 +194,11 @@ if (isset($_GET['complaint_photo_id'])) {
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
-							<input type="hidden" name="complaint-id" value="<?php echo $row['complaint_id']; ?>">
+							<input type="hidden" name="complaint-id" value="<?php echo $comp_ID ; ?>">
 							<div class="form-group">
-								<button data-toggle="modal" data-target="#add-modal" data-id="<?php echo $row['complaint_id']; ?>" id="getComplaint_id" class="btn btn-sm btn-info" >เพิ่มรูปภาพ</button>
+								<button data-toggle="modal" data-target="#add-modal" data-id="<?php echo $comp_ID; ?>" id="getComplaint_id" class="btn btn-sm btn-info" >เพิ่มรูปภาพ</button>
 							</div>
+
 					<div class="col-md-12">
                     <div class="table-responsive">
                             <table class="table">
@@ -206,10 +221,10 @@ if (isset($_GET['complaint_photo_id'])) {
                               <tr>
                                <td><?php echo $count ?></td>
                                <td><img src="comp_img/<?php echo $row["complaint_photo_name"]; ?>" name="complaint-photo-name" class="img-thumbnail" width="100" height="100" /></td>
-							   <td class="text-center"><button data-toggle="modal" data-target="#edit-modal" data-id="<?php echo $row['complaint_photo_id']; ?>" id="getPhoto_id" class="btn btn-sm btn-warning"><i class="icon-pencil2"></i></button></td>
+							   <td class="text-center"><a href="#" data-toggle="modal" data-target="#edit-modal" data-id="<?php echo $row['complaint_photo_id']; ?>" id="getPhoto_id" ><i class="icon-pencil2"></i></a></td>
 
                                <td class="text-center">
-                               <a href="#"  data-href="img_list.php?complaint_photo_id=<?php echo $row["complaint_photo_id"]; ?>" data-toggle="modal" data-target="#confirm-delete" class="btn btn-sm btn-danger"><i class="icon-bin"></i></a>
+                               <a href="#"  data-href="img_list.php?complaint_photo_id=<?php echo $row["complaint_photo_id"]; ?>" data-toggle="modal" data-target="#confirm-delete" ><i class="icon-bin"></i></a>
 
                                </td>
 							   
