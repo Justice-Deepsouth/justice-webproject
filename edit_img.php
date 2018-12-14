@@ -24,12 +24,12 @@ $row = mysqli_fetch_array($result);
 <form action="update_img.php" method="post" enctype="multipart/form-data">
     <input type="hidden" name="complaint-photo-id" value="<?php echo $row['complaint_photo_id']; ?>">
 	<input type="hidden" name="complaint-id" value="<?php echo $row['complaint_id']; ?>">
-	<h2>รูปปัจจุบัน</h2>
+	<center><h4>รูปปัจจุบัน</h4></center>
     <div class ="text-center">
 	<img src="comp_img/<?php echo $row["complaint_photo_name"]; ?>" name="complaint-photo-name" width="250" height="250" />
 	</div>
     <br>
-	<h2>รูปที่ต้องการแก้ไข</h2>
+	<center><h4>รูปที่ต้องการแก้ไข</h4></center>
 	<div class="col-md-12">
 	<div id="image_preview"></div>
 	</div>

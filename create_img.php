@@ -45,7 +45,21 @@ if (isset($_POST['add_photo-submit'])) {
 		$type = strrchr($fileName, ".");
 
 //ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
-$mComplaint_PId  = $_POST['complaint-photo-id'];
+
+$mComplaint_ID = $complaint_photos->getLast_Complaint_Photo_ID();
+if ( $_POST['complaint-photo-id']  !== $mComplaint_ID) {
+	$mComplaint_PId  = $_POST['complaint-id']."-img";
+	$count = $i+1;
+	$running_no = (int)substr($mComplaint_PId, 14, 1) + $count;
+	$nComplaint_PId = substr($mComplaint_PId, 0, 14) . $running_no;
+			$newname = $nComplaint_PId. $type;
+	
+}else{
+
+
+}
+
+	$mComplaint_PId  =  $_POST['complaint-photo-id'];
 $count = $i+1;
 $running_no = (int)substr($mComplaint_PId, 14, 1) + $count;
 $nComplaint_PId = substr($mComplaint_PId, 0, 14) . $running_no;
@@ -74,15 +88,12 @@ $nComplaint_PId = substr($mComplaint_PId, 0, 14) . $running_no;
 
 
         $complaint_photos->complaint_id = $_POST['complaint-id'];
-        // $mComplaint_PId  = $_POST['complaint-photo-id'];
-        // $complaint_photos->complaint_photo_name = $fileName;
-        
 		$count = $i+1;
-		// $running_no = (int)substr($mComplaint_PId, 14, 1) + $count;
-        // $nComplaint_PId = substr($mComplaint_PId, 0, 14) . $running_no;
-        $complaint_photos->complaint_photo_name = $nComplaint_PId. $type;
+        $complaint_photos->complaint_photo_name = $newname;
 		$complaint_photos->complaint_photo_id =  $nComplaint_PId;
 		// echo $_POST['complaint-id'];
+		// echo "<br>";
+		// echo $mComplaint_PId;
 		// echo "<br>";
 		// echo $nComplaint_PId;
 		// echo "<br>";

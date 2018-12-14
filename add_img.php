@@ -20,10 +20,11 @@ $Complaint_ID = $_POST['complaint_id'];
 ?>
 
 
-<form action="create_img.php" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="complaint-photo-id" value="<?php echo $mComplaint_ID ?>">
+<form action="create_img.php" method="post" enctype="multipart/form-data">  
 	<input type="hidden" name="complaint-id" value="<?php echo $Complaint_ID ?>">
-	<h2>รูปที่ต้องการเพิ่ม</h2>
+<input type="hidden" name="complaint-photo-id" value="<?php echo $mComplaint_ID ?>">
+
+	<center><h4>รูปที่ต้องการเพิ่ม</h4></center>
 	<div class="col-md-12">
 	<div id="image_preview"></div>
 	</div>
