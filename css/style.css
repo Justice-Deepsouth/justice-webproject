@@ -1636,5 +1636,13 @@ input[type="text"] {
   height: 300px;
   overflow-y: auto;
 }
+#edit-modal .modal-dialog {
+  overflow-y: initial !important
+}
+#edit-modal .modal-body {
+  height: 300px;
+  overflow-y: auto;
+}
+
 
 /*# sourceMappingURL=style.css.map */
