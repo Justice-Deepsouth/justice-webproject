@@ -1,54 +1,54 @@
 <?php
-session_start();
+	session_start();
 	
     // set current timezone
-date_default_timezone_set("Asia/Bangkok");
+	date_default_timezone_set("Asia/Bangkok");
 
-    /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_state'])) {
-		if ($_SESSION['user_state'] != 0) {
-			header("Location: ../index.php");
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only complainant and justice unit can access
+		// user_type = 0 -> admin
+		if ($_SESSION['user_type'] == 0) {
+			header("Location: admin/admin_main.php");
 		}
-	} */
-include_once 'php/dbconnect.php';
-include_once 'php/complaint_photo.php';
+	} else {
+		header("Location: index.php");
+	}
 
-// get connection
-$database = new Database();
-$db = $database->getConnection();
+	include_once 'php/dbconnect.php';
+	include_once 'php/complaint_photo.php';
 
-// pass connection to property_types table
-$complaint_photos = new Complaint_photo($db);
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
+
+	// pass connection to property_types table
+	$complaint_photos = new Complaint_photo($db);
 
 	// read all records
+	$complaint_photos->complaint_id = $_GET['comp_id'];
+	$comp_ID = $_GET['comp_id'];
+	$active = true;
+	$result = $complaint_photos->readall($active);
+	$total_rows = $complaint_photos->getTotalRows();
+	$row = mysqli_fetch_array($result);
 
-$complaint_photos->complaint_id = $_GET['comp_id'];
-$comp_ID = $_GET['comp_id'];
-$active = true;
-$result = $complaint_photos->readall($active);
-$total_rows = $complaint_photos->getTotalRows();
-$row = mysqli_fetch_array($result);
+	$cid = $complaint_photos->complaint_id;
 
-$cid = $complaint_photos->complaint_id;
+	$output = '';
 
+	//delete
+	if (isset($_GET['complaint_photo_id'])) {
+		$complaint_photos->complaint_photo_id =$_GET['complaint_photo_id'];
+		$img = $complaint_photos->readone();
+		$data = mysqli_fetch_array($img);
 
-
-$output = '';
-
-//delete
-if (isset($_GET['complaint_photo_id'])) {
-	$complaint_photos->complaint_photo_id =$_GET['complaint_photo_id'];
-	$img = $complaint_photos->readone();
-	$data = mysqli_fetch_array($img);
-
-	$file_path = 'comp_img/'.$data['complaint_photo_name'];
-	if (unlink($file_path)) {
-		if ($complaint_photos->delete()) {
-			header("Location: img_list.php?comp_id=".$data['complaint_id']);
+		$file_path = 'comp_img/'.$data['complaint_photo_name'];
+		if (unlink($file_path)) {
+			if ($complaint_photos->delete()) {
+				header("Location: img_list.php?comp_id=".$data['complaint_id']);
+			}
 		}
 	}
-}
-
-
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -183,10 +183,7 @@ if (isset($_GET['complaint_photo_id'])) {
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<!-- <li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li> -->
-								<li class="active"><a href="complaint_status.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<!-- <li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li> -->
+								<li class="active"><a href="complaint_status.php"><i class="icon-settings"></i><span> ข้อมูลข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -194,57 +191,47 @@ if (isset($_GET['complaint_photo_id'])) {
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
-							<input type="hidden" name="complaint-id" value="<?php echo $comp_ID ; ?>">
-							<div class="form-group">
-								<button data-toggle="modal" data-target="#add-modal" data-id="<?php echo $comp_ID; ?>" id="getComplaint_id" class="btn btn-sm btn-info" >เพิ่มรูปภาพ</button>
-							</div>
-
-					<div class="col-md-12">
-                    <div class="table-responsive">
-                            <table class="table">
-                            <thead>
-                             <tr>
-                                 <th>ลำดับ</th>
-                                 <th>รูป</th>
-                                 <th class="text-center">แก้ไขข้อมูล</th>
-                                 <th class="text-center">ลบข้อมูล</th>
-                            </tr>
-                            </thead>
-                            <?php 
-									if ($total_rows > 0) {
-									$count = 0;
-									foreach ($result as $row) {
-									$count++;
-									
-                                    // $output .= ' ';
-								?>
-                              <tr>
-                               <td><?php echo $count ?></td>
-                               <td><img src="comp_img/<?php echo $row["complaint_photo_name"]; ?>" name="complaint-photo-name" class="img-thumbnail" width="100" height="100" /></td>
-							   <td class="text-center"><a href="#" data-toggle="modal" data-target="#edit-modal" data-id="<?php echo $row['complaint_photo_id']; ?>" id="getPhoto_id" ><i class="icon-pencil2"></i></a></td>
-
-                               <td class="text-center">
-                               <a href="#"  data-href="img_list.php?complaint_photo_id=<?php echo $row["complaint_photo_id"]; ?>" data-toggle="modal" data-target="#confirm-delete" ><i class="icon-bin"></i></a>
-
-                               </td>
-							   
-
- 
-                               </tr>
-                             
-                               <?php 
-								}
-								} else {
-								$output .= '
-                              <tr>
-                               <td colspan="6" align="center">ไม่พบข้อมูล</td>
-                              </tr>
-                             ';
-							}
-							$output .= '</table>';
-							echo $output;
-							?>
-
+						<input type="hidden" name="complaint-id" value="<?php echo $comp_ID ; ?>">
+						<div class="form-group">
+							<button data-toggle="modal" data-target="#add-modal" data-id="<?php echo $comp_ID; ?>" id="getComplaint_id" class="btn btn-sm btn-info" >เพิ่มรูปภาพ</button>
+						</div>
+						<div class="col-md-12">
+                    		<div class="table-responsive">
+                            	<table class="table">
+                            		<thead>
+                             			<tr>
+                                 			<th class="text-center">ลำดับ</th>
+                                 			<th>รูป</th>
+                                 			<th class="text-center">แก้ไขข้อมูล</th>
+                                 			<th class="text-center">ลบข้อมูล</th>
+                            			</tr>
+                            		</thead>
+									<?php 
+										if ($total_rows > 0) {
+											$count = 0;
+											foreach ($result as $row) {
+												$count++;
+												// $output .= ' ';
+									?>
+									<tr>
+                            			<td class="text-center"><?php echo $count ?></td>
+                               			<td><img src="comp_img/<?php echo $row["complaint_photo_name"]; ?>" name="complaint-photo-name" class="img-thumbnail" width="100" height="100" /></td>
+							   			<td class="text-center"><a href="#" data-toggle="modal" data-target="#edit-modal" data-id="<?php echo $row['complaint_photo_id']; ?>" id="getPhoto_id" ><i class="icon-pencil2"></i></a></td>
+                               			<td class="text-center">
+                               				<a href="#"  data-href="img_list.php?complaint_photo_id=<?php echo $row["complaint_photo_id"]; ?>" data-toggle="modal" data-target="#confirm-delete" ><i class="icon-bin"></i></a>
+                               			</td>
+                               		</tr>
+                               		<?php 
+										}
+										} else {
+											$output .= '
+                              		<tr>
+                               			<td colspan="6" align="center">ไม่พบข้อมูล</td>
+                              		</tr>';
+										}
+										$output .= '</table>';
+										echo $output;
+									?>
 						</div>
 					</div><!-- /.row -->
 					</form>
@@ -273,7 +260,8 @@ if (isset($_GET['complaint_photo_id'])) {
 		</div>
 	</div>
 
-    <div id = "edit-modal" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
+	<div id = "edit-modal" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
+	<form action="update_img.php" method="post" enctype="multipart/form-data">
          <div class = "modal-dialog"> 
             <div class = "modal-content">       
                 <div class = "modal-header"> 
@@ -287,12 +275,13 @@ if (isset($_GET['complaint_photo_id'])) {
                     <!-- content will be load here -->                          
                     <div id = "dynamic-content"></div>                             
                 </div> 
-                <!-- <div class = "modal-footer"> 
-				
-                </div>  -->
-                        
+                <div class = "modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
+					<input type="submit" value="บันทึก" class="btn btn-primary" name="edit_photo-submit">
+                </div>
             </div> 
-        </div>
+		</div>
+	</form>
     </div><!-- /.modal -->
 
 	    <div id = "add-modal" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
@@ -340,7 +329,6 @@ if (isset($_GET['complaint_photo_id'])) {
     <script src="js/main.js"></script>
     <script type="text/javascript"></script>
   
-
 	<script>
 		$('#confirm-delete').on('show.bs.modal', function(e) {
 			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
