@@ -267,8 +267,8 @@
 												$resultstate = $complaint_state->readone();
 												$rowstate = mysqli_fetch_array($resultstate);
 											?>
-											<td><?php echo $row['user_id']; ?></td>
-											<td><?php echo date_format($cdate,'d/m/Y'); ?></td>	
+											<td class="text-center"><?php echo $row['user_id']; ?></td>
+											<td class="text-center"><?php echo date_format($cdate,'d/m/Y'); ?></td>	
 											<!-- button for update complaint_state_id and insert complaint_progress modal -->
 											<td class="text-center">
 												<a href="" data-toggle="modal" data-target="#showstate" data-id="<?php echo $row['complaint_id']; ?>" id="getState_id"><?php echo $rowstate['complaint_state_desc']; ?></a>
