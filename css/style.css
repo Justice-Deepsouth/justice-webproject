@@ -14,7 +14,7 @@ body {
   /* font-family: "Oxygen", sans-serif; */
   font-family: 'Chakra Petch', sans-serif;
   font-weight: 300;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.7;
   color: gray;
   background: #e8e8e8;
@@ -60,8 +60,11 @@ a:hover, a:active, a:focus {
 }
 
 p {
-  margin-bottom: 20px;
+   /* กำหนดระยะห่างแต่ละ p */
+  margin-bottom: 10px;  
+
 }
+
 
 h1, h2, h3, h4, h5, h6, figure {
   color: #000;
@@ -1465,6 +1468,11 @@ input[type="text"] {
 .img-portfolio-detail {
   margin-bottom: 20px;
   float: left;
+
+}
+.img-fluid {
+  width: 100% \9;
+  
 }
 
 .fh5co-project-detail .fh5co-project-title {
