@@ -102,5 +102,6 @@
 			} // if
 		} // for
 	} // if
+	ob_end_flush();
 
 ?>
