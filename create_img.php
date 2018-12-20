@@ -49,7 +49,13 @@
 			} else {
 			}
 
-			$mComplaint_PId  =  $_POST['complaint-photo-id'];
+			$mComplaint_ID = $complaint_photos->getLast_Complaint_Photo_ID();
+			if ( $_POST['complaint-photo-id']  !== "") {
+				$mComplaint_PId  =  $_POST['complaint-photo-id'];
+			}else{
+				$mComplaint_PId  = $_POST['complaint-id']."-img";
+			}
+				
 			$count = $i+1;
 			$running_no = (int)substr($mComplaint_PId, 14, 1) + $count;
 			$nComplaint_PId = substr($mComplaint_PId, 0, 14) . $running_no;
@@ -62,30 +68,39 @@
 					if ($fileSize <= 100000000) {
 						$fileDestination = 'comp_img/' . $newname;
 						move_uploaded_file($fileTmpName, $fileDestination);
-					} else {
-						echo "<div class='alert alert-danger text-center' $fileName ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
-					}
-				} else {
-					echo "<div class='alert alert-danger text-center' $fileName มีปัญหาการอัพโหลดไฟล์</div>";
-				}
-			} else {
-				echo "<div class='alert alert-danger text-center' $fileName คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
-			}
+					
+						$complaint_photos->complaint_id = $_POST['complaint-id'];
+						$count = $i+1;
+						$complaint_photos->complaint_photo_name = $newname;
+						$complaint_photos->complaint_photo_id =  $nComplaint_PId;
+						if ($complaint_photos->create()) {
+							echo "<div class='alert alert-success text-center'>อัพโหลดไฟล์สำเร็จ</div>";
+							// header("Location: img_list.php ");	
+						} else {
+							echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน</div>";
+						}
 
-        	$complaint_photos->complaint_id = $_POST['complaint-id'];
-			$count = $i+1;
-        	$complaint_photos->complaint_photo_name = $newname;
-			$complaint_photos->complaint_photo_id =  $nComplaint_PId;
-		
-			if ($complaint_photos->create()) {
-				echo "<div class='alert alert-success text-center'>อัพโหลดไฟล์สำเร็จ</div>";
-					// header("Location: img_list.php ");
-					header("Location: img_list.php?comp_id=".$_POST['complaint-id']);
-			} else {
-				echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน</div>";
-			}
-		}
-	}
-	ob_end_flush();
+						if (in_array($fileActualExt, $allowed)) {
+							if ($fileError === 0) {
+								if ($fileSize <= 100000000) {
+									$fileDestination = 'comp_img/' . $newname;
+									move_uploaded_file($fileTmpName, $fileDestination);
+								} else {
+									echo "<div class='alert alert-danger text-center' $fileName ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+								}
+							} else {
+								echo "<div class='alert alert-danger text-center' $fileName มีปัญหาการอัพโหลดไฟล์</div>";
+							}
+						} else {
+							echo "<div class='alert alert-danger text-center' $fileName คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
+						}
+					} else {
+						echo "<div class='alert alert-danger text-center' $fileName คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
+					} // if
+				} // if
+				header("Location: img_list.php?comp_id=".$_POST['complaint-id']);
+			} // if
+		} // for
+	} // if
 
 ?>
