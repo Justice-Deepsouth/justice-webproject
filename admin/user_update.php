@@ -1,9 +1,15 @@
 <?php
 	session_start();
+	ob_start();
 
-    if (!isset($_SESSION['user_session_id'])) {
-        header("Location: ../index.php");
-    }
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only admin type can access
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
+		header("Location: ../index.php");
+	}
 
 	include_once '../php/dbconnect.php';
 	include_once '../php/user.php';
@@ -29,10 +35,10 @@
 			$success = true;
 			header("Location: users_list.php");
 		} else {
-
 			$success = false;
 		}
 	}
+	ob_end_flush();
 ?>
 
 <!DOCTYPE HTML>

@@ -1,5 +1,6 @@
 <?php
-    session_start();
+	session_start();
+	ob_start();
 
     if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only complainant and justice unit can access
@@ -79,7 +80,8 @@
 				header("Location: complaint_status.php");
 			} 
         }
-    }
+	}
+	ob_end_flush();
 
 ?>
 <!DOCTYPE HTML>

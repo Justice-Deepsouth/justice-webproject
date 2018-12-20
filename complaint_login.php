@@ -1,5 +1,6 @@
 <?php 
 	session_start();
+	ob_start();
 
 	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// admin
@@ -9,6 +10,7 @@
 			header("Location: complaint_status.php");
 		}
 	}
+	ob_end_flush();
 ?>
 
 <!DOCTYPE HTML>

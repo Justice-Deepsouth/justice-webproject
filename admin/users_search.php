@@ -1,26 +1,26 @@
 <?php
-session_start();
+	session_start();
 
-if (!isset($_SESSION['user_session_id'])) {
-    header("Location: ../index.php");
-}
+	if (!isset($_SESSION['user_session_id'])) {
+		header("Location: ../index.php");
+	}
 
-include_once '../php/dbconnect.php';
-include_once '../php/user.php';
+	include_once '../php/dbconnect.php';
+	include_once '../php/user.php';
 
-// get connection
-$database = new Database();
-$db = $database->getConnection();
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
-// pass connection to property_types table
-$user = new User($db);
+	// pass connection to property_types table
+	$user = new User($db);
 
-if (isset($_POST['name-search'])) {
-    $user->user_name = $_POST['name-search'];
-    $active = true;
-    $result = $user->search($active);
-    $total_rows = $user->getTotalRows();
-}
+	if (isset($_POST['name-search'])) {
+		$user->user_name = $_POST['name-search'];
+		$active = true;
+		$result = $user->search($active);
+		$total_rows = $user->getTotalRows();
+	}
 ?>
 <!DOCTYPE HTML>
 <html>

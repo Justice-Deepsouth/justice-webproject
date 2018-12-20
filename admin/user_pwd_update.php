@@ -1,5 +1,6 @@
 <?php
-    session_start();
+	session_start();
+	ob_start();
 
     if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
@@ -37,6 +38,7 @@
 			$success = false;
 		}	
 	}
+	ob_end_flush();
 ?>
 
 <!DOCTYPE HTML>

@@ -1,5 +1,6 @@
 <?php
-    session_start();
+	session_start();
+	ob_start();
 
     if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
@@ -34,11 +35,10 @@
 			$success = true;
 			header("Location: complaint_states_list.php");
         } else {
-			
             $success = false;
 		}
 	}
-	
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>

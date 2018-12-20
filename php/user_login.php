@@ -1,5 +1,6 @@
 <?php
     session_start();
+    ob_start();
 
     // set current timezone
     date_default_timezone_set("Asia/Bangkok");
@@ -46,5 +47,6 @@
             header("Location: ../complaint_login.php?result=fail");
         }
     }
+    ob_end_flush();
 
 ?>

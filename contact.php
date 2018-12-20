@@ -25,9 +25,7 @@
         // insert
         if ($contact_info->create()) {
 			$success = true;
-
         } else {
-			
             $success = false;
 		}
     }

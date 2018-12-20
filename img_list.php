@@ -1,5 +1,6 @@
 <?php
 	session_start();
+	ob_start();
 	
     // set current timezone
 	date_default_timezone_set("Asia/Bangkok");
@@ -49,6 +50,7 @@
 			}
 		}
 	}
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>

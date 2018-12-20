@@ -1,19 +1,24 @@
 <?php
-session_start();
+	session_start();
 
-if (!isset($_SESSION['user_session_id'])) {
-	header("Location: ../index.php");
-}
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only admin type can access
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
+		header("Location: ../index.php");
+	}
 
-include_once '../php/dbconnect.php';
-include_once '../php/user.php';
+	include_once '../php/dbconnect.php';
+	include_once '../php/user.php';
 
 	// get connection
-$database = new Database();
-$db = $database->getConnection();
+	$database = new Database();
+	$db = $database->getConnection();
 
     // pass connection to property_types table
-$user = new User($db);
+	$user = new User($db);
 
 ?>
 <!DOCTYPE HTML>
