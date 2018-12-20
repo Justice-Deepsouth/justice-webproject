@@ -19,6 +19,7 @@
 	include_once 'php/complaint_type.php';
 	include_once 'php/complaint.php';
 	include_once 'php/complaint_photo.php';
+	include_once 'php/complaint_video.php';
 	include_once 'php/setting.php';
 	
 	// get connection
@@ -27,6 +28,7 @@
 
 	$complaint_type = new Complaint_type($db);
 	$complaint_photos = new Complaint_photo($db);
+	$complaint_videos = new Complaint_video($db);
 
 	// read all records
 	$active = true;
@@ -85,6 +87,50 @@
 				// $count = $i+1;
 				$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
 				if ($complaint_photos->create()) {
+					$success = true;
+				} else {
+					$success = false;
+				}
+			}
+
+			// add file video to server and insert to complaint video
+			for ($i = 0; $i < count($_FILES['complaint_video']['name']); $i++) {
+				$filevName = $_FILES['complaint_video']['name'][$i];
+				$filevTmpName = $_FILES['complaint_video']['tmp_name'][$i];
+				$filevSize = $_FILES['complaint_video']['size'][$i];
+				$filevError = $_FILES['complaint_video']['error'][$i];
+				$filevType = $_FILES['complaint_video']['type'][$i];
+		
+				$filevExt = explode('.', $filevName);
+				$filevActualExt = strtolower(end($filevExt));
+				$vcount = $i + 1;
+			
+				//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
+				$vtype = strrchr($filevName, ".");
+				//ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
+				$newvname = $mComplaint_ID . "-video" . $vcount . $vtype;
+	
+				$vallowed = array('mp4', 'mkv', 'flv', '3gp');
+
+				if (in_array($filevActualExt, $vallowed)) {
+					if ($filevError === 0) {
+						if ($filevSize <= 20971520) {
+							$filevDestination = 'comp_video/' . $newvname;
+							move_uploaded_file($filevTmpName, $filevDestination);
+						} else {
+							echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+						}
+					} else {
+						echo "<div class='alert alert-danger text-center'>" . $filevName . "  มีปัญหาการอัพโหลดไฟล์</div>";
+					}
+				} else {
+					echo "<div class='alert alert-danger text-center'>" . $filevName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
+				}
+	
+				$complaint_videos->complaint_id = $mComplaint_ID;
+				$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
+				$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
+				if ($complaint_videos->create()) {
 					$setting->complaint_id_last = $mComplaint_ID;
 					$setting->update_complaint_id();
 					$success = true;
@@ -94,6 +140,8 @@
 					$success = false;
 				}
 			}
+			// add file video to server and insert complaint video //
+
 		}
 	}
 	ob_end_flush();
@@ -275,6 +323,13 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
+							ไฟล์คลิป
+								<input type="file" id="complaint_video" name="complaint_video[]" multiple >
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+							ไฟล์ภาพ
 								<!-- <input type="file" class="btn btn-primary btn-modify" id= "complaint_photo" name="complaint_photo[]" multiple > -->
 								<input type="file" id="complaint_photo" name="complaint_photo[]" multiple >
 							</div>

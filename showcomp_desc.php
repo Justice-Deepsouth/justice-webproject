@@ -12,6 +12,7 @@
     include_once 'php/complaint.php';
     include_once 'php/complaint_progress.php';
     include_once 'php/complaint_photo.php';
+    include_once 'php/complaint_video.php';
     include_once 'php/complaint_state.php';
 
     // get connection
@@ -21,20 +22,22 @@
     // pass connection to property_states table
 	$complaint = new Complaint($db);
     $complaint->complaint_id = $_POST['comp_id'];
+    $resultcomp = $complaint->readone();
+    $rowcomp = mysqli_fetch_array($resultcomp);
 
     $complaint_progress = new Complaint_progress($db);
     $complaint_progress->complaint_id = $_POST['comp_id'];
-
+    $result = $complaint_progress->readall();
 
     $complaint_photos = new Complaint_photo($db);
     $complaint_photos->complaint_id = $_POST['comp_id'];
     $active = true;
     $img = $complaint_photos->readall($active);
 
-    $result = $complaint_progress->readall();
-    
-    $resultcomp = $complaint->readone();
-    $rowcomp = mysqli_fetch_array($resultcomp);
+    $complaint_videos = new Complaint_video($db);
+    $complaint_videos->complaint_id = $_POST['comp_id'];
+    $active = true;
+    $video = $complaint_videos->readall($active);
 
     $complaint_state = new Complaint_state($db);
 ?>
@@ -53,6 +56,17 @@
             <td>
             <?php while ($data = mysqli_fetch_array($img)) { ?>
                 <img src='comp_img/<?php echo $data['complaint_photo_name'] ?>' name='complaint-photo-name' class='img-thumbnail' width='250' height='250' />
+            <?php } ?>
+            </td>
+		</tr>
+        <tr>
+			<th>วีดีโอ</th>
+            <td>
+            <?php while ($datav = mysqli_fetch_array($video)) { ?>
+                <video width="320" height="240" controls>
+                    <source src="comp_video/<?php echo $datav['complaint_video_name'] ?>" name='complaint-video-name' type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             <?php } ?>
             </td>
 		</tr>
