@@ -3,9 +3,17 @@ class Database{
 
     //connect to mysql database
     private $host = "localhost";
+    // host on z.com
+    //private $host = "localhost:3306";
     private $user = "root";
+    // database user on z.com
+    //private $user = "cp506146_root";
     private $passwd = "";
+    // database password on z.com
+    //private $passwd = "G6uTvhz?wgUy";
     private $db_name = "justice_ds";
+    // database name on z.com
+    //private $db_name = "cp506146_justice_ds";
     public $conn;
 
     // get the database connection
