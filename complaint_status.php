@@ -242,8 +242,9 @@
 											  <th class="text-center">การดำเนินการ</th>';
 									}else{
 										echo '<th class="text-center">สถานะ</th>
-										      <th class="text-center">วันที่ร้องเรียน</th>	
+											  <th class="text-center">วันที่ร้องเรียน</th>
 											  <th class="text-center">รูปภาพ</th>
+											  <th class="text-center">วีดีโอ</th>
 											  <th class="text-center">แก้ไข</th>
 											  <th class="text-center">ลบ</th>';
 									}
@@ -291,6 +292,9 @@
 													<a href="img_list.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-images"></i></a>
 												</td>
 												<td class="text-center">
+													<a href="video_list.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-video"></i></a>
+												</td>
+												<td class="text-center">
 													<a href="complaint_update.php?comp_id=<?php echo $row['complaint_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
 												</td>
 												<td class="text-center">
@@ -299,6 +303,7 @@
 												<?php
 												}else{
 													echo'<td class="text-center"><i class="icon-images"></i></td>';
+													echo'<td class="text-center"><i class="icon-video"></i></td>';
 													echo'<td class="text-center"><i class="icon-pencil2"></i></td>';
 													echo'<td class="text-center"><i class="icon-bin"></i></td>';
 												}

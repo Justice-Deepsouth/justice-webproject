@@ -22,9 +22,9 @@ class Complaint {
     //read all records
     function readall($act){
         if ($act) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "' ORDER BY complaint_id";
+            $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "' ORDER BY complaint_id desc";
         } else {
-            $query = "SELECT * FROM " . $this->table_name . " ORDER BY complaint_id";
+            $query = "SELECT * FROM " . $this->table_name . " ORDER BY complaint_id desc";
         }
         $result = mysqli_query($this->conn, $query);
         return $result;
