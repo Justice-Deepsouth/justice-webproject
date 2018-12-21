@@ -116,21 +116,17 @@
 					if ($filevError === 0) {
 						if ($filevSize <= 1000000000) {
 							$filevDestination = 'comp_video/' . $newvname;
+
 							if(move_uploaded_file($filevTmpName, $filevDestination)){
 								$complaint_videos->complaint_id = $mComplaint_ID;
 								$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
 								$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
 								if ($complaint_videos->create()) {
-									$setting->complaint_id_last = $mComplaint_ID;
-									$setting->update_complaint_id();
 									$success = true;
 								} else {
 									$success = false;
 								}
-							};
-
-
-
+							}
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -142,6 +138,8 @@
 				}
 			}
 			// add file video to server and insert complaint video //
+			$setting->complaint_id_last = $mComplaint_ID;
+			$setting->update_complaint_id();
 			header("Location: complaint_status.php");
 		}
 	}
