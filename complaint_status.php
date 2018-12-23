@@ -20,6 +20,7 @@
 	include_once 'php/complaint_state.php';
 	include_once 'php/complaint_progress.php';
 	include_once 'php/complaint_photo.php';
+	include_once 'php/complaint_video.php';
 
     // get connection
     $database = new Database();
@@ -52,15 +53,24 @@
 		while ($rowphoto = mysqli_fetch_array($photo)) {
 			$file_path = 'comp_img/'.$rowphoto['complaint_photo_name'];
 			if (unlink($file_path)) {
-
+				$complaint_photo->deleteall();
 			}
 		}
 
-		if ($complaint_photo->deleteall()) {
+		$complaint_video = new Complaint_video($db);
+		$complaint_video->complaint_id = $_GET['comp_id'];
+		$active = true;
+		$video = $complaint_video->readall($active);
+
+		while ($rowvideo = mysqli_fetch_array($video)) {
+			$file_path = 'comp_video/'.$rowvideo['complaint_video_name'];
+			if (unlink($file_path)) {
+				$complaint_video->deleteall();
+			}
+		}
 			if ($complaint->delete()) {
 				header("Location: complaint_status.php");
 			}
-		}
 	}
 
 	$complaint_progress = new Complaint_progress($db);
