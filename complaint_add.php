@@ -140,7 +140,7 @@
 			// add file video to server and insert complaint video //
 			$setting->complaint_id_last = $mComplaint_ID;
 			$setting->update_complaint_id();
-			header("Location: complaint_status.php");
+			// header("Location: complaint_status.php");
 		}
 	}
 	ob_end_flush();
@@ -343,6 +343,13 @@
 								<input type="submit" value="บันทึกข้อร้องเรียน" class="btn btn-primary btn-modify" name="complaint-status-submit">
 							</div>
 						</div>
+                        <div class="col-md-12">
+							<div class="form-group">
+							<div class="progress progress-striped active">
+								<div class="progress-bar" style="width:0%"><p id="msg">0%</p></div>
+							</div>
+							</div>
+						</div>
 						<div class="col-md-12">
 						<?php
 							if (isset($success)) {
@@ -418,5 +425,31 @@
 	<script>
 		$.validate();
 	</script>
+
+	<!-- progress bar -->
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script>$(function(){
+    $('#complaint').ajaxForm({
+        beforeSend:function(){
+            $('.progress').show();
+        },
+        uploadProgress:function(event,position,total,percentcomplete){
+			$('.progress-bar').width(percentcomplete+"%");
+			$('#msg').html(percentcomplete+"%")
+			if(percentcomplete==100){
+				alert("อัพโหลดไฟล์เสร็จสิ้น");
+			}
+		},
+        success:function(){
+			$('.progress').hide();
+		},
+        complete:function(){
+			window.location.href = "complaint_status.php";
+		}
+		});
+		$('.progress').hide();
+	});
+	</script>
+    <!-- progress bar -->
 	</body>
 </html>

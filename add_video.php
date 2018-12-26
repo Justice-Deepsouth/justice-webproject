@@ -20,7 +20,7 @@ $Complaint_ID = $_POST['complaint_id'];
 ?>
 
 
-<form action="create_video.php" method="post" enctype="multipart/form-data">  
+<form action="create_video.php" id="complaint" method="post" enctype="multipart/form-data">  
 	<input type="hidden" name="complaint-id" value="<?php echo $Complaint_ID ?>">
 <input type="hidden" name="complaint-video-id" value="<?php echo $mComplaint_ID ?>">
 
@@ -29,6 +29,13 @@ $Complaint_ID = $_POST['complaint_id'];
 	<div id="video_preview"></div>
 	</div>
 
+	<div class="col-md-12">
+		<div class="form-group">
+			<div class="progress progress-striped active">
+				<div class="progress-bar" style="width:0%"><p id="msg">0%</p></div>
+			</div>
+		</div>
+	</div>
 					<input type="file" id= "complaint_video" name="complaint_video[]" multiple >
 					<br>
 					<div class ="text-center">
@@ -37,21 +44,30 @@ $Complaint_ID = $_POST['complaint_id'];
 					</div>
 
 					</form>
- 
-<!-- <script type="text/javascript">
-  
-
-  $("#complaint_video").change(function(){
-     $('#video_preview').html("");
-     var total_file=document.getElementById("complaint_video").files.length;
 
 
-     for(var i=0;i<total_file;i++)
-     {
-      $('#video_preview').append("<center><video width="320" height="240" controls><source src='"+URL.createObjectURL(event.target.files[i])+"' name='complaint-video-name' type="video/mp4">'"Your browser does not support the video tag."'</video></center>");
-     }
 
-
-  });
-
-</script> -->
+	<!-- progress bar -->
+	<script>$(function(){
+    $('#complaint').ajaxForm({
+        beforeSend:function(){
+            $('.progress').show();
+        },
+        uploadProgress:function(event,position,total,percentcomplete){
+			$('.progress-bar').width(percentcomplete+"%");
+			$('#msg').html(percentcomplete+"%")
+			if(percentcomplete==100){
+				alert("อัพโหลดไฟล์เสร็จสิ้น");
+			}
+		},
+        success:function(){
+			$('.progress').hide();
+		},
+        complete:function(){
+			window.location.href = "video_list.php?comp_id=<?php echo $Complaint_ID; ?>";
+		}
+		});
+		$('.progress').hide();
+	});
+	</script>
+    <!-- progress bar -->

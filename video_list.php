@@ -265,7 +265,7 @@
 	</div>
 
 	<div id = "edit-modal" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
-	<form action="update_video.php" method="post" enctype="multipart/form-data">
+	<form action="update_video.php" id="upvideo" method="post" enctype="multipart/form-data">
          <div class = "modal-dialog"> 
             <div class = "modal-content">       
                 <div class = "modal-header"> 
@@ -274,10 +274,17 @@
                 </div> 
                 <div class = "modal-body">        
                     <div id = "modal-loader" style = "display: none; text-align: center;">
-                       	<img src = "ajax-loader.gif">
+                       	
                     </div>                            
                     <!-- content will be load here -->                          
-                    <div id = "dynamic-content"></div>                             
+                    <div id = "dynamic-content"></div>  
+					<div class="col-md-12">
+					<div class="form-group">
+						<div class="progress progress-striped active">
+							<div class="progress-bar" style="width:0%"><p id="msg">0%</p></div>
+						</div>
+					</div>
+					</div>                           
                 </div> 
                 <div class = "modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
@@ -389,6 +396,31 @@
         });
 	</script>
 
+	<!-- progress bar -->
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script>$(function(){
+    $('#upvideo').ajaxForm({
+        beforeSend:function(){
+            $('.progress').show();
+        },
+        uploadProgress:function(event,position,total,percentcomplete){
+			$('.progress-bar').width(percentcomplete+"%");
+			$('#msg').html(percentcomplete+"%")
+			if(percentcomplete==100){
+				alert("อัพโหลดไฟล์เสร็จสิ้น");
+			}
+		},
+        success:function(){
+			$('.progress').hide();
+		},
+        complete:function(){
+			window.location.href = "complaint_status.php";
+		}
+		});
+		$('.progress').hide();
+	});
+	</script>
+    <!-- progress bar -->
 	</body>
 </html>
 
