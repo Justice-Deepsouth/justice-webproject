@@ -89,6 +89,22 @@ class User
             return false;
         }
     } // update()
+        // update user
+        function update_user_info()
+        {
+            $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, modified_date = ? WHERE  user_id = ?";
+            // statement
+            $stmt = mysqli_prepare($this->conn, $query);
+            // bind parameters
+            mysqli_stmt_bind_param($stmt, 'ssss', $this->user_name, $this->user_email, $this->modified_date, $this->user_id);
+        
+            /* execute prepared statement */
+            if (mysqli_stmt_execute($stmt)) {
+                return true;
+            } else {
+                return false;
+            }
+        } // update()
 
     // update user's password
     function update_pwd()

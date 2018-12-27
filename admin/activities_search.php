@@ -1,62 +1,34 @@
 <?php
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
-if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
-	if ($_SESSION['user_type'] != 0) {
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
 		header("Location: ../index.php");
 	}
-} else {
-	header("Location: ../index.php");
-}
 
-include_once '../php/dbconnect.php';
-include_once '../php/activity.php';
+    include_once '../php/dbconnect.php';
+    include_once '../php/activity.php';
 
     // get connection
-$database = new Database();
-$db = $database->getConnection();
+    $database = new Database();
+    $db = $database->getConnection();
 
     // pass connection to property_types table
-$activity = new Activity($db);
+    $activity = new Activity($db);
 
-
-
-
-	 	// delete activity
-if (isset($_GET['activity_id'])) {
-	$activity->activity_id = $_GET['activity_id'];
-	$result = $activity->readone();
-
-	while ($row = mysqli_fetch_array($result)) {
-		$file_path = '../activity_img/' . $row['activity_image'];
-		if (unlink($file_path)) {
-			if ($activity->delete()) {
-				header("Location: activities_list.php");
-			}
-		}
+    if (isset($_POST['name-search'])) {
+        $activity->activity_name = $_POST['name-search'];
+		$active = true;
+		$result =  $activity->search($active);
+		$total_rows =  $activity->getTotalRows();
 	}
-}
-
-$data = $activity->readall();
-$total_rows = $activity->getTotalRows();
-// define how many results you want per page
-$results_per_page = 10;
-// determine number of total pages available
-$number_of_pages = ceil($total_rows / $results_per_page);
-
-// determine which page number visitor is currently on
-if (!isset($_GET['page'])) {
-	$page = 1;
-} else {
-	$page = $_GET['page'];
-}
-// determine the sql LIMIT starting number for the results on the displaying page
-$this_page_first_result = ($page - 1) * $results_per_page;
-
-
-ob_end_flush();
+	
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -138,17 +110,17 @@ ob_end_flush();
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
-						if (!isset($_SESSION['user_session_id'])) {
-							echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
-						} else {
-							echo "<li class='has-dropdown'>";
-							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
-							echo "<ul class='dropdown'>";
-							echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-							echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
-							echo "</ul></li>";
-						}
-						?>
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
@@ -217,7 +189,6 @@ ob_end_flush();
 						</form>
 					</div><!-- /.row -->
 					<div class="row">
-
 						<div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -232,29 +203,40 @@ ob_end_flush();
                                 </tr>
                                 </thead>
                                 <tbody>
-								<?php while ($row = mysqli_fetch_array($data)) { ?>
+								<?php while ($row = mysqli_fetch_array($result)) { ?>
                                     <tr>
                                         <td>
-                                        <a href="" data-toggle="modal" data-target="#showactivity" data-id="<?php echo $row['activity_id']; ?>" id="getActivity_id"><?php echo $row['activity_name']; ?></a>
+                                        <a href="" data-toggle="modal" data-target="#showactivity" data-id="<?php echo $row['activity_id']; ?>" id="getActivity_id"><?php echo $row['activity_name'];?></a>
                                         </td>
 
                                         <td><?php echo $row['activity_place']; ?></td>
 
                                         <td>
-										<?php 
-											$strDat = $row['activity_sdate'];
-											$sDate = $activity->DateThai($strDat);
-											echo $sDate;
-										?>
+                                        <?php 
+                                        $strDate =$row['activity_sdate'];
+                                        $newDate = date("d-M-Y", strtotime($strDate));
+                                        $strYear = date("Y",strtotime($strDate))+543;
+                                        $strMonth= date("n",strtotime($strDate));
+                                        $strDay= date("j",strtotime($strDate));
+                                        $strMonthCut = array("", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
+                                        $strMonthThai = $strMonthCut[$strMonth];
+                                        $strDate = "$strDay $strMonthThai $strYear"; 
+                                        echo  $strDate;
+                                         ?>
                                          </td>
 
                                         <td>
-										<?php 
-											$strDat = $row['activity_edate'];
-											$eDate = $activity->DateThai($strDat);
-											echo $eDate;
-											
-										?>
+                                        <?php 
+                                        $strDate = $row['activity_edate'];
+                                        $newDate = date("d-M-Y", strtotime($strDate));
+                                        $strYear = date("Y",strtotime($strDate))+543;
+                                        $strMonth= date("n",strtotime($strDate));
+                                        $strDay= date("j",strtotime($strDate));
+                                        $strMonthCut = array("", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
+                                        $strMonthThai = $strMonthCut[$strMonth];
+                                        $strDate = "$strDay $strMonthThai $strYear"; 
+                                        echo  $strDate;
+                                        ?>
                                         </td>
 
                                         <td class="text-center">
@@ -270,22 +252,10 @@ ob_end_flush();
                                            
                                         </td>
                                     </tr>
-								<?php 
-						} ?>
+								<?php } ?>
                                 </tbody>
                             </table>
                         </div><!-- /.table-responsive -->
-						<?php
-							
-							// display the links to the pages
-					for ($page = 1; $page <= $number_of_pages; $page++) {
-						echo '
-						<ul class="pagination">
-							<li><a href="activities_list.php?page=' . $page . '">' . $page . '</a></li>					
-						</ul>';
-					}
-							// exit(0);
-					?>
 					</div><!-- /.row -->
 				</div>
 			</div>
