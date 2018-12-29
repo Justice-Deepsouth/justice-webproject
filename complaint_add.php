@@ -70,7 +70,18 @@
 					if ($fileError === 0) {
 						if ($fileSize <= 100000000) {
 							$fileDestination = 'comp_img/' . $newname;
-							move_uploaded_file($fileTmpName, $fileDestination);
+							if(move_uploaded_file($fileTmpName, $fileDestination)){
+								$complaint_photos->complaint_id = $mComplaint_ID;
+								$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
+								$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
+								if ($complaint_photos->create()) {
+									$success = true;
+								} else {
+									$success = false;
+								}
+							};
+							
+
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $fileName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -79,17 +90,6 @@
 					}
 				} else {
 					echo "<div class='alert alert-danger text-center'>" . $fileName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
-				}
-	
-				$complaint_photos->complaint_id = $mComplaint_ID;
-				$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
-				// $complaint_photos->complaint_photo_id =  $mComplaint_ID. "-" .$fileName;
-				// $count = $i+1;
-				$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
-				if ($complaint_photos->create()) {
-					$success = true;
-				} else {
-					$success = false;
 				}
 			}
 
@@ -114,9 +114,19 @@
 
 				if (in_array($filevActualExt, $vallowed)) {
 					if ($filevError === 0) {
-						if ($filevSize <= 20971520) {
+						if ($filevSize <= 1000000000) {
 							$filevDestination = 'comp_video/' . $newvname;
-							move_uploaded_file($filevTmpName, $filevDestination);
+
+							if(move_uploaded_file($filevTmpName, $filevDestination)){
+								$complaint_videos->complaint_id = $mComplaint_ID;
+								$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
+								$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
+								if ($complaint_videos->create()) {
+									$success = true;
+								} else {
+									$success = false;
+								}
+							}
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -126,22 +136,11 @@
 				} else {
 					echo "<div class='alert alert-danger text-center'>" . $filevName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
 				}
-	
-				$complaint_videos->complaint_id = $mComplaint_ID;
-				$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
-				$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
-				if ($complaint_videos->create()) {
-					$setting->complaint_id_last = $mComplaint_ID;
-					$setting->update_complaint_id();
-					$success = true;
-					header("Location: complaint_status.php");
-				} else {
-					// echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน</div>";
-					$success = false;
-				}
 			}
 			// add file video to server and insert complaint video //
-
+			$setting->complaint_id_last = $mComplaint_ID;
+			$setting->update_complaint_id();
+			// header("Location: complaint_status.php");
 		}
 	}
 	ob_end_flush();
@@ -344,6 +343,13 @@
 								<input type="submit" value="บันทึกข้อร้องเรียน" class="btn btn-primary btn-modify" name="complaint-status-submit">
 							</div>
 						</div>
+                        <div class="col-md-12">
+							<div class="form-group">
+							<div class="progress progress-striped active">
+								<div class="progress-bar" style="width:0%"><p id="msg">0%</p></div>
+							</div>
+							</div>
+						</div>
 						<div class="col-md-12">
 						<?php
 							if (isset($success)) {
@@ -419,5 +425,31 @@
 	<script>
 		$.validate();
 	</script>
+
+	<!-- progress bar -->
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script>$(function(){
+    $('#complaint').ajaxForm({
+        beforeSend:function(){
+            $('.progress').show();
+        },
+        uploadProgress:function(event,position,total,percentcomplete){
+			$('.progress-bar').width(percentcomplete+"%");
+			$('#msg').html(percentcomplete+"%")
+			if(percentcomplete==100){
+				alert("อัพโหลดไฟล์เสร็จสิ้น");
+			}
+		},
+        success:function(){
+			$('.progress').hide();
+		},
+        complete:function(){
+			window.location.href = "complaint_status.php";
+		}
+		});
+		$('.progress').hide();
+	});
+	</script>
+    <!-- progress bar -->
 	</body>
 </html>
