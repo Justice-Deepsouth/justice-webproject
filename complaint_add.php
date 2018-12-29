@@ -323,15 +323,16 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-							ไฟล์คลิป
-								<input type="file" id="complaint_video" name="complaint_video[]" multiple >
+								<label class="btn btn-info">
+									อัพโหลดไฟล์คลิป&hellip; <input type="file" id="complaint_video" name="complaint_video[]" style="display: none;" multiple >
+								</label>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-							ไฟล์ภาพ
-								<!-- <input type="file" class="btn btn-primary btn-modify" id= "complaint_photo" name="complaint_photo[]" multiple > -->
-								<input type="file" id="complaint_photo" name="complaint_photo[]" multiple >
+								<label class="btn btn-info">
+									อัพโหลดไฟล์ภาพ&hellip; <input type="file" id="complaint_photo" name="complaint_photo[]" style="display: none;" multiple>
+            					</label>
 							</div>
 						</div>
 						<div class="col-md-12">
