@@ -70,7 +70,18 @@
 					if ($fileError === 0) {
 						if ($fileSize <= 100000000) {
 							$fileDestination = 'comp_img/' . $newname;
-							move_uploaded_file($fileTmpName, $fileDestination);
+							if(move_uploaded_file($fileTmpName, $fileDestination)){
+								$complaint_photos->complaint_id = $mComplaint_ID;
+								$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
+								$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
+								if ($complaint_photos->create()) {
+									$success = true;
+								} else {
+									$success = false;
+								}
+							};
+							
+
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $fileName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -79,17 +90,6 @@
 					}
 				} else {
 					echo "<div class='alert alert-danger text-center'>" . $fileName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
-				}
-	
-				$complaint_photos->complaint_id = $mComplaint_ID;
-				$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
-				// $complaint_photos->complaint_photo_id =  $mComplaint_ID. "-" .$fileName;
-				// $count = $i+1;
-				$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
-				if ($complaint_photos->create()) {
-					$success = true;
-				} else {
-					$success = false;
 				}
 			}
 
@@ -114,9 +114,19 @@
 
 				if (in_array($filevActualExt, $vallowed)) {
 					if ($filevError === 0) {
-						if ($filevSize <= 20971520) {
+						if ($filevSize <= 1000000000) {
 							$filevDestination = 'comp_video/' . $newvname;
-							move_uploaded_file($filevTmpName, $filevDestination);
+
+							if(move_uploaded_file($filevTmpName, $filevDestination)){
+								$complaint_videos->complaint_id = $mComplaint_ID;
+								$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
+								$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
+								if ($complaint_videos->create()) {
+									$success = true;
+								} else {
+									$success = false;
+								}
+							}
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -126,22 +136,11 @@
 				} else {
 					echo "<div class='alert alert-danger text-center'>" . $filevName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
 				}
-	
-				$complaint_videos->complaint_id = $mComplaint_ID;
-				$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
-				$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
-				if ($complaint_videos->create()) {
-					$setting->complaint_id_last = $mComplaint_ID;
-					$setting->update_complaint_id();
-					$success = true;
-					header("Location: complaint_status.php");
-				} else {
-					// echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน</div>";
-					$success = false;
-				}
 			}
 			// add file video to server and insert complaint video //
-
+			$setting->complaint_id_last = $mComplaint_ID;
+			$setting->update_complaint_id();
+			header("Location: complaint_status.php");
 		}
 	}
 	ob_end_flush();
