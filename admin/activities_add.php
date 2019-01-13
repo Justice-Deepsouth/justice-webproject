@@ -3,102 +3,114 @@ session_start();
 ob_start();
 
     // set current timezone
-    date_default_timezone_set("Asia/Bangkok");
+date_default_timezone_set("Asia/Bangkok");
 
 if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
-    if ($_SESSION['user_type'] != 0) {
-        header("Location: ../index.php");
-    }
+	if ($_SESSION['user_type'] != 0) {
+		header("Location: ../index.php");
+	}
 } else {
-    header("Location: ../index.php");
+	header("Location: ../index.php");
 }
 
  // form is submitted
 if (isset($_POST['activity-submit'])) {
 
-    include_once '../php/dbconnect.php';
-    include_once '../php/activity.php';
+	include_once '../php/dbconnect.php';
+	include_once '../php/activity.php';
 
     // get connection
-    $database = new Database();
-    $db = $database->getConnection();
+	$database = new Database();
+	$db = $database->getConnection();
 
     // pass connection to property_states table
-    $activity = new Activity($db);
-    if (isset($_POST['activity-submit'])) {
+	$activity = new Activity($db);
+	if (isset($_POST['activity-submit'])) {
+		if (isset($_POST['activity-image'] )) {
+		$fileName = $_FILES['activity-image']['name'];
+		$fileTmpName = $_FILES['activity-image']['tmp_name'];
+		$fileSize = $_FILES['activity-image']['size'];
+		$fileError = $_FILES['activity-image']['error'];
+		$fileType = $_FILES['activity-image']['type'];
 
-        include_once '../php/dbconnect.php';
-        include_once '../php/activity.php';
-    
-        // get connection
-        $database = new Database();
-        $db = $database->getConnection();
-    
-        // pass connection to property_states table
-        $activity = new Activity($db);
-
-        $fileName = $_FILES['activity-image']['name'];
-        $fileTmpName = $_FILES['activity-image']['tmp_name'];
-        $fileSize = $_FILES['activity-image']['size'];
-        $fileError = $_FILES['activity-image']['error'];
-        $fileType = $_FILES['activity-image']['type'];
-
-        $fileExt = explode('.', $fileName);
-        $fileActualExt = strtolower(end($fileExt));
+		$fileExt = explode('.', $fileName);
+		$fileActualExt = strtolower(end($fileExt));
                 
          //เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
-        $type = strrchr($fileName, ".");
+		$type = strrchr($fileName, ".");
         
         //ตั้งชื่อไฟล์ใหม่โดยชื่อกิจกรรมไว้หน้าชื่อไฟล์เดิม
-        $img = "img-" . $_POST['activity-name'];
-        $newname = $img . $type;
+		$img = "img-" . $_POST['activity-name'];
+		$newname = $img . $type;
     
         //อนุญาตให้นามสกุลนี้บันทึกได้
-        $allowed = array('jpg', 'jpeg', 'png', 'JPG');
-        
-        if ($_POST['activity-edate'] > $_POST['activity-sdate']) {
-        if (in_array($fileActualExt, $allowed)) {
-            if ($fileError === 0) {
-                if ($fileSize <= 100000000) {
-                    $fileDestination = '../activity_img/' . $newname;
-                    move_uploaded_file($fileTmpName, $fileDestination);
+		$allowed = array('jpg', 'jpeg', 'png', 'JPG');
+
+		if ($_POST['activity-edate'] > $_POST['activity-sdate']) {
+			if (in_array($fileActualExt, $allowed)) {
+				if ($fileError === 0) {
+					if ($fileSize <= 100000000) {
+						$fileDestination = '../activity_img/' . $newname;
+						move_uploaded_file($fileTmpName, $fileDestination);
 
                    
                          //ข้อมูลที่จะบันทึก
-                            $activity->activity_name = $_POST['activity-name'];
-                            $activity->activity_desc = $_POST['activity-desc'];
-                            $activity->activity_place = $_POST['activity-place'];
-                            $activity->activity_sdate = $_POST['activity-sdate'];
-                            $activity->activity_edate = $_POST['activity-edate'];
-                            $activity->activity_image = $newname;
-                            $activity->user_id = $_SESSION['user_id'];
-                            // $activity->created_date = date("Y/m/d h:i:sa");
-                    if ($activity->create()) {
-                        echo "<div class='alert alert-success text-center'>อัพโหลดไฟล์สำเร็จ</div>";
-                        header("Location: activities_list.php");
-                    } else {
-                        echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน</div>";
-                        header("Refresh:3; url=activities_add.php");
-                    }
+						$activity->activity_name = $_POST['activity-name'];
+						$activity->activity_desc = $_POST['activity-desc'];
+						$activity->activity_place = $_POST['activity-place'];
+						$activity->activity_sdate = $_POST['activity-sdate'];
+						$activity->activity_edate = $_POST['activity-edate'];
+						$activity->activity_image = $newname;
+						$activity->user_id = $_SESSION['user_id'];
+							// $activity->created_date = date("Y/m/d h:i:sa");
+					
+						if ($activity->create()) {
+							echo "<div class='alert alert-success text-center'>อัพโหลดไฟล์สำเร็จ</div>";
+							header("Location: activities_list.php");
+						} else {
+							echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน มีภาพ</div>";
+							header("Refresh:3; url=activities_add.php");
+						}
 
-                } else {
-					echo "<div class='alert alert-danger text-center' $fileName ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+					} else {
+						echo "<div class='alert alert-danger text-center' $fileName ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+						header("Refresh:3; url=activities_add.php");
+					}
+				} else {
+					echo "<div class='alert alert-danger text-center' $fileName มีปัญหาการอัพโหลดไฟล์</div>";
 					header("Refresh:3; url=activities_add.php");
-                }
-            } else {
-				echo "<div class='alert alert-danger text-center' $fileName มีปัญหาการอัพโหลดไฟล์</div>";
+				}
+			} else {
+				echo "<div class='alert alert-danger text-center' $fileName คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
 				header("Refresh:3; url=activities_add.php");
-            }
-        } else {
-			echo "<div class='alert alert-danger text-center' $fileName คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
+			}
+		} else {
+			echo "<div class='alert alert-danger text-center'>วันเริ่มงานไม่สามารถมากกว่าวันสิ้นสุดงาน</div>";
 			header("Refresh:3; url=activities_add.php");
-        }
-    }else { 
-        echo "<div class='alert alert-danger text-center'>วันเริ่มงานไม่สามารถมากกว่าวันสิ้นสุดงาน</div>";
-       header("Refresh:3; url=activities_add.php");
-    }
-    }
+		}
+	}else{
+		//ข้อมูลที่จะบันทึก
+	   $activity->activity_name = $_POST['activity-name'];
+	   $activity->activity_desc = $_POST['activity-desc'];
+	   $activity->activity_place = $_POST['activity-place'];
+	   $activity->activity_sdate = $_POST['activity-sdate'];
+	   $activity->activity_edate = $_POST['activity-edate'];
+	   $activity->activity_image = null;
+	   $activity->user_id = $_SESSION['user_id'];
+		   // $activity->created_date = date("Y/m/d h:i:sa");
+   
+	   if ($activity->create()) {
+		   echo "<div class='alert alert-success text-center'>อัพโหลดไฟล์สำเร็จ</div>";
+		   header("Location: activities_list.php");
+	   } else {
+		   echo "<div class='alert alert-danger text-center'>Create ไม่ผ่าน ไม่มีภาพ</div>";
+		   header("Refresh:3; url=activities_add.php");
+	   }
+
+
+	}
+	}
 
 }
 ob_end_flush();
@@ -183,17 +195,17 @@ ob_end_flush();
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
-                                 if (!isset($_SESSION['user_session_id'])) {
-                                     echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
-                                } else {
-                                    echo "<li class='has-dropdown'>";
-                                    echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
-                                    echo "<ul class='dropdown'>";
-                                    echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-                                    echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
-                                    echo "</ul></li>";
-                                }
-                             ?>
+						if (!isset($_SESSION['user_session_id'])) {
+							echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+						} else {
+							echo "<li class='has-dropdown'>";
+							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+							echo "<ul class='dropdown'>";
+							echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+							echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+							echo "</ul></li>";
+						}
+						?>
 						</ul>
 					</div>
 				</div>
@@ -300,14 +312,14 @@ ob_end_flush();
 						</div>
 						<div class="col-md-12">
 						<?php
-        if (isset($success)) {
-            if ($success) {
-                echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
-            } else {
-                echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
-            }
-        }
-        ?>
+					if (isset($success)) {
+						if ($success) {
+							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+						} else {
+							echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+						}
+					}
+					?>
 						</div>
 					</div><!-- /.row -->
 					</form>

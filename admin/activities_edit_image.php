@@ -27,8 +27,14 @@ ob_end_flush();
 
 <input type="hidden" name="activity-id" value="<?php echo $row['activity_id']; ?>">
 	<div class ="text-center">
-	<h4>รูปปัจจุบัน</h4>
-		<img src="../activity_img/<?php echo $row["activity_image"]; ?>" name="activity-oldImage" width="250" height="250" />
+	<?php
+	if ($row['activity_image'] !="") {
+		echo "<div class ='text-center'><h4>รูปปัจจุบัน</h4>";
+		echo "<img src='../activity_img/$row[activity_image]' name='activity-oldImage' width='250' height='250' />";
+		
+	}else{}
+		
+		?>
     <br> <br>
 	<h4>รูปที่ต้องการแก้ไข</h4>
 	<div class="col-md-12">

@@ -27,15 +27,6 @@ if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
     // pass connection to property_states table
     $activity = new Activity($db);
 
-        include_once '../php/dbconnect.php';
-        include_once '../php/activity.php';
-    
-        // get connection
-        $database = new Database();
-        $db = $database->getConnection();
-    
-        // pass connection to property_states table
-		$activity = new Activity($db);
 
 		$active =$activity->activity_id = $_GET['activity_id'];
 		$result = $activity->readone($active);
@@ -205,7 +196,7 @@ ob_end_flush();
 					</div><!-- /.row -->
 					<form role="form" id="activities-update" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					
-					<input type="text" name="activity-id" value="<?php echo $row['activity_id']; ?>">
+					<input type="hidden" name="activity-id" value="<?php echo $row['activity_id']; ?>">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
