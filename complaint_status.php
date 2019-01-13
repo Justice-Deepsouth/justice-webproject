@@ -91,6 +91,14 @@
 			} 
         }
 	}
+	// update complaint_progress
+	if (isset($_POST['complaint-progress-submit'])) {
+		$complaint_progress->complaint_progress_id = $_POST['complaint-progress-id'];
+		$complaint_progress->complaint_progress_desc = $_POST['complaint-progress-desc'];
+        if ($complaint_progress->update()) {
+			header("Location: complaint_status.php");
+        }
+	}
 	ob_end_flush();
 
 ?>
@@ -251,7 +259,8 @@
 									if ($_SESSION['user_type'] == 1) {
 										echo '<th class="text-center">ชื่อผู้แจ้ง</th>
 											  <th class="text-center">วันที่ร้องเรียน</th>
-											  <th class="text-center">การดำเนินการ</th>';
+											  <th class="text-center">การดำเนินการ</th>
+											  <th class="text-center">แก้ไข</th></th>';
 									}else{
 										echo '<th class="text-center">สถานะ</th>
 											  <th class="text-center">วันที่ร้องเรียน</th>
@@ -287,6 +296,24 @@
 												<a href="" data-toggle="modal" data-target="#showstate" data-id="<?php echo $row['complaint_id']; ?>" id="getState_id"><?php echo $rowstate['complaint_state_desc']; ?></a>
 											</td>
 											<?php
+
+												// ปุ่มแก้ไข complaint_progress
+												$complaint_progress->complaint_id = $row['complaint_id'];
+												$lastresult = $complaint_progress->getLast_user();
+												$lastrow = mysqli_fetch_array($lastresult);
+													if($lastrow['user_id'] == ""){
+														echo'<td class="text-center"><i class="icon-pencil2"></i></td>';
+													}elseif($lastrow['user_id'] == $_SESSION['user_id']){
+														?>
+														<td class="text-center">
+														<a href="" data-toggle="modal" data-target="#editprogress" data-id="<?php echo $lastrow['complaint_progress_id']; ?>" id="getProgress_id"><i class="icon-pencil2"></i></a>
+														</td>
+														<?php
+													}else{
+														echo'<td class="text-center"><i class="icon-pencil2"></i></td>';
+													}
+													// ปุ่มแก้ไข complaint_progress //
+
 
 											}else{	
 													$cdate = date_create($row['created_date']);
@@ -423,6 +450,31 @@
 	</form>
     </div><!-- /.modal -->
 
+	<!-- modal edit complaint progress -->
+	<div id = "editprogress" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
+	<form role="form" id="complaint-progresss" method="post" action="complaint_status.php">
+        <div class = "modal-dialog"> 
+            <div class = "modal-content">       
+                <div class = "modal-header"> 
+                    <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">×</button> 
+                    <h4 class = "modal-title">แก้ไขรายละเอียดการดำเนินการ</h4> 
+                </div> 
+                <div class = "modal-body">        
+                    <div id = "modal-loader" style = "display: none; text-align: center;">
+                       	<img src = "ajax-loader.gif">
+                    </div>                            
+                    <!-- content will be load here -->                          
+                    <div id = "dynamic2-content"></div>                             
+                </div> 
+                <div class = "modal-footer"> 
+					<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+           			<input type="submit" class="btn btn-info" value="บันทึก" name="complaint-progress-submit">
+                </div>     
+            </div>
+		</div>
+	</form>
+    </div><!-- /.modal edit complaint progress -->
+
 	<!-- jQuery -->
 	<script src="js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -502,6 +554,33 @@
 		        });
 	        });
         });
+
+		// modal edit complaint progress
+		$(document).ready(function(){	
+	        $(document).on('click', '#getProgress_id', function(e){
+		        e.preventDefault();
+                var pro_id = $(this).data('id');   // it will get id of clicked row
+		        $('#dynamic2-content').html(''); // leave it blank before ajax call
+		        $('#modal-loader').show();      // load ajax loader
+		        $.ajax({
+			        url: 'showcomp_pro.php',
+			        type: 'POST',
+			        data: 'pro_id='+pro_id,
+			        dataType: 'html'
+		        })
+		        .done(function(data){
+			        console.log(data);	
+			        $('#dynamic2-content').html('');    
+			        $('#dynamic2-content').html(data); // load response 
+			        $('#modal-loader').hide();		  // hide ajax loader	
+		        })
+		        .fail(function(){
+			        $('#dynamic2-content').html('<i class="glyphicon glyphicon-info-sign"></i> Something went wrong, Please try again...');
+			        $('#modal-loader').hide();
+		        });
+	        });
+        });
+		// modal edit complaint progress //
 	</script>
 
 	</body>
