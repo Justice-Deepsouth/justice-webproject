@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 ob_start();
 
@@ -12,9 +12,22 @@ $db = $database->getConnection();
     // pass connection to property_types table
 $activity = new Activity($db);
 
-$result = $activity->readone_index();
 $data = $activity->readall();
 $total_rows = $activity->getTotalRows();
+// define how many results you want per page
+$results_per_page = 10;
+// determine number of total pages available
+$number_of_pages = ceil($total_rows / $results_per_page);
+
+// determine which page number visitor is currently on
+if (!isset($_GET['page'])) {
+	$page = 1;
+} else {
+	$page = $_GET['page'];
+}
+// determine the sql LIMIT starting number for the results on the displaying page
+$this_page_first_result = ($page - 1) * $results_per_page;
+
 
 ob_end_flush();
 ?>
@@ -87,7 +100,7 @@ ob_end_flush();
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li class="active"><a href="index.php">หน้าแรก</a></li>
+							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -97,7 +110,7 @@ ob_end_flush();
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="activities_show.php">กิจกรรม</a></li>
+							<li class="active"><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
@@ -182,157 +195,57 @@ ob_end_flush();
 			   	</li>	   	
 			  	</ul>
 		  	</div>
-		</aside>
-		<div id="fh5co-services">
+        </aside>	
+    
+		<div id="fh5co-blog">
+                
 			<div class="row">
-				<div class="col-md-4 text-center animate-box">
-					<div class="services">
-						<span class="icon">
-							<i class="icon-diamond"></i>
-						</span>
-						<div class="desc">
-							<h3><a href="#">ความรู้ด้านยุติธรรม#1</a></h3>
-							<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4 text-center animate-box">
-					<div class="services">
-						<span class="icon">
-							<i class="icon-lab2"></i>
-						</span>
-						<div class="desc">
-							<h3><a href="#">ความรู้ด้านยุติธรรม#2</a></h3>
-							<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4 text-center animate-box">
-					<div class="services">
-						<span class="icon">
-							<i class="icon-settings"></i>
-						</span>
-						<div class="desc">
-							<h3><a href="#">ความรู้ด้านยุติธรรม#3</a></h3>
-							<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div id="fh5co-work" class="fh5co-light-grey">
-			<div class="row animate-box">
-				<div class="col-md-6 col-md-offset-3 text-center fh5co-heading">
-					<h2>ผลงานการแก้ปัญหาความยุติธรรมในพื้นที่</h2>
-					<p>Dignissimos asperiores vitae velit veniam totam fuga molestias accusamus alias autem provident. Odit ab aliquam dolor eius.</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4 text-center animate-box">
-					<a href="work-single.html" class="work"  style="background-image: url(images/portfolio-1.jpg);">
-						<div class="desc">
-							<h3>Project Name</h3>
-							<span>Illustration</span>
-						</div>
-					</a>
-				</div>
-				<div class="col-md-4 text-center animate-box">
-					<a href="work-single.html" class="work" style="background-image: url(images/portfolio-2.jpg);">
-						<div class="desc">
-							<h3>Project Name</h3>
-							<span>Brading</span>
-						</div>
-					</a>
-				</div>
-				<div class="col-md-4 text-center animate-box">
-					<a href="work-single.html" class="work" style="background-image: url(images/portfolio-3.jpg);">
-						<div class="desc">
-							<h3>Project Name</h3>
-							<span>Illustration</span>
-						</div>
-					</a>
-				</div>
-			</div>
-		</div>
-
-
-		<?php $row = mysqli_fetch_array($result, MYSQLI_ASSOC); ?>
-		<div id="fh5co-blog" class="blog-flex">
-		<?php 
+            <?php while ($row = mysqli_fetch_array($data)) { ?>
+				<div class="col-md-4">
+					<div class="fh5co-blog animate-box">
+                        <?php 
                         if ($row['activity_image'] != "") {
-						
-						 echo "<div class='featured-blog' style='background-image: url(activity_img/$row[activity_image]'>" ;
+                           echo "<a href='#' class='blog-bg' style='background-image: url(activity_img/$row[activity_image])'></a>";
                         } else {
-						
-							echo "<div class='featured-blog' style='background-image: url(images/no_image.jpg)'>" ;
-                         }
+                            echo "<a href='#' class='blog-bg' style='background-image: url(images/no_image.jpg)'></a>";
+                        }
                       
                         ?>
-			<!-- <div class="featured-blog" style="background-image: url(<?php echo $row["activity_image"]; ?>)"> -->
-				<div class="desc-t">
-					<div class="desc-tc">
-					<h3><span class="featured-head"><?php echo $row["activity_name"]; ?></span></h3>
-						<h3><a href="#">วันที่ 
-						<?php 
-						echo $row['activity_sdate'];
+						<div class="blog-text">
+							<i class="icon-calendar"></i> &nbsp;
+							<?php 
+							echo $row['activity_sdate'];
 					// $strDat = $row['activity_sdate'];
 					// $sDate = $activity->DateThai($strDat);
 					// echo $sDate;
 					?>
-					 ถึง 
+					-
 					 <?php 
-					 echo $row['activity_edate'];
+					echo $row['activity_edate'];
 					// $strDat = $row['activity_edate'];
 					// $eDate = $activity->DateThai($strDat);
 					// echo $eDate;
-					?><br>
-				 สถานที่จัด<?php echo $row["activity_place"]; ?></a></h3>
-						<span><a href="#" class="read-button">รายละเอียดเพิ่มเติม</a></span>
-					</div>
-				</div>
-			</div>
-			<div class="blog-entry fh5co-light-grey">
-				<div class="row animate-box">
-					<div class="col-md-12">
-						<h2>กิจกรรมล่าสุด</h2>
-					</div>
-				</div>
-				<?php 
-				 $result_last = $activity->getLast_Activity_ID();
-				while ($sort = mysqli_fetch_array( $result_last)) { 
 					?>
-				<div class="row">
-					<div class="col-md-12 animate-box">
-						<a href="#" class="blog-post">
-						<?php 
-                        if ($sort['activity_image'] != "") {
-						 echo "<span class='img' style='background-image: url(activity_img/$sort[activity_image])'></span>";
-						
-                        } else {
-							echo "<span class='img' style='background-image: url(images/no_image.jpg);'></span>";
-                        }
-                      
-                        ?>
-							<!-- <span class="img" style="background-image: url(activity_img/<?php echo $sort["activity_image"]; ?>);"></span> -->
-							<div class="desc">
-								<h3><?php echo $sort["activity_name"]; ?></h3>
-								<span class="cat"><?php echo $sort['activity_sdate'];?> - <?php echo  $sort['activity_sdate'];?></span>
-							</div>
+							<h3><a href="activities_detail.php?activity_id=<?php echo $row['activity_id']; ?>"><?php echo $row["activity_name"]; ?></a></h3>
+							<p><?php 
+							$desc = $row["activity_desc"];
+							$detail = substr($desc, 0,30);
+							echo $detail;
+							 ?></p>
+							<ul class="stuff">
 
-						</a>
+								<li><a href="activities_detail.php?activity_id=<?php echo $row['activity_id']; ?>">รายละเอียดเพิ่มเติม<i class="icon-arrow-right22"></i></a></li>
+							</ul>
+						</div> 
 					</div>
-				
-
-				</div>
-		<?php	} ?>
-		
-		<a class="btn btn-primary btn-demo" href="activities_show.php">รายละเอียดเพิ่มเติม</a>
+                </div>
+            <?php } ?>
+			
 			</div>
 		</div>
 	</div><!-- END container-wrap -->
 
-	<div class="container-wrap">
+    <div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
 			<div class="row">
 				<div class="col-md-3 fh5co-widget">

@@ -2,7 +2,7 @@
 	session_start();
 	ob_start();
 
-    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only complainant and justice unit can access
 		// user_type = 0 -> admin
 		if ($_SESSION['user_type'] == 0) {
@@ -10,7 +10,9 @@
 		}
 	} else {
 		header("Location: index.php");
+
 	}
+
 	
     // set current timezone
     date_default_timezone_set("Asia/Bangkok");
@@ -91,6 +93,7 @@
 			} 
         }
 	}
+
 	// update complaint_progress
 	if (isset($_POST['complaint-progress-submit'])) {
 		$complaint_progress->complaint_progress_id = $_POST['complaint-progress-id'];
@@ -186,9 +189,9 @@
 									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
 								} else {
 									echo "<li class='has-dropdown'>";
-									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . $_SESSION['user_type'] . "</a>";
 									echo "<ul class='dropdown'>";
-									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
 									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
 									echo "</ul></li>";
 								}
@@ -524,7 +527,7 @@
 			        $('#modal-loader').hide();		  // hide ajax loader	
 		        })
 		        .fail(function(){
-			        $('#dynamic-content').html('<i class="glyphicon glyphicon-info-sign"></i> Something went wrong, Please try again...');
+			        $('#dynamic-content').html('<i class="glyphicon glyphicon-info-sign"></i> มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง');
 			        $('#modal-loader').hide();
 		        });
 	        });
@@ -549,7 +552,7 @@
 			        $('#modal-loader').hide();		  // hide ajax loader	
 		        })
 		        .fail(function(){
-			        $('#dynamic1-content').html('<i class="glyphicon glyphicon-info-sign"></i> Something went wrong, Please try again...');
+			        $('#dynamic1-content').html('<i class="glyphicon glyphicon-info-sign"></i>มีบางอย่างผิดพลาด กรุณาลองใหม่อีกครั้ง');
 			        $('#modal-loader').hide();
 		        });
 	        });

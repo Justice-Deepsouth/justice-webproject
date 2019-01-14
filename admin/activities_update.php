@@ -1,46 +1,61 @@
 <?php
-	session_start();
-	ob_start();
+session_start();
+ob_start();
 
-    if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+    // set current timezone
+    date_default_timezone_set("Asia/Bangkok");
+
+if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
-		if ($_SESSION['user_type'] != 0) {
-			header("Location: ../index.php");
-		}
-	} else {
-		header("Location: ../index.php");
-	}
+    if ($_SESSION['user_type'] != 0) {
+        header("Location: ../index.php");
+    }
+} else {
+    header("Location: ../index.php");
+}
+
+ // form is submitted
+
 
     include_once '../php/dbconnect.php';
-    include_once '../php/contact_info.php';
+    include_once '../php/activity.php';
 
     // get connection
     $database = new Database();
     $db = $database->getConnection();
 
-    // pass connection to contact_info table
-    $contact_info = new Contact_info($db);
+    // pass connection to property_states table
+    $activity = new Activity($db);
 
-	// read all records
-	$active = false;
-    $result = $contact_info->readall($active);
-    $total_rows = $contact_info->getTotalRows();
 
-    if (isset($_GET['con_id'])) {
-		$contact_info->contact_info_id = $_GET['con_id'];
-		$contact_info->check_read = "1";
-        if ($contact_info->update()) {
-            header("Location: admin_main.php");
-        }
+		$active =$activity->activity_id = $_GET['activity_id'];
+		$result = $activity->readone($active);
+		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+		if (isset($_POST['activity-submit'])) {
+		$activity->user_id =  $_SESSION['user_id'];
+		$activity->activity_name = $_POST['activity-name'];
+		$activity->activity_desc = $_POST['activity-desc'];
+		$activity->activity_place = $_POST['activity-place'];
+		$activity->activity_sdate = $_POST['activity-sdate'];
+		$activity->activity_edate = $_POST['activity-edate'];
+		$activity->activity_id = $_POST['activity-id'];
+		if ($activity->update()) {
+			$success = true;
+			header("Location:activities_list.php");
+		} else {
+			header("Refresh:3; url=activities_list.php");
+		}
 	}
-	ob_end_flush();
+
+ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>หน้าหลักผู้ดูแลระบบ | Justice Project</title>
+	<title>หน้าแก้ไขกิจกรรม | Justice Project</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
@@ -115,17 +130,17 @@
 							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
-								if (!isset($_SESSION['user_session_id'])) {
-									echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
-								} else {
-									echo "<li class='has-dropdown'>";
-									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
-									echo "<ul class='dropdown'>";
-									echo "<li><a href='../user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
-									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
-									echo "</ul></li>";
-								}
-							?>
+                                 if (!isset($_SESSION['user_session_id'])) {
+                                     echo "<li><a href='../complaint_login.php'>เข้าสู่ระบบ</a></li>";
+                                } else {
+                                    echo "<li class='has-dropdown'>";
+                                    echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+                                    echo "<ul class='dropdown'>";
+                                    echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+                                    echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+                                    echo "</ul></li>";
+                                }
+                             ?>
 						</ul>
 					</div>
 				</div>
@@ -162,54 +177,79 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<li class="active"><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
+								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
 								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
 								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
-								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
+								<li class="active"><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
 				</div><!-- /.col-md-3 -->
 				<!-- end Sidebar -->
 				<div class="col-md-7 col-md-push-1 animate-box">
-				<div class="row">
-						<div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>ชื่อผู้ติดต่อ</th>
-									<th>อีเมลผู้ติดต่อ</th>
-									<th class="text-center">รายละเอียดการติดต่อ</th>
-									<th class="text-center">อ่านแล้ว</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-								<?php while ($row = mysqli_fetch_array($result)) { ?>
-                                    <tr>
-										<td><?php echo $row['contact_info_name']; ?></td>
-										<td><?php echo $row['contact_info_email']; ?></td>
-										<?php
-										if($row['check_read'] == 0){
-											?>
-												<td class="text-center"><a href="admin_main.php?con_id=<?php echo $row['contact_info_id']; ?>" >อ่านข้อความ</a></td>
-												<td class="text-center"></td>
-											<?php
-										}else {
-											?><td class="text-center"><?php echo $row['contact_info_desc']; ?></td>
-                                        <td class="text-center">
-											<i class="icon-checkmark"></i>
-                                        </td>											
-											<?php
-										}
-										?>
-                                    </tr>
-								<?php } ?>
-                                </tbody>
-                            </table>
-                        </div><!-- /.table-responsive -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3>แก้ไขข้อมูลกิจกรรม</h3>
+						</div>
 					</div><!-- /.row -->
+					<form role="form" id="activities-update" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+					
+					<input type="hidden" name="activity-id" value="<?php echo $row['activity_id']; ?>">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" value="<?php echo $row['activity_name']; ?>" maxlength="100" name="activity-name" data-validation="required" data-validation-error-msg="บันทึกชื่อกิจกรรม">
+							</div>
+						</div>
+
+                        <div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" value="<?php echo $row['activity_desc']; ?>"   name="activity-desc" data-validation="required" data-validation-error-msg="บันทึกรายละเอียดกิจกรรม">
+							</div>
+						</div>
+
+                        <div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" value="<?php echo $row['activity_place']; ?>" maxlength="100" name="activity-place" data-validation="required" data-validation-error-msg="บันทึกสถานที่จัดกิจกรรม">
+							</div>
+						</div>
+                            
+                         <div class="col-md-6">
+							<div class="form-group">
+                                <p>วันเริ่มกิจกรรม</p>
+								    <input type="date" value="<?php echo $row['activity_sdate']; ?>" class="form-control"  name="activity-sdate" data-validation="required" data-validation-error-msg="บันทึกวันเริ่มกิจกรรม">
+							</div>
+						</div>
+                           
+                        <div class="col-md-6">
+							 <div class="form-group">
+                                <p>วันสิ้นสดกิจกรรม</p>
+								    <input type="date" value="<?php echo $row['activity_edate']; ?>" class="form-control"  name="activity-edate" data-validation="required" data-validation-error-msg="บันทึกวันสิ้นสดกิจกรรม">
+							 </div>
+						</div>
+
+
+
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="submit" value="บันทึก" class="btn btn-primary btn-modify" name="activity-submit">
+							</div>
+						</div>
+						<div class="col-md-12">
+						<?php
+        if (isset($success)) {
+            if ($success) {
+                echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
+            } else {
+                echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+            }
+        }
+        ?>
+						</div>
+					</div><!-- /.row -->
+					</form>
 				</div>
 			</div>
 		</div>
@@ -217,45 +257,6 @@
 
 	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
-			<!-- <div class="row">
-				<div class="col-md-3 fh5co-widget">
-					<h4>ยุติธรรมคืออะไร?</h4>
-					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto
-						culpa amet.</p>
-				</div>
-				<div class="col-md-3 col-md-push-1">
-					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
-					<ul class="fh5co-footer-links">
-						<li><a href="#">บทความอื่นๆ 1</a></li>
-						<li><a href="#">บทความอื่นๆ 2</a></li>
-						<li><a href="#">บทความอื่นๆ 3</a></li>
-						<li><a href="#">บทความอื่นๆ 4</a></li>
-						<li><a href="#">ดูบทความทั้งหมด</a></li>
-					</ul>
-				</div>
-	
-				<div class="col-md-3 col-md-push-1">
-					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
-					<ul class="fh5co-footer-links">
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
-					</ul>
-				</div>
-	
-				<div class="col-md-3">
-					<h4>ติดต่อโครงการ</h4>
-					<ul class="fh5co-footer-links">
-						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
-						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
-						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
-						<li><a href="">gettemplates.co</a></li>
-					</ul>
-				</div>
-			</div> -->
-	
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
@@ -279,25 +280,6 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up2"></i></a>
 	</div>
-
-	<!-- Modal Dialog -->
-	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">ยืนยันการลบข้อมูล</h4>
-				</div>
-				<div class="modal-body">
-				<p>แน่ใจว่าต้องการลบข้อมูลนี้?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">ยกเลิก</button>
-					<a class="btn btn-danger" id="confirm">ลบข้อมูล</a>
-				</div>
-			</div>
-		</div>
-	</div>	
 	
 	<!-- jQuery -->
 	<script src="../js/jquery.min.js"></script>
@@ -316,12 +298,20 @@
 	<script src="../js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="../js/main.js"></script>
+	<!-- jQuery Form Validator -->
+	<script src="../js/form-validator/jquery.form-validator.min.js"></script>
 	<script>
-		$('#confirm-delete').on('show.bs.modal', function(e) {
-			$(this).find('#confirm').attr('href', $(e.relatedTarget).data('href'));
-		});
+		$.validate();
 	</script>
-
+    <script type="text/javascript">
+    	$("#activity-image").change(function(){
+    	    $('#image_preview').html("");
+     	    var total_file=document.getElementById("activity-image").files.length;
+     	    for(var i=0;i<total_file;i++) {
+      		    $('#image_preview').append("<center><img src='"+URL.createObjectURL(event.target.files[i])+"' width='250' height='250'></center>");
+     	    }
+        });
+    </script>
 	</body>
 </html>
 
