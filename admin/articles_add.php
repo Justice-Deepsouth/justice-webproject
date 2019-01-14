@@ -23,7 +23,7 @@
         $database = new Database();
         $db = $database->getConnection();
 
-        // pass connection to property_types table
+        // pass connection to articles table
         $article = new Article($db);
 		$article->article_title = $_POST['article-title'];
 		$article->article_desc = $_POST['article-desc'];
@@ -192,7 +192,7 @@
                     <div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="ชื่อบทความ" maxlength="100" name="article-title" data-validation="required" data-validation-error-msg="บันทึกประเภทข้อร้องเรียน">
+								<input type="text" class="form-control" placeholder="ชื่อบทความ" maxlength="100" name="article-title" data-validation="required" data-validation-error-msg="บันทึกชื่อบทความ">
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -202,7 +202,7 @@
                                     $rte->Text='';
 									$rte->Name='article-desc';
 									$rte->Width='600px';
-                                    $rte->Height='200px';
+                                    $rte->Height='400px';
                                     $rte->Skin='officexpsilver';
                                     $rte->Toolbar='email';
                                     $rte->MvcInit();

@@ -177,7 +177,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
-								<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline" onclick="location.href='article_add.php';">
+								<input type="button" value="เพิ่มข้อมูล" class="btn btn-outline" onclick="location.href='articles_add.php';">
 							</div>
 						</div>
 					</div><!-- /.row -->
@@ -202,7 +202,7 @@
                                             echo "ใช้งานปกติ";
                                         } else { echo "ยกเลิกการใช้งาน"; } ?></td>
                                         <td class="text-center">
-                                            <a href="article_update.php?art_id=<?php echo $row['article_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
+                                            <a href="articles_update.php?art_id=<?php echo $row['article_id']; ?>" class="edit"><i class="icon-pencil2"></i></a>
                                         </td>
                                         <td class="text-center">
                                             <a href="#" class="delete" data-href="articles_list.php?type_id=<?php echo $row['article_id']; ?>" data-toggle="modal" data-target="#confirm-delete"><i class="icon-bin"></i></a>

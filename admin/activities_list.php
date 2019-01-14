@@ -1,63 +1,60 @@
 <?php
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
-if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
-	if ($_SESSION['user_type'] != 0) {
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
 		header("Location: ../index.php");
 	}
-} else {
-	header("Location: ../index.php");
-}
 
-include_once '../php/dbconnect.php';
-include_once '../php/activity.php';
+	include_once '../php/dbconnect.php';
+	include_once '../php/activity.php';
 
     // get connection
-$database = new Database();
-$db = $database->getConnection();
+	$database = new Database();
+	$db = $database->getConnection();
 
     // pass connection to property_types table
-$activity = new Activity($db);
+	$activity = new Activity($db);
 
+	// delete activity
+	if (isset($_GET['activity_id'])) {
+		$activity->activity_id = $_GET['activity_id'];
+		$result = $activity->readone();
 
-
-
-	 	// delete activity
-if (isset($_GET['activity_id'])) {
-	$activity->activity_id = $_GET['activity_id'];
-	$result = $activity->readone();
-
-	while ($row = mysqli_fetch_array($result)) {
-		$file_path = '../activity_img/' . $row['activity_image'];
-		if (unlink($file_path)) {
-			if ($activity->delete()) {
-				header("Location: activities_list.php");
+		while ($row = mysqli_fetch_array($result)) {
+			$file_path = '../activity_img/' . $row['activity_image'];
+			if (unlink($file_path)) {
+				if ($activity->delete()) {
+					header("Location: activities_list.php");
+				}
 			}
 		}
 	}
-}
 
-$data = $activity->readall();
-$total_rows = $activity->getTotalRows();
-// define how many results you want per page
-$results_per_page = 10;
-// determine number of total pages available
-$number_of_pages = ceil($total_rows / $results_per_page);
+	$data = $activity->readall();
+	$total_rows = $activity->getTotalRows();
+	// define how many results you want per page
+	$results_per_page = 10;
+	// determine number of total pages available
+	$number_of_pages = ceil($total_rows / $results_per_page);
 
-// determine which page number visitor is currently on
-if (!isset($_GET['page'])) {
-	$page = 1;
-} else {
-	$page = $_GET['page'];
-}
-// determine the sql LIMIT starting number for the results on the displaying page
-$this_page_first_result = ($page - 1) * $results_per_page;
+	// determine which page number visitor is currently on
+	if (!isset($_GET['page'])) {
+		$page = 1;
+	} else {
+		$page = $_GET['page'];
+	}
+	// determine the sql LIMIT starting number for the results on the displaying page
+	$this_page_first_result = ($page - 1) * $results_per_page;
 
-
-ob_end_flush();
+	ob_end_flush();
 ?>
+
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -191,6 +188,7 @@ ob_end_flush();
 								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
 								<li class="active"><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
+								<li><a href="articles_list.php"><i class="icon-settings"></i><span> ข้อมูลบทความ</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
