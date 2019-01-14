@@ -122,7 +122,7 @@ ob_end_flush();
 							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
 							echo "<ul class='dropdown'>";
 							echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-							echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+							echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
 							echo "</ul></li>";
 						}
 						?>
