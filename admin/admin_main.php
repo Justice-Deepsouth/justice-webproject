@@ -110,9 +110,9 @@
 									<li><a href="#">ประเภทบทความ 4</a></li>
 								</ul>
 							</li>
-							<li><a href="#">กิจกรรม</a></li>
+							<li><a href="../activities_show.php">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
+							<li><a href="../about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
