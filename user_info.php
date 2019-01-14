@@ -1,16 +1,16 @@
 <?php
 	session_start();
 	ob_start();
-	// if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
-	// 	// only complainant and justice unit can access
-	// 	// user_type = 0 -> admin
-	// 	if ($_SESSION['user_type'] == 0) {
-	// 		header("Location: admin/admin_main.php");
-	// 	}
-	// } else {
-	// 	header("Location: index.php");
 
-	// }
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+	 	// only complainant and justice unit can access
+	 	// user_type = 0 -> admin
+	 	//if ($_SESSION['user_type'] == 0) {
+	 	//	header("Location: admin/admin_main.php");
+	 	//}
+	} else {
+	 	header("Location: index.php");
+	}
 
 	include_once 'php/dbconnect.php';
 	include_once 'php/user.php';
@@ -22,34 +22,19 @@
     // pass connection to property_types table
 	$user = new User($db);
 
-	// read all records
-	$user->user_id = $_SESSION['user_id'];
-	$result = $user->readoneforupdate();
-
 	if (isset($_POST['user-submit'])) {
 		$user->user_id = $_SESSION['user_id'];
 		$user->user_name = $_POST['user-name'];
 		$user->user_email = $_POST['user-email'];
 		if ($user->update_user_info()) {
-            if ($_SESSION['user_type'] != 0) {
-				echo $_SESSION['user_type'];
-				exit(0);
-				$success = true;
-                header("Location: complaint_status.php");
-
-            }else {
-				echo $_SESSION['user_type'];
-				exit(0);
-                $success = true;
-                header("Location: admin/admin_main.php");
-            }
-
+			$success = true;        
 		} else {
             $success = false;
-            header("Refresh:3; url=user_info.php");
 		}
-    }
-	// echo $_SESSION['user_type'];
+	}
+	// read for update
+	$user->user_id = $_SESSION['user_id'];
+	$result = $user->readoneforupdate();
 
 	ob_end_flush();
 ?>
@@ -171,36 +156,8 @@
 			   	</li>		   	
 			  	</ul>
 		  	</div>
-		</aside>
-		<?php
-		if ($_SESSION['user_type'] = 0) {
-				
-		echo "<div id='fh5co-contact'>
-			<div class='row'>
-				<!-- sidebar -->
-
-				
-				<div class='col-md-3 col-sm-2'>
-					<section id='sidebar'>
-						<header>
-							<h3>ประเภทข้อมูล</h3>
-						</header>
-						<aside>
-							<ul class='sidebar-navigation'>
-								<li><a href='admin_main.php'><i class='icon-settings'></i><span> ข้อมูลการติดต่อ</span></a></li>
-								<li><a href='complaint_types_list.php'><i class='icon-settings'></i><span> ประเภทข้อร้องเรียน</span></a></li>
-								<li><a href='complaint_states_list.php'><i class='icon-settings'></i><span> สถานะข้อร้องเรียน</span></a></li>
-								<li><a href='users_list.php'><i class='icon-settings'></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
-								<li><a href='settings_update.php'><i class='icon-settings'></i><span> ข้อมูลการตั้งค่า</span></a></li>
-								<li><a href='activities_list.php'><i class='icon-settings'></i><span> ข้อมูลกิจกรรม</span></a></li>
-							</ul>
-						</aside>
-					</section><!-- /#sidebar -->
-				</div><!-- /.col-md-3 -->
-				<!-- end Sidebar -->";
-		}else {
-			echo"		
-			<div id='fh5co-contact'>
+		</aside>		
+		<div id='fh5co-contact'>
 			<div class='row'>
 				<!-- sidebar -->
 				<div class='col-md-3 col-sm-2'>
@@ -210,15 +167,12 @@
 						</header>
 						<aside>
 							<ul class='sidebar-navigation'>
-								<li><a href='complaint_status.php'><i class='icon-settings'></i><span> ข้อมูลข้อร้องเรียน</span></a></li>
+								<li><a href='#'><i class='icon-settings'></i><span> ข้อมูลข้อผู้ใข้งาน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
 				</div><!-- /.col-md-3 -->
 				<!-- end Sidebar -->
-				";
-		}
-				?>
 				<div class="col-md-7 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
