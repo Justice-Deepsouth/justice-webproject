@@ -9,32 +9,25 @@
 	$database = new Database();
 	$db = $database->getConnection();
 
-    // pass connection to property_types table
+    // pass connection to users table
 	$user = new User($db);
 
-	// read all records
-	$active = false;
-	$result = $user->readall($active);
-	$total_rows = $user->getTotalRows();
-
 	if (isset($_POST['user-submit'])) {
-		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 		$user->user_id = $_POST['user-id'];
-		$user->user_name = $_POST['user-name'];
-		$user->user_passwd = $_POST['user-password_confirmation'];
-		$user->user_email = $_POST['user-email'];
-		$user->user_type = "2";
-		$user->user_status = "1";
-
-		if ($row['user_id'] != $_POST['user-id']) {
-			if ($_POST['user-password_confirmation'] == $_POST['user-password']) {
-				$user->user_passwd = $_POST['user-password_confirmation'];
-				if ($user->create()) {
-					$success = true;
-					header("Location: index.php");
-				} else {
-					$success = false;
-				}
+		if ($user->checkDuplicateUser()) {
+			# user_id already exists
+			$success = false;
+			$duplicate = true;
+		} else {
+			# user_id inexists
+			$user->user_name = $_POST['user-name'];
+			$user->user_passwd = $_POST['user-password_confirmation'];
+			$user->user_email = $_POST['user-email'];
+			$user->user_type = "2";
+			$user->user_status = "1";
+			if ($user->create()) {
+				$success = true;
+				header("Location: index.php");
 			} else {
 				$success = false;
 			}
@@ -106,61 +99,12 @@
 					<div class="col-xs-2">
 						<div id="fh5co-logo"><a href="index.php"><img src="images/logo_7.jpg"></a></div>
 					</div>
-					<div class="col-xs-10 text-right menu-1">
-						<ul>
-							<li><a href="index.html">หน้าแรก</a></li>
-							<li class="has-dropdown">
-								<a href="#">บทความ</a>
-								<ul class="dropdown">
-									<li><a href="#">ประเภทบทความ 1</a></li>
-									<li><a href="#">ประเภทบทความ 2</a></li>
-									<li><a href="#">ประเภทบทความ 3</a></li>
-									<li><a href="#">ประเภทบทความ 4</a></li>
-								</ul>
-							</li>
-							<li><a href="#">กิจกรรม</a></li>
-							<li><a href="complaint_login.html">ร้องเรียน</a></li>
-							<li><a href="about.html">เกี่ยวกับโครงการ</a></li>
-							<li><a href="contact.php">ติดต่อ</a></li>
-							<?php 
-								if (!isset($_SESSION['user_session_id'])) {
-									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
-								} else {
-									echo "<li class='has-dropdown'>";
-									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
-									echo "<ul class='dropdown'>";
-									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
-									echo "</ul></li>";
-								}
-							?>
-						</ul>
-					</div>
 				</div>
 				
 			</div>
 		</div>
 	</nav>
-	<div class="container-wrap">
-		<aside id="fh5co-hero">
-			<div class="flexslider">
-				<ul class="slides">
-			   	<li style="background-image: url(images/img_bg_3.jpg);">
-			   		<div class="overlay-gradient"></div>
-			   		<div class="container-fluids">
-			   			<div class="row">
-				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
-				   				<div class="slider-text-inner text-center">
-				   					<h1>การจัดการข้อมูล</h1>
-										<h2>Data Management</h2>
-				   				</div>
-				   			</div>
-				   		</div>
-			   		</div>
-			   	</li>		   	
-			  	</ul>
-		  	</div>
-		</aside>		
+	<div class="container-wrap">		
 		<div id="fh5co-contact">
 			<div class="row">
 				<!-- sidebar -->
@@ -168,10 +112,10 @@
 					
 				</div><!-- /.col-md-3 -->
 				<!-- end Sidebar -->
-				<div class="col-md-8 col-md-push-2 animate-box">
+				<div class="col-md-8 col-md-push-1 animate-box">
 					<div class="row">
 						<div class="col-md-12">
-							<h3>เพิ่มผู้ร้องเรียน</h3>
+							<h3>ข้อมูลผู้ร้องเรียน</h3>
 						</div>
 					</div><!-- /.row -->
 					<form role="form" id="users" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
@@ -213,7 +157,11 @@
 								if ($success) {
 									echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
 								} else {
-									echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+									if ($duplicate) {
+										echo "<div class='alert alert-danger text-center'>รหัสผู้ใช้งานซ้ำ! ไม่สามารถบันทึกข้อมูลได้</div>";
+									} else {
+										echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+									}
 								}
 							}
 						?>
