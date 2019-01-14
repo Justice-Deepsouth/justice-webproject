@@ -154,13 +154,12 @@ class User
 
 
 
-        //page
+    //page
     function readall_complainant()
     {
-
         // define how many results you want per page
         $results_per_page = 10;
-// determine which page number visitor is currently on
+        // determine which page number visitor is currently on
         if (!isset($_GET['page'])) {
             $page = 1;
         } else {
@@ -182,42 +181,38 @@ class User
         return mysqli_num_rows($result);
     }
 
-
-            //page
-            function readall_ju()
-            {
-        
-                // define how many results you want per page
-                $results_per_page = 10;
-        // determine which page number visitor is currently on
-                if (!isset($_GET['page'])) {
-                    $page = 1;
-                } else {
-                    $page = $_GET['page'];
-                } 
-                // determine the sql LIMIT starting number for the results on the displaying page
-                $this_page_first_result = ($page - 1) * $results_per_page;
-                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id LIMIT  $this_page_first_result , $results_per_page";
-                $result = mysqli_query($this->conn, $query);
-                return $result;
-            } //read all complainant
-        
-        
-             // get number of total records
-            function getTotalRows_ju()
-            {
-                $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id";
-                $result = mysqli_query($this->conn, $query);
-                return mysqli_num_rows($result);
-            }
-
-                    //page
-    function readall_admin()
+    //page
+    function readall_ju()
     {
-
         // define how many results you want per page
         $results_per_page = 10;
-// determine which page number visitor is currently on
+        // determine which page number visitor is currently on
+        if (!isset($_GET['page'])) {
+            $page = 1;
+        } else {
+            $page = $_GET['page'];
+        } 
+        // determine the sql LIMIT starting number for the results on the displaying page
+        $this_page_first_result = ($page - 1) * $results_per_page;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id LIMIT  $this_page_first_result , $results_per_page";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    } //read all complainant
+        
+    // get number of total records
+    function getTotalRows_ju()
+    {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 1 ORDER BY user_id";
+        $result = mysqli_query($this->conn, $query);
+        return mysqli_num_rows($result);
+    }
+
+    //page
+    function readall_admin()
+    {
+        // define how many results you want per page
+        $results_per_page = 10;
+        // determine which page number visitor is currently on
         if (!isset($_GET['page'])) {
             $page = 1;
         } else {
@@ -231,12 +226,25 @@ class User
     } //read all complainant
 
 
-     // get number of total records
+    // get number of total records
     function getTotalRows_admin()
     {
         $query = "SELECT * FROM " . $this->table_name . " WHERE user_type = 0 ORDER BY user_id";
         $result = mysqli_query($this->conn, $query);
         return mysqli_num_rows($result);
+    }
+
+    // check duplicate
+    function checkDuplicateUser()
+    {
+        //$query = "SELECT * FROM " . $this->table_name . "WHERE user_id = '" . $this->user_id . "' AND user_type = " . $this->user_type;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE user_id = '" . $this->user_id . "'";
+        $result = mysqli_query($this->conn, $query);
+        if (mysqli_num_rows($result) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
