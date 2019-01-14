@@ -54,11 +54,11 @@ class Complaint_progress
 
     // update record
     function update(){
-        $query = "UPDATE " . $this->table_name . " SET complaint_progress_desc = ?, complaint_progress_status = ? WHERE complaint_progress_id = ?";
+        $query = "UPDATE " . $this->table_name . " SET complaint_progress_desc = ? WHERE complaint_progress_id = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameters
-        mysqli_stmt_bind_param($stmt, 'sss', $this->complaint_progress_desc, $this->complaint_progress_status, $this->complaint_progress_id);
+        mysqli_stmt_bind_param($stmt, 'ss', $this->complaint_progress_desc, $this->complaint_progress_id);
 
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
@@ -75,5 +75,11 @@ class Complaint_progress
         return mysqli_num_rows($result);
     }
     
+    function getLast_user() {
+        $query = "SELECT * FROM	" . $this->table_name." WHERE complaint_id ='" . $this->complaint_id . "' ORDER BY complaint_progress_id DESC LIMIT 1";
+        $result = mysqli_query($this->conn, $query);
+            
+        return $result;
+    }
 }
 ?>
