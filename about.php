@@ -3,7 +3,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Justice Deep South Project by Justice League Team</title>
+	<title>Justice Deep South Project</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Justice Deep South Project" />
 	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
