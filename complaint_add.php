@@ -116,21 +116,17 @@
 					if ($filevError === 0) {
 						if ($filevSize <= 1000000000) {
 							$filevDestination = 'comp_video/' . $newvname;
+
 							if(move_uploaded_file($filevTmpName, $filevDestination)){
 								$complaint_videos->complaint_id = $mComplaint_ID;
 								$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
 								$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
 								if ($complaint_videos->create()) {
-									$setting->complaint_id_last = $mComplaint_ID;
-									$setting->update_complaint_id();
 									$success = true;
 								} else {
 									$success = false;
 								}
-							};
-
-
-
+							}
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -142,7 +138,9 @@
 				}
 			}
 			// add file video to server and insert complaint video //
-			header("Location: complaint_status.php");
+			$setting->complaint_id_last = $mComplaint_ID;
+			$setting->update_complaint_id();
+			// header("Location: complaint_status.php");
 		}
 	}
 	ob_end_flush();
@@ -324,15 +322,16 @@
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-							ไฟล์คลิป
-								<input type="file" id="complaint_video" name="complaint_video[]" multiple >
+								<label class="btn btn-info">
+									อัพโหลดไฟล์คลิป&hellip; <input type="file" id="complaint_video" name="complaint_video[]" style="display: none;" multiple >
+								</label>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-							ไฟล์ภาพ
-								<!-- <input type="file" class="btn btn-primary btn-modify" id= "complaint_photo" name="complaint_photo[]" multiple > -->
-								<input type="file" id="complaint_photo" name="complaint_photo[]" multiple >
+								<label class="btn btn-info">
+									อัพโหลดไฟล์ภาพ&hellip; <input type="file" id="complaint_photo" name="complaint_photo[]" style="display: none;" multiple>
+            					</label>
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -343,6 +342,13 @@
 						<div class="col-md-12">
 							<div class="form-group">
 								<input type="submit" value="บันทึกข้อร้องเรียน" class="btn btn-primary btn-modify" name="complaint-status-submit">
+							</div>
+						</div>
+                        <div class="col-md-12">
+							<div class="form-group">
+							<div class="progress progress-striped active">
+								<div class="progress-bar" style="width:0%"><p id="msg">0%</p></div>
+							</div>
 							</div>
 						</div>
 						<div class="col-md-12">
@@ -420,5 +426,31 @@
 	<script>
 		$.validate();
 	</script>
+
+	<!-- progress bar -->
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script>$(function(){
+    $('#complaint').ajaxForm({
+        beforeSend:function(){
+            $('.progress').show();
+        },
+        uploadProgress:function(event,position,total,percentcomplete){
+			$('.progress-bar').width(percentcomplete+"%");
+			$('#msg').html(percentcomplete+"%")
+			if(percentcomplete==100){
+				alert("อัพโหลดไฟล์เสร็จสิ้น");
+			}
+		},
+        success:function(){
+			$('.progress').hide();
+		},
+        complete:function(){
+			window.location.href = "complaint_status.php";
+		}
+		});
+		$('.progress').hide();
+	});
+	</script>
+    <!-- progress bar -->
 	</body>
 </html>

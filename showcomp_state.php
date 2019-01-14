@@ -9,7 +9,8 @@
     date_default_timezone_set("Asia/Bangkok");
 
     include_once 'php/dbconnect.php';
-	include_once 'php/complaint_state.php';
+    include_once 'php/complaint_state.php';
+    include_once 'php/complaint.php';
 
     // get connection
     $database = new Database();
@@ -17,6 +18,14 @@
 
     $complaint_state = new Complaint_state($db);
     $cdate = new DateTime();
+
+    $complaint = new Complaint($db);
+    $complaint->complaint_id = $_POST['comp_id'];
+    $result = $complaint->readone();
+    $row = mysqli_fetch_array($result);
+
+    $complaint_state->complaint_state_id = $row['complaint_state_id'];
+    
 ?>
 
 <div class="table-responsive">
