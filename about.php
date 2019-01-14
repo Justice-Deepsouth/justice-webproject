@@ -147,11 +147,11 @@
 			<br>
 
 					<ul class="nav nav-tabs">
-						<li class="active"><a data-toggle="tab" href="#step-1">ขั้นตอนที่1</a></li>
-						<li><a data-toggle="tab" href="#step-2">ขั้นตอนที่2</a></li>
-						<li><a data-toggle="tab" href="#step-3">ขั้นตอนที่3</a></li>
-						<li><a data-toggle="tab" href="#step-4">ขั้นตอนที่4</a></li>
-						<li><a data-toggle="tab" href="#step-5">ขั้นตอนที่5</a></li>
+						<li class="active"><a data-toggle="tab" href="#step-1">ขั้นตอนที่ 1</a></li>
+						<li><a data-toggle="tab" href="#step-2">ขั้นตอนที่ 2</a></li>
+						<li><a data-toggle="tab" href="#step-3">ขั้นตอนที่ 3</a></li>
+						<li><a data-toggle="tab" href="#step-4">ขั้นตอนที่ 4</a></li>
+						<li><a data-toggle="tab" href="#step-5">ขั้นตอนที่ 5</a></li>
 					  </ul>
 					  <div class="tab-content">
 						<div id="step-1" class="tab-pane fade in active">
