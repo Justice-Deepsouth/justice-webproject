@@ -1,22 +1,22 @@
 <?php 
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
-include_once 'php/dbconnect.php';
-include_once 'php/activity.php';
+	include_once 'php/dbconnect.php';
+	include_once 'php/activity.php';
 
-    // get connection
-$database = new Database();
-$db = $database->getConnection();
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
-    // pass connection to property_types table
-$activity = new Activity($db);
+	// pass connection to property_types table
+	$activity = new Activity($db);
 
-$result = $activity->readone_index();
-$data = $activity->readall();
-$total_rows = $activity->getTotalRows();
+	$result = $activity->readone_index();
+	$data = $activity->readall();
+	$total_rows = $activity->getTotalRows();
 
-ob_end_flush();
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -109,7 +109,7 @@ ob_end_flush();
 							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
 							echo "<ul class='dropdown'>";
 							echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-							echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
+							echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
 							echo "</ul></li>";
 						}
 						?>
