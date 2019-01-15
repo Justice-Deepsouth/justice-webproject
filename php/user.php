@@ -10,6 +10,7 @@ class User
     public $user_name;
     public $user_passwd;
     public $user_email;
+    public $user_organization;
     public $user_type;
     public $user_status;
     public $created_date;
@@ -61,9 +62,9 @@ class User
     function create()
     {
         // write statement
-        $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (user_id,user_name, user_passwd, user_email, user_type, user_status, created_date , modified_date) VALUES (?,?,?,?,?,?,?,?)");
+        $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (user_id,user_name, user_passwd, user_email, user_organization, user_type, user_status, created_date , modified_date) VALUES (?,?,?,?,?,?,?,?,?)");
         // bind parameters
-        mysqli_stmt_bind_param($stmt, 'ssssssss', $this->user_id, $this->user_name, md5($this->user_passwd), $this->user_email, $this->user_type, $this->user_status, $this->created_date, $this->modified_date);
+        mysqli_stmt_bind_param($stmt, 'sssssssss', $this->user_id, $this->user_name, md5($this->user_passwd), $this->user_email, $this->user_organization, $this->user_type, $this->user_status, $this->created_date, $this->modified_date);
     
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
@@ -76,11 +77,11 @@ class User
     // update user
     function update()
     {
-        $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, user_type = ?, user_status = ?, created_date = ?, modified_date = ? WHERE  user_id = ?";
+        $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, user_organization = ?, user_type = ?, user_status = ?, created_date = ?, modified_date = ? WHERE  user_id = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameters
-        mysqli_stmt_bind_param($stmt, 'sssssss', $this->user_name, $this->user_email, $this->user_type, $this->user_status, $this->created_date, $this->modified_date, $this->user_id);
+        mysqli_stmt_bind_param($stmt, 'ssssssss', $this->user_name, $this->user_email, $this->user_organization, $this->user_type, $this->user_status, $this->created_date, $this->modified_date, $this->user_id);
     
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
@@ -89,22 +90,23 @@ class User
             return false;
         }
     } // update()
-        // update user
-        function update_user_info()
-        {
-            $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, modified_date = ? WHERE  user_id = ?";
-            // statement
-            $stmt = mysqli_prepare($this->conn, $query);
-            // bind parameters
-            mysqli_stmt_bind_param($stmt, 'ssss', $this->user_name, $this->user_email, $this->modified_date, $this->user_id);
+
+    // update user
+    function update_user_info()
+    {
+        $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, user_organization = ?, modified_date = ? WHERE  user_id = ?";
+        // statement
+        $stmt = mysqli_prepare($this->conn, $query);
+        // bind parameters
+        mysqli_stmt_bind_param($stmt, 'sssss', $this->user_name, $this->user_email, $this->user_organization, $this->modified_date, $this->user_id);
         
-            /* execute prepared statement */
-            if (mysqli_stmt_execute($stmt)) {
-                return true;
-            } else {
-                return false;
-            }
-        } // update()
+        /* execute prepared statement */
+        if (mysqli_stmt_execute($stmt)) {
+            return true;
+        } else {
+            return false;
+        }
+    } // update()
 
     // update user's password
     function update_pwd()
@@ -151,8 +153,6 @@ class User
         $result = mysqli_query($this->conn, $query);
         return $result;
     }//search all
-
-
 
     //page
     function readall_complainant()

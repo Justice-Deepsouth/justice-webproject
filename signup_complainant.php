@@ -23,6 +23,7 @@
 			$user->user_name = $_POST['user-name'];
 			$user->user_passwd = $_POST['user-password_confirmation'];
 			$user->user_email = $_POST['user-email'];
+			$user->user_organization = $_POST['user-organization'];
 			$user->user_type = "2";
 			$user->user_status = "1";
 			if ($user->create()) {
@@ -133,6 +134,11 @@
 						<div class="col-md-12">
 							<div class="form-group">
 								<input type="email" class="form-control" placeholder="อีเมล" maxlength="50" name="user-email" data-validation="email" data-validation-error-msg="บันทึกอีเมล">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="หน่วยงาน/โรงเรียน" maxlength="200" name="user-organization" data-validation="required" data-validation-error-msg="บันทึกหน่วยงาน/โรงเรียน">
 							</div>
 						</div>
 						<div class="col-md-6">

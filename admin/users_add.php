@@ -16,7 +16,7 @@
     // pass connection to property_types table
 	$user = new User($db);
 
-	// read all records
+/* 	// read all records
 	$active = false;
 	$result = $user->readall($active);
 	$total_rows = $user->getTotalRows();
@@ -27,6 +27,7 @@
 		$user->user_name = $_POST['user-name'];
 		$user->user_passwd = $_POST['user-password_confirmation'];
 		$user->user_email = $_POST['user-email'];
+		$user->user_organization = $_POST['user-organization'];
 		$user->user_type = $_POST['user-type'];
 		$user->user_status = $_POST['user-status'];
 
@@ -43,7 +44,32 @@
 				$success = false;
 			}
 		}
+	} */
+
+	// Aj.Ruchdee
+	if (isset($_POST['user-submit'])) {
+		$user->user_id = $_POST['user-id'];
+		if ($user->checkDuplicateUser()) {
+			# user_id already exists
+			$success = false;
+			$duplicate = true;
+		} else {
+			# user_id inexists
+			$user->user_name = $_POST['user-name'];
+			$user->user_passwd = $_POST['user-password_confirmation'];
+			$user->user_email = $_POST['user-email'];
+			$user->user_organization = $_POST['user-organization'];
+			$user->user_type = $_POST['user-type'];
+			$user->user_status = $_POST['user-status'];
+			if ($user->create()) {
+				$success = true;
+				header("Location: users_list.php");
+			} else {
+				$success = false;
+			}
+		}
 	}
+
 	ob_end_flush();
 ?>
 
@@ -112,7 +138,7 @@
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
-							<li><a href="../index.html">หน้าแรก</a></li>
+							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="#">บทความ</a>
 								<ul class="dropdown">
@@ -123,8 +149,8 @@
 								</ul>
 							</li>
 							<li><a href="#">กิจกรรม</a></li>
-							<li><a href="../complaint_login.html">ร้องเรียน</a></li>
-							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
+							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
+							<li><a href="../about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
@@ -210,6 +236,11 @@
 								<input type="email" class="form-control" placeholder="อีเมล" maxlength="50" name="user-email" data-validation="email" data-validation-error-msg="บันทึกอีเมล">
 							</div>
 						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="หน่วยงาน/โรงเรียน" maxlength="200" name="user-organization" data-validation="required" data-validation-error-msg="บันทึกหน่วยงาน/โรงเรียน">
+							</div>
+						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<input type="password" class="form-control" placeholder="รหัสผ่าน"  maxlength="8" name="user-password_confirmation" data-validation="required" data-validation-error-msg="บันทึกรหัสผ่าน">
@@ -245,7 +276,11 @@
 								if ($success) {
 									echo "<div class='alert alert-success text-center'>บันทึกข้อมูลเรียบร้อยแล้ว</div>";
 								} else {
-									echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+									if ($duplicate) {
+										echo "<div class='alert alert-danger text-center'>รหัสผู้ใช้งานซ้ำ! ไม่สามารถบันทึกข้อมูลได้</div>";
+									} else {
+										echo "<div class='alert alert-danger text-center'>พบข้อผิดพลาด! ไม่สามารถบันทึกข้อมูลได้</div>";
+									}
 								}
 							}
 						?>

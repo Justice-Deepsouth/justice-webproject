@@ -29,6 +29,7 @@
 		$user->user_id = $_POST['user-id'];
 		$user->user_name = $_POST['user-name'];
 		$user->user_email = $_POST['user-email'];
+		$user->user_organization = $_POST['user-organization'];
 		$user->user_type = $_POST['user-type'];
 		$user->user_status = $_POST['user-status'];
 		if ($user->update()) {
@@ -199,7 +200,12 @@
 							<div class="form-group">
 								<input type="email" class="form-control" placeholder="อีเมล" maxlength="50" name="user-email" value="<?php echo $row['user_email']; ?>" data-validation="email" data-validation-error-msg="อีเมลไม่ถูกต้อง">
 							</div>
-						</div>			
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="หน่วยงาน/โรงเรียน" maxlength="200" name="user-organization" value="<?php echo $row['user_organization']; ?>" data-validation="required" data-validation-error-msg="บันทึกหน่วยงาน/โรงเรียน">
+							</div>
+						</div>
                       	<div class="col-md-4">
 							<div class="form-group">
 								<select class="form-control" name="user-type">
