@@ -4,6 +4,7 @@
 
 	include_once 'php/dbconnect.php';
 	include_once 'php/activity.php';
+	include_once 'php/article.php';
 
 	// get connection
 	$database = new Database();
@@ -15,6 +16,11 @@
 	$result = $activity->readone_index();
 	$data = $activity->readall();
 	$total_rows = $activity->getTotalRows();
+
+	// pass connection to property_types table
+	$article = new Article($db);
+	$active = true;
+	$Aresult = $article->readall($active);
 
 	ob_end_flush();
 ?>
@@ -89,13 +95,15 @@
 						<ul>
 							<li class="active"><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-								<a href="#">บทความ</a>
-								<ul class="dropdown">
-									<li><a href="#">ประเภทบทความ 1</a></li>
-									<li><a href="#">ประเภทบทความ 2</a></li>
-									<li><a href="#">ประเภทบทความ 3</a></li>
-									<li><a href="#">ประเภทบทความ 4</a></li>
-								</ul>
+								<a href="article_list.php">บทความ</a>
+								<?php if(mysqli_fetch_array($Aresult) == ""){
+								}else{
+								?> <ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+									</ul>
+								<?php } ?>
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>

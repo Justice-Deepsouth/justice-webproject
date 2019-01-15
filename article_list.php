@@ -1,37 +1,36 @@
 <?php
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
-include_once 'php/dbconnect.php';
-include_once 'php/article.php';
+	include_once 'php/dbconnect.php';
+	include_once 'php/article.php';
 
-    // get connection
-$database = new Database();
-$db = $database->getConnection();
+		// get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
-    // pass connection to property_types table
-$article = new Article($db);
+		// pass connection to property_types table
+	$article = new Article($db);
 
-$active = true;
-$data = $article->readall($active);
-$Aresult = $article->readall($active);
-$total_rows = $article->getTotalRows();
-// define how many results you want per page
-$results_per_page = 10;
-// determine number of total pages available
-$number_of_pages = ceil($total_rows / $results_per_page);
+	$active = true;
+	$data = $article->readall($active);
+	$Aresult = $article->readall($active);
+	$total_rows = $article->getTotalRows();
+	// define how many results you want per page
+	$results_per_page = 10;
+	// determine number of total pages available
+	$number_of_pages = ceil($total_rows / $results_per_page);
 
-// determine which page number visitor is currently on
-if (!isset($_GET['page'])) {
-	$page = 1;
-} else {
-	$page = $_GET['page'];
-}
-// determine the sql LIMIT starting number for the results on the displaying page
-$this_page_first_result = ($page - 1) * $results_per_page;
+	// determine which page number visitor is currently on
+	if (!isset($_GET['page'])) {
+		$page = 1;
+	} else {
+		$page = $_GET['page'];
+	}
+	// determine the sql LIMIT starting number for the results on the displaying page
+	$this_page_first_result = ($page - 1) * $results_per_page;
 
-
-ob_end_flush();
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -105,13 +104,16 @@ ob_end_flush();
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown active">
 								<a href="#">บทความ</a>
-								<ul class="dropdown">
-								<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-									echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-								} ?>
-								</ul>
+								<?php if(mysqli_fetch_array($Aresult) == ""){
+								}else{
+								?> <ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+									</ul>
+								<?php } ?>
 							</li>
-							<li><a href="activities.php">กิจกรรม</a></li>
+							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>

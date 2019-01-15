@@ -2,6 +2,14 @@
 session_start();
 ob_start();
 
+include_once '../php/dbconnect.php';
+include_once '../php/activity.php';
+include_once '../php/article.php';
+
+// get connection
+$database = new Database();
+$db = $database->getConnection();
+
     // set current timezone
 date_default_timezone_set("Asia/Bangkok");
 
@@ -16,13 +24,6 @@ if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 
  // form is submitted
 if (isset($_POST['activity-submit'])) {
-
-	include_once '../php/dbconnect.php';
-	include_once '../php/activity.php';
-
-    // get connection
-	$database = new Database();
-	$db = $database->getConnection();
 
     // pass connection to property_states table
 	$activity = new Activity($db);
@@ -113,57 +114,63 @@ if (isset($_POST['activity-submit'])) {
 	}
 
 }
+
+// pass connection to property_types table
+$article = new Article($db);
+$active = true;
+$Aresult = $article->readall($active);
+
 ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
 	<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>หน้าเพิ่มกิจกรรม | Justice Project</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
-	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
-	<meta name="author" content="freehtml5.co" />
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>หน้าเพิ่มกิจกรรม | Justice Project</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
+		<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
+		<meta name="author" content="freehtml5.co" />
 
-  	<!-- Facebook and Twitter integration -->
-	<meta property="og:title" content=""/>
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content=""/>
-	<meta property="og:site_name" content=""/>
-	<meta property="og:description" content=""/>
-	<meta name="twitter:title" content="" />
-	<meta name="twitter:image" content="" />
-	<meta name="twitter:url" content="" />
-	<meta name="twitter:card" content="" />
+		<!-- Facebook and Twitter integration -->
+		<meta property="og:title" content=""/>
+		<meta property="og:image" content=""/>
+		<meta property="og:url" content=""/>
+		<meta property="og:site_name" content=""/>
+		<meta property="og:description" content=""/>
+		<meta name="twitter:title" content="" />
+		<meta name="twitter:image" content="" />
+		<meta name="twitter:url" content="" />
+		<meta name="twitter:card" content="" />
 
-	<link href="https://fonts.googleapis.com/css?family=Oxygen:300,400" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Oxygen:300,400" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700" rel="stylesheet">
 
-	<link href="https://fonts.googleapis.com/css?family=Chakra+Petch" rel="stylesheet">
-	
-	<!-- Animate.css -->
-	<link rel="stylesheet" href="../css/animate.css">
-	<!-- Icomoon Icon Fonts-->
-	<link rel="stylesheet" href="../css/icomoon.css">
-	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="../css/bootstrap.css">
+		<link href="https://fonts.googleapis.com/css?family=Chakra+Petch" rel="stylesheet">
+		
+		<!-- Animate.css -->
+		<link rel="stylesheet" href="../css/animate.css">
+		<!-- Icomoon Icon Fonts-->
+		<link rel="stylesheet" href="../css/icomoon.css">
+		<!-- Bootstrap  -->
+		<link rel="stylesheet" href="../css/bootstrap.css">
 
-	<!-- Magnific Popup -->
-	<link rel="stylesheet" href="../css/magnific-popup.css">
+		<!-- Magnific Popup -->
+		<link rel="stylesheet" href="../css/magnific-popup.css">
 
-	<!-- Flexslider  -->
-	<link rel="stylesheet" href="../css/flexslider.css">
+		<!-- Flexslider  -->
+		<link rel="stylesheet" href="../css/flexslider.css">
 
-	<!-- Theme style  -->
-	<link rel="stylesheet" href="../css/style.css">
+		<!-- Theme style  -->
+		<link rel="stylesheet" href="../css/style.css">
 
-	<!-- Modernizr JS -->
-	<script src="../js/modernizr-2.6.2.min.js"></script>
-	<!-- FOR IE9 below -->
-	<!--[if lt IE 9]>
-	<script src="js/respond.min.js"></script>
-	<![endif]-->
+		<!-- Modernizr JS -->
+		<script src="../js/modernizr-2.6.2.min.js"></script>
+		<!-- FOR IE9 below -->
+		<!--[if lt IE 9]>
+		<script src="js/respond.min.js"></script>
+		<![endif]-->
 
 	</head>
 	<body>
@@ -182,17 +189,19 @@ ob_end_flush();
 						<ul>
 							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-								<a href="#">บทความ</a>
-								<ul class="dropdown">
-									<li><a href="#">ประเภทบทความ 1</a></li>
-									<li><a href="#">ประเภทบทความ 2</a></li>
-									<li><a href="#">ประเภทบทความ 3</a></li>
-									<li><a href="#">ประเภทบทความ 4</a></li>
-								</ul>
+							<a href="../article_list.php">บทความ</a>
+								<?php if(mysqli_fetch_array($Aresult) == ""){
+								}else{
+								?> <ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='../article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+									</ul>
+								<?php } ?>
 							</li>
-							<li><a href="#">กิจกรรม</a></li>
+							<li><a href="../activities_show.php">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
+							<li><a href="../about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
 						if (!isset($_SESSION['user_session_id'])) {
