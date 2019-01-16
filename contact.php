@@ -138,14 +138,14 @@
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(images/img_bg_3.jpg);">
+			   	<li style="background-image: url(images/IMG_7876.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluids">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>ติดต่อโครงการ</h1>
-										<h2>Contact Us</h2>
+				   					<h1><span style="background-color:yellow">ติดต่อโครงการ</span></h1>
+									<h2><span style="background-color:yellow">Contact Us</span></h2>
 				   				</div>
 				   			</div>
 				   		</div>
@@ -155,12 +155,12 @@
 		  	</div>
 		</aside>		
 		<div id="fh5co-contact">
-			<div class="row animate-box">
+			<!-- <div class="row animate-box">
 				<div class="col-md-6 col-md-offset-3 text-center fh5co-heading">
 					<h2>ติดต่อโครงการ</h2>
 					<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia.</p>
 				</div>
-			</div>
+			</div> -->
 			<div class="row">
 				<div class="col-md-3 col-md-push-1 animate-box">
 					<h3>ที่ตั้งโครงการ</h3>

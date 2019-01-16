@@ -126,14 +126,14 @@
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(images/img_bg_3.jpg);">
+			   	<li style="background-image: url(images/IMG_7800.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluids">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>เกี่ยวกับโครงการ</h1>
-										<h2>ใส่ Quote เกี่ยวกับความยุติธรรม</h2>
+				   					<h1><span style="background-color:yellow">เกี่ยวกับโครงการ</span></h1>
+									<h2><span style="background-color:yellow">ใส่ Quote เกี่ยวกับความยุติธรรม</span></h2>
 				   				</div>
 				   			</div>
 				   		</div>

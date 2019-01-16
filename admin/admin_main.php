@@ -145,14 +145,14 @@
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(../images/img_bg_3.jpg);">
+			   	<li style="background-image: url(../images/DSC_9377.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluids">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>การจัดการข้อมูล</h1>
-										<h2>Data Management</h2>
+				   					<h1><span style="background-color:yellow">การจัดการข้อมูล</span></h1>
+									<h2><span style="background-color:yellow">Data Management</span></h2>
 				   				</div>
 				   			</div>
 				   		</div>

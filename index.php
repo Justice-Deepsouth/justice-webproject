@@ -139,8 +139,8 @@
 				   			<div class="col-md-6 col-md-offset-3 col-md-pull-3 slider-text">
 				   				<div class="slider-text-inner">
 				   					<h1><span style="background-color:yellow">กรณีศึกษาการจัดการปัญหาความยุติธรรม#1</span></h1>
-										<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
-										<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
+									<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
+									<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
 				   				</div>
 				   			</div>
 				   		</div>
@@ -153,36 +153,36 @@
 				   			<div class="col-md-6 col-md-offset-3 col-md-push-3 slider-text">
 				   				<div class="slider-text-inner">
 				   					<h1><span style="background-color:yellow">กรณีศึกษาการจัดการปัญหาความยุติธรรม#2</span></h1>
-										<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
-										<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
+									<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
+									<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
 				   				</div>
 				   			</div>
 				   		</div>
 			   		</div>
 			   	</li>
-			   	<li style="background-image: url(images/img_bg_3.jpg);">
+			   	<li style="background-image: url(images/IMG_7800.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluids">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>กรณีศึกษาการจัดการปัญหาความยุติธรรม#3</h1>
-										<h2>ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</h2>
-										<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
+				   					<h1><span style="background-color:yellow">กรณีศึกษาการจัดการปัญหาความยุติธรรม#3</span></h1>
+									<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
+									<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
 				   				</div>
 				   			</div>
 				   		</div>
 			   		</div>
 			   	</li>
-			   	<li style="background-image: url(images/img_bg_4.jpg);">
+			   	<li style="background-image: url(images/IMG_7873.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluid">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 col-md-push-3 slider-text">
 				   				<div class="slider-text-inner">
-				   					<h1>กรณีศึกษาการจัดการปัญหาความยุติธรรม#4</h1>
-										<h2>ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</h2>
-										<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
+				   					<h1><span style="background-color:yellow">กรณีศึกษาการจัดการปัญหาความยุติธรรม#4</span></h1>
+									<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
+									<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
 				   				</div>
 				   			</div>
 				   		</div>
