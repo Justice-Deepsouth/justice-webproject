@@ -4,7 +4,7 @@ class Database{
     //connect to mysql database
     private $host = "localhost";
     // host on z.com
-    //private $host = "localhost:3306";
+    //private $host = "localhost";
     private $user = "root";
     // database user on z.com
     //private $user = "cp506146_root";
