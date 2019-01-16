@@ -1,9 +1,6 @@
 <?php
 	session_start();
-
-	if (!isset($_SESSION['user_session_id'])) {
-		header("Location: ../index.php");
-	}
+	ob_start();
 
 	include_once '../php/dbconnect.php';
 	include_once '../php/user.php';
@@ -11,6 +8,10 @@
 	// get connection
 	$database = new Database();
 	$db = $database->getConnection();
+
+	if (!isset($_SESSION['user_session_id'])) {
+		header("Location: ../index.php");
+	}
 
 	// pass connection to property_types table
 	$user = new User($db);
@@ -21,6 +22,13 @@
 		$result = $user->search($active);
 		$total_rows = $user->getTotalRows();
 	}
+		
+	// pass connection to property_types table
+	$article = new Article($db);
+	$active = true;
+	$Aresult = $article->readall($active);
+
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -90,17 +98,19 @@
 						<ul>
 							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-								<a href="#">บทความ</a>
-								<ul class="dropdown">
-									<li><a href="#">ประเภทบทความ 1</a></li>
-									<li><a href="#">ประเภทบทความ 2</a></li>
-									<li><a href="#">ประเภทบทความ 3</a></li>
-									<li><a href="#">ประเภทบทความ 4</a></li>
-								</ul>
+							<a href="../article_list.php">บทความ</a>
+								<?php if(mysqli_fetch_array($Aresult) == ""){
+								}else{
+								?> <ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='../article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+									</ul>
+								<?php } ?>
 							</li>
-							<li><a href="#">กิจกรรม</a></li>
+							<li><a href="../activities_show.php">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="../about.html">เกี่ยวกับโครงการ</a></li>
+							<li><a href="../about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php
 								if (!isset($_SESSION['user_session_id'])) {

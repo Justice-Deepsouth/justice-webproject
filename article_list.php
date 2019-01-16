@@ -104,13 +104,16 @@
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown active">
 								<a href="#">บทความ</a>
-								<ul class="dropdown">
-								<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-									echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-								} ?>
-								</ul>
+								<?php if(mysqli_fetch_array($Aresult) == ""){
+								}else{
+								?> <ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+									</ul>
+								<?php } ?>
 							</li>
-							<li><a href="activities.php">กิจกรรม</a></li>
+							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>

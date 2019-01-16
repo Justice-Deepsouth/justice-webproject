@@ -1,23 +1,29 @@
 <?php
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
-include_once 'php/dbconnect.php';
-include_once 'php/activity.php';
+	include_once 'php/dbconnect.php';
+	include_once 'php/activity.php';
+	include_once 'php/article.php';
 
-    // get connection
-$database = new Database();
-$db = $database->getConnection();
+		// get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
-    // pass connection to property_states table
-$activity = new Activity($db);
+		// pass connection to property_states table
+	$activity = new Activity($db);
 
 
-$active = $activity->activity_id = $_GET['activity_id'];
-$result = $activity->readone($active);
-$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	$active = $activity->activity_id = $_GET['activity_id'];
+	$result = $activity->readone($active);
+	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-ob_end_flush();
+	// pass connection to property_types table
+	$article = new Article($db);
+	$active = true;
+	$Aresult = $article->readall($active);
+
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -91,30 +97,32 @@ ob_end_flush();
 						<ul>
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-								<a href="#">บทความ</a>
-								<ul class="dropdown">
-									<li><a href="#">ประเภทบทความ 1</a></li>
-									<li><a href="#">ประเภทบทความ 2</a></li>
-									<li><a href="#">ประเภทบทความ 3</a></li>
-									<li><a href="#">ประเภทบทความ 4</a></li>
-								</ul>
+							<a href="article_list.php">บทความ</a>
+								<?php if(mysqli_fetch_array($Aresult) == ""){
+								}else{
+								?> <ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+									</ul>
+								<?php } ?>
 							</li>
-							<li class="active"><a href="activities_show.php">กิจกรรม</a></li>
+							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
+							<li class="active"><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
-        if (!isset($_SESSION['user_session_id'])) {
-            echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
-        } else {
-            echo "<li class='has-dropdown'>";
-            echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
-            echo "<ul class='dropdown'>";
-            echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
-            echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
-            echo "</ul></li>";
-        }
-        ?>
+							if (!isset($_SESSION['user_session_id'])) {
+								echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
+							} else {
+								echo "<li class='has-dropdown'>";
+								echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+								echo "<ul class='dropdown'>";
+								echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+								echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
+								echo "</ul></li>";
+							}
+							?>
 						</ul>
 					</div>
 				</div>
