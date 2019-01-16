@@ -116,7 +116,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo2.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -204,7 +204,7 @@
 						<form role="form" id="search" action="activities_search.php" method="post">
 							<div class="col-md-8" >
 								<div class="form-group">
-									<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ค้นหาข้อมูลผู้ใช้งาน" autocomplete="off">
+									<input type="text" name="name-search" id="name-search" class="form-control" placeholder="ค้นหาข้อมูลกิจกรรม" autocomplete="off">
 								</div>
 							</div>
 							<div class="col-md-4 ">

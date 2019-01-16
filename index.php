@@ -83,7 +83,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.php"><img src="images/6646.jpg"></a></div>
+						<div id="fh5co-logo"><a href="index.php"><img src="images/logo2.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -124,28 +124,28 @@
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(images/img_bg_1.jpg);">
+			   	<li style="background-image: url(images/DSC_7565.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluid">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 col-md-pull-3 slider-text">
 				   				<div class="slider-text-inner">
-				   					<h1>กรณีศึกษาการจัดการปัญหาความยุติธรรม#1</h1>
-										<h2>ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</h2>
+				   					<h1><span style="background-color:yellow">กรณีศึกษาการจัดการปัญหาความยุติธรรม#1</span></h1>
+										<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
 										<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
 				   				</div>
 				   			</div>
 				   		</div>
 			   		</div>
 			   	</li>
-			   	<li style="background-image: url(images/img_bg_2.jpg);">
+			   	<li style="background-image: url(images/IMG_7942.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluid">
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 col-md-push-3 slider-text">
 				   				<div class="slider-text-inner">
-				   					<h1>กรณีศึกษาการจัดการปัญหาความยุติธรรม#2</h1>
-										<h2>ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</h2>
+				   					<h1><span style="background-color:yellow">กรณีศึกษาการจัดการปัญหาความยุติธรรม#2</span></h1>
+										<h2><span style="background-color:yellow">ข้อความเกริ่นนำหรือบทสรุป ไม่เกิน 2 บรรทัด</span></h2>
 										<p><a class="btn btn-primary btn-demo" href="#"> อ่านต่อ...</a></p>
 				   				</div>
 				   			</div>

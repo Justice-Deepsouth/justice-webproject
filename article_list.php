@@ -1,37 +1,36 @@
 <?php
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
-include_once 'php/dbconnect.php';
-include_once 'php/article.php';
+	include_once 'php/dbconnect.php';
+	include_once 'php/article.php';
 
-    // get connection
-$database = new Database();
-$db = $database->getConnection();
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
 
-    // pass connection to property_types table
-$article = new Article($db);
+	// pass connection to property_types table
+	$article = new Article($db);
 
-$active = true;
-$data = $article->readall($active);
-$Aresult = $article->readall($active);
-$total_rows = $article->getTotalRows();
-// define how many results you want per page
-$results_per_page = 10;
-// determine number of total pages available
-$number_of_pages = ceil($total_rows / $results_per_page);
+	$active = true;
+	$data = $article->readall($active);
+	$Aresult = $article->readall($active);
+	$total_rows = $article->getTotalRows();
+	// define how many results you want per page
+	$results_per_page = 10;
+	// determine number of total pages available
+	$number_of_pages = ceil($total_rows / $results_per_page);
 
-// determine which page number visitor is currently on
-if (!isset($_GET['page'])) {
-	$page = 1;
-} else {
-	$page = $_GET['page'];
-}
-// determine the sql LIMIT starting number for the results on the displaying page
-$this_page_first_result = ($page - 1) * $results_per_page;
+	// determine which page number visitor is currently on
+	if (!isset($_GET['page'])) {
+		$page = 1;
+	} else {
+		$page = $_GET['page'];
+	}
+	// determine the sql LIMIT starting number for the results on the displaying page
+	$this_page_first_result = ($page - 1) * $results_per_page;
 
-
-ob_end_flush();
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -98,7 +97,7 @@ ob_end_flush();
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="index.php"><img src="images/6646.jpg"></a></div>
+						<div id="fh5co-logo"><a href="index.php"><img src="images/logo2.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>

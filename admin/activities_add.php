@@ -176,7 +176,7 @@ ob_end_flush();
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo2.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -283,20 +283,23 @@ ob_end_flush();
                          <div class="col-md-6">
 							<div class="form-group">
                                 <p>วันเริ่มกิจกรรม</p>
-								    <input type="date" class="form-control"  name="activity-sdate" data-validation="required" data-validation-error-msg="บันทึกวันเริ่มกิจกรรม">
+								<input type="date" class="form-control"  name="activity-sdate" data-validation="required" data-validation-error-msg="บันทึกวันเริ่มกิจกรรม">
 							</div>
 						</div>
                            
                         <div class="col-md-6">
 							 <div class="form-group">
                                 <p>วันสิ้นสดกิจกรรม</p>
-								    <input type="date" class="form-control"  name="activity-edate" data-validation="required" data-validation-error-msg="บันทึกวันสิ้นสดกิจกรรม">
+								<input type="date" class="form-control"  name="activity-edate" data-validation="required" data-validation-error-msg="บันทึกวันสิ้นสดกิจกรรม">
 							 </div>
 						</div>
 
                         <div class="col-md-6">
 							 <div class="form-group">
-                                <input type="file" id= "activity-image" name="activity-image">
+								<!-- <input type="file" id= "activity-image" name="activity-image"> -->
+								<label class="btn btn-info">
+									อัพโหลดไฟล์ภาพ&hellip; <input type="file" id="activity-image" name="activity-image" style="display: none;">
+            					</label>
                             </div>
 						</div>
 
