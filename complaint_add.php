@@ -86,8 +86,6 @@
 									$success = false;
 								}
 							};
-							
-
 						} else {
 							echo "<div class='alert alert-danger text-center'>" . $fileName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 						}
@@ -437,28 +435,29 @@
 
 	<!-- progress bar -->
 	<script src="http://malsup.github.com/jquery.form.js"></script> 
-	<script>$(function(){
-    $('#complaint').ajaxForm({
-        beforeSend:function(){
-            $('.progress').show();
-        },
-        uploadProgress:function(event,position,total,percentcomplete){
-			$('.progress-bar').width(percentcomplete+"%");
-			$('#msg').html(percentcomplete+"%")
-			if(percentcomplete==100){
-				alert("อัพโหลดไฟล์เสร็จสิ้น");
-			}
-		},
-        success:function(){
+	<!-- <script>
+		$(function(){
+			$('#complaint').ajaxForm({
+				beforeSend:function(){
+					$('.progress').show();
+				},
+				uploadProgress:function(event,position,total,percentcomplete){
+					$('.progress-bar').width(percentcomplete+"%");
+					$('#msg').html(percentcomplete+"%")
+					if(percentcomplete==100){
+						alert("อัพโหลดไฟล์เสร็จสิ้น");
+					}
+				},
+				success:function(){
+					$('.progress').hide();
+				},
+				complete:function(){
+					window.location.href = "complaint_status.php";
+				}
+			});
 			$('.progress').hide();
-		},
-        complete:function(){
-			window.location.href = "complaint_status.php";
-		}
 		});
-		$('.progress').hide();
-	});
-	</script>
+	</script> -->
     <!-- progress bar -->
 	</body>
 </html>
