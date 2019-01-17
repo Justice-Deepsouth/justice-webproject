@@ -5,31 +5,24 @@
 	include_once 'php/dbconnect.php';
 	include_once 'php/article.php';
 
-	// get connection
-	$database = new Database();
+    // get connection
+    $database = new Database();
 	$db = $database->getConnection();
 
-	// pass connection to property_types table
 	$article = new Article($db);
-
-	$active = true;
-	$data = $article->readall($active);
-	$Aresult = $article->readall($active);
-	$total_rows = $article->getTotalRows();
-	// define how many results you want per page
-	$results_per_page = 10;
-	// determine number of total pages available
-	$number_of_pages = ceil($total_rows / $results_per_page);
-
-	// determine which page number visitor is currently on
-	if (!isset($_GET['page'])) {
-		$page = 1;
+	
+    if (isset($_GET['ar_id'])) {
+		$article->article_id = $_GET['ar_id'];
+		$result = $article->readone();
+		$row = mysqli_fetch_array($result);
+		if ($row['article_id'] == "") {
+			header("Location: article_list.php");
+		}
 	} else {
-		$page = $_GET['page'];
+		header("Location: article_list.php");
 	}
-	// determine the sql LIMIT starting number for the results on the displaying page
-	$this_page_first_result = ($page - 1) * $results_per_page;
-
+	$active = true;
+	$Aresult = $article->readall($active);
 	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
@@ -37,7 +30,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Justice Deep South Project</title>
+	<title>บทความ <?= $row['article_title']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Justice Deep South Project" />
 	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
@@ -82,10 +75,6 @@
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 
-	<!-- <style rel="stylesheet" type="text/css">
-		#fh5co-logo {font-family: 'Chakra Petch', sans-serif;}
-	</style> -->
-
 	</head>
 	<body>
 		
@@ -103,17 +92,14 @@
 						<ul>
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown active">
-								<a href="#">บทความ</a>
-								<?php if(mysqli_fetch_array($Aresult) == ""){
-								}else{
-								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-										} ?>
-									</ul>
-								<?php } ?>
+								<a href="article_list.php">บทความ</a>
+								<ul class="dropdown">
+								<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+									echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+								} ?>
+								</ul>
 							</li>
-							<li><a href="activities_show.php">กิจกรรม</a></li>
+							<li><a href="activities.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
 							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
@@ -155,49 +141,27 @@
 			   	</li>		   	
 			  	</ul>
 			</div>
-        </aside>	
-    
-		<div id="fh5co-blog">
-                
-			<div class="row">
-            <?php while ($row = mysqli_fetch_array($data)) { ?>
-				<div class="col-md-4">
-					<div class="fh5co-blog animate-box">
-                        <!-- <?php 
-                        if ($row['article_image'] != "") {
-                           echo "<a href='#' class='blog-bg' style='background-image: url(article_img/$row[article_image])'></a>";
-                        } else {
-                            echo "<a href='#' class='blog-bg' style='background-image: url(images/no_image.jpg)'></a>";
-                        }
-                      
-                        ?> -->
-						<div class="blog-text">
-							<i class="icon-calendar"></i> &nbsp;
-							<?php 
-								echo $row['created_date'];
-								// $strDat = $row['created_date'];
-								// $sDate = $article->DateThai($strDat);
-								// echo $sDate;
-							?>
-							<h3><a href="article_detail.php?ar_id=<?php echo $row['article_id']; ?>"><?php echo $row["article_title"]; ?></a></h3>
-							<ul class="stuff">
-
-								<li><a href="article_detail.php?ar_id=<?php echo $row['article_id']; ?>">อ่านบทความ<i class="icon-arrow-right22"></i></a></li>
-							</ul>
-						</div> 
-					</div>
-                </div>
-            <?php } ?>
+		</aside>		
+		<div id="fh5co-about">
+			<div class="col-md-12">
+				<h4><i class="icon-stopwatch"> <?php echo $row['created_date'];?></i></h4>
+			</div>
+			<div class="row animate-box">
+				<div class="col-md-8 col-md-offset-2 heading-section">
+				<h3><?php echo $row['article_title']; ?></h3>
+					<?php echo $row['article_desc']; ?>
+				</div>
 			</div>
 		</div>
 	</div><!-- END container-wrap -->
 
-    <div class="container-wrap">
+	<div class="container-wrap">
 		<footer id="fh5co-footer" role="contentinfo">
 			<div class="row">
 				<div class="col-md-3 fh5co-widget">
 					<h4>ยุติธรรมคืออะไร?</h4>
-					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
+					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto
+						culpa amet.</p>
 				</div>
 				<div class="col-md-3 col-md-push-1">
 					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
@@ -209,18 +173,18 @@
 						<li><a href="#">ดูบทความทั้งหมด</a></li>
 					</ul>
 				</div>
-
+	
 				<div class="col-md-3 col-md-push-1">
 					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
 					<ul class="fh5co-footer-links">
-						<li><a href="https://www.psu.ac.th/th/" target="_blank">มหาวิทยาลัยสงขลานครินทร์</a></li>
-						<li><a href="http://huso.pn.psu.ac.th/th/" target="_blank">คณะมนุษยศาสตร์และสังคมศาสตร์ ม.อ.</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
+						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
 						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
 					</ul>
 				</div>
-
+	
 				<div class="col-md-3">
 					<h4>ติดต่อโครงการ</h4>
 					<ul class="fh5co-footer-links">
@@ -230,13 +194,13 @@
 						<li><a href="">gettemplates.co</a></li>
 					</ul>
 				</div>
-
+	
 			</div>
-
+	
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small> 
+						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
 						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>
@@ -274,14 +238,7 @@
 	<script src="js/jquery.countTo.js"></script>
 	<!-- Main -->
 	<script src="js/main.js"></script>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-130573850-1"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'UA-130573850-1');
-	</script>
 
 	</body>
 </html>
+
