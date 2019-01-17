@@ -54,93 +54,96 @@
 		$complaint->user_id = $_SESSION['user_id'];
 		$complaint->created_date = date("Y/m/d H:i:s");
 		if ($complaint->create()) {
-			for ($i = 0; $i < count($_FILES['complaint_photo']['name']); $i++) {
-				$fileName = $_FILES['complaint_photo']['name'][$i];
-				$fileTmpName = $_FILES['complaint_photo']['tmp_name'][$i];
-				$fileSize = $_FILES['complaint_photo']['size'][$i];
-				$fileError = $_FILES['complaint_photo']['error'][$i];
-				$fileType = $_FILES['complaint_photo']['type'][$i];
-		
-				$fileExt = explode('.', $fileName);
-				$fileActualExt = strtolower(end($fileExt));
-				$count = $i + 1;
-			
-				//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
-				$type = strrchr($fileName, ".");
-				//ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
-				$newname = $mComplaint_ID . "-img" . $count . $type;
-	
-				$allowed = array('jpg', 'jpeg', 'png', 'JPG');
+				for ($i = 0; $i < count($_FILES['complaint_photo']['name']); $i++) {
+					$fileName = $_FILES['complaint_photo']['name'][$i];
+					$fileTmpName = $_FILES['complaint_photo']['tmp_name'][$i];
+					$fileSize = $_FILES['complaint_photo']['size'][$i];
+					$fileError = $_FILES['complaint_photo']['error'][$i];
+					$fileType = $_FILES['complaint_photo']['type'][$i];
+						if($fileSize > 0){
+							$fileExt = explode('.', $fileName);
+							$fileActualExt = strtolower(end($fileExt));
+							$count = $i + 1;
+						
+							//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
+							$type = strrchr($fileName, ".");
+							//ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
+							$newname = $mComplaint_ID . "-img" . $count . $type;
+				
+							$allowed = array('jpg', 'jpeg', 'png', 'JPG');
 
-				if (in_array($fileActualExt, $allowed)) {
-					if ($fileError === 0) {
-						if ($fileSize <= 100000000) {
-							$fileDestination = 'comp_img/' . $newname;
-							if(move_uploaded_file($fileTmpName, $fileDestination)){
-								$complaint_photos->complaint_id = $mComplaint_ID;
-								$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
-								$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
-								if ($complaint_photos->create()) {
-									$success = true;
+							if (in_array($fileActualExt, $allowed)) {
+								if ($fileError === 0) {
+									if ($fileSize <= 100000000) {
+										$fileDestination = 'comp_img/' . $newname;
+										if(move_uploaded_file($fileTmpName, $fileDestination)){
+											$complaint_photos->complaint_id = $mComplaint_ID;
+											$complaint_photos->complaint_photo_name = $mComplaint_ID . "-img" . $count. $type;
+											$complaint_photos->complaint_photo_id = $mComplaint_ID . "-img" . $count;
+											if ($complaint_photos->create()) {
+												$success = true;
+											} else {
+												$success = false;
+											}
+										};
+									} else {
+										echo "<div class='alert alert-danger text-center'>" . $fileName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+									}
 								} else {
-									$success = false;
+									echo "<div class='alert alert-danger text-center'>" . $fileName . "  มีปัญหาการอัพโหลดไฟล์</div>";
 								}
-							};
-						} else {
-							echo "<div class='alert alert-danger text-center'>" . $fileName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+							} else {
+								echo "<div class='alert alert-danger text-center'>" . $fileName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
+							}
 						}
-					} else {
-						echo "<div class='alert alert-danger text-center'>" . $fileName . "  มีปัญหาการอัพโหลดไฟล์</div>";
-					}
-				} else {
-					echo "<div class='alert alert-danger text-center'>" . $fileName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
-				}
-			}
+				}				
 
-			// add file video to server and insert to complaint video
-			for ($i = 0; $i < count($_FILES['complaint_video']['name']); $i++) {
-				$filevName = $_FILES['complaint_video']['name'][$i];
-				$filevTmpName = $_FILES['complaint_video']['tmp_name'][$i];
-				$filevSize = $_FILES['complaint_video']['size'][$i];
-				$filevError = $_FILES['complaint_video']['error'][$i];
-				$filevType = $_FILES['complaint_video']['type'][$i];
-		
-				$filevExt = explode('.', $filevName);
-				$filevActualExt = strtolower(end($filevExt));
-				$vcount = $i + 1;
+				// add file video to server and insert to complaint video
+				for ($i = 0; $i < count($_FILES['complaint_video']['name']); $i++) {
+					$filevName = $_FILES['complaint_video']['name'][$i];
+					$filevTmpName = $_FILES['complaint_video']['tmp_name'][$i];
+					$filevSize = $_FILES['complaint_video']['size'][$i];
+					$filevError = $_FILES['complaint_video']['error'][$i];
+					$filevType = $_FILES['complaint_video']['type'][$i];
+					if($filevSize > 0){
+						$filevExt = explode('.', $filevName);
+						$filevActualExt = strtolower(end($filevExt));
+						$vcount = $i + 1;
+					
+						//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
+						$vtype = strrchr($filevName, ".");
+						//ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
+						$newvname = $mComplaint_ID . "-video" . $vcount . $vtype;
 			
-				//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
-				$vtype = strrchr($filevName, ".");
-				//ตั้งชื่อไฟล์ใหม่โดยเอาเวลาไว้หน้าชื่อไฟล์เดิม
-				$newvname = $mComplaint_ID . "-video" . $vcount . $vtype;
-	
-				$vallowed = array('mp4', 'mkv', 'flv', '3gp');
+						$vallowed = array('mp4', 'mkv', 'flv', '3gp');
 
-				if (in_array($filevActualExt, $vallowed)) {
-					if ($filevError === 0) {
-						if ($filevSize <= 1000000000) {
-							$filevDestination = 'comp_video/' . $newvname;
+						if (in_array($filevActualExt, $vallowed)) {
+							if ($filevError === 0) {
+								if ($filevSize <= 1000000000) {
+									$filevDestination = 'comp_video/' . $newvname;
 
-							if(move_uploaded_file($filevTmpName, $filevDestination)){
-								$complaint_videos->complaint_id = $mComplaint_ID;
-								$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
-								$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
-								if ($complaint_videos->create()) {
-									$success = true;
+									if(move_uploaded_file($filevTmpName, $filevDestination)){
+										$complaint_videos->complaint_id = $mComplaint_ID;
+										$complaint_videos->complaint_video_name = $mComplaint_ID . "-video" . $vcount. $vtype;
+										$complaint_videos->complaint_video_id = $mComplaint_ID . "-video" . $vcount;
+										if ($complaint_videos->create()) {
+											$success = true;
+										} else {
+											$success = false;
+										}
+									}
 								} else {
-									$success = false;
+									echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 								}
+							} else {
+								echo "<div class='alert alert-danger text-center'>" . $filevName . "  มีปัญหาการอัพโหลดไฟล์</div>";
 							}
 						} else {
-							echo "<div class='alert alert-danger text-center'>" . $filevName . "  ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+							echo "<div class='alert alert-danger text-center'>" . $filevName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
 						}
-					} else {
-						echo "<div class='alert alert-danger text-center'>" . $filevName . "  มีปัญหาการอัพโหลดไฟล์</div>";
 					}
-				} else {
-					echo "<div class='alert alert-danger text-center'>" . $filevName . "  คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
 				}
-			}
+
 			// add file video to server and insert complaint video //
 			$setting->complaint_id_last = $mComplaint_ID;
 			$setting->update_complaint_id();
@@ -240,7 +243,7 @@
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
-							<li class="active"><a href="about.php">เกี่ยวกับโครงการ</a></li>
+							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
