@@ -159,7 +159,7 @@
 
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2 animate-box">
-					<img src="comp_img/about/1.png" width="640" height="640" class="img-fluid" alt="Responsive image">
+					<img src="images/about1.png" width="640" height="640" class="img-fluid" alt="Responsive image">
 			<div class="about-desc">	
 			<br>
 
@@ -175,7 +175,7 @@
 							<br>
 							<h4>ขั้นตอนที่ 1 การเผยแนวคิดยุติธรรมสู่ประชาชน </h4>
 							<p class="text-justify">&emsp; &emsp; ภายใต้กระบวนการศึกษา จะยึดแนวทางการมีส่วนร่วมและการบูรณาการภายใต้บริบทของชุมชนเป็นหลัก ซึ่งพบว่าวิธีการส่งเสริมหรือเผยแพร่ความรู้ และกิจกรรมต่างๆ ที่เกี่ยวข้องกับงานยุติธรรม การทำงานของโครงการได้เน้นการเผยแพร่แนวคิดการทำงานทางด้านยุติธรรมชุมชน และการสร้างเครือข่ายยุติธรรมโรงเรียนเอกชนสอนศาสนาอิสลาม และชุมชนสู่กลุ่มต่างๆในพื้น สามารถจำแนกออกเป็น 4 ระดับ คือ</p>
-							<img src="comp_img/about/2.png" width="640" height="640" class="img-fluid" alt="Responsive image">
+							<img src="images/about2.png" width="640" height="640" class="img-fluid" alt="Responsive image">
 							<br><br>
 							<ol type=”1″>
 						<li>
@@ -235,7 +235,7 @@
 							<br>
 							<h4>ขั้นตอนที่ 4 การส่งเสริมและพัฒนาเครือข่ายโรงเรียนเอกชนสอนศาสนาอิสลาม </h4>
 							<p class="text-justify">&emsp; &emsp; มีการดำเนินงานโดยสามารถแบ่งกิจกรรมการส่งเสริมออกเป็นกิจกรรมต่างๆ ได้ดังนี้</p>
-							<img src="comp_img/about/3.png" width="640" height="640" class="img-fluid" alt="Responsive image">
+							<img src="images/about3.png" width="640" height="640" class="img-fluid" alt="Responsive image">
 							<br><br>
 							<ol type=”1″>
 								<li>
