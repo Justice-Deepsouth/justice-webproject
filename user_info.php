@@ -15,18 +15,24 @@
 	include_once 'php/dbconnect.php';
 	include_once 'php/user.php';
 	include_once 'php/article.php';
+	include_once 'php/setting.php';
 
     // get connection
 	$database = new Database();
 	$db = $database->getConnection();
 
-    // pass connection to property_types table
-	$user = new User($db);
-
 	// pass connection to property_types table
 	$article = new Article($db);
 	$active = true;
 	$Aresult = $article->readall($active);
+
+	// pass connection to settings table
+	$setting = new Setting($db);
+	$Sresult = $setting->readone();
+	$Srow = mysqli_fetch_array($Sresult);
+
+	// pass connection to property_types table
+	$user = new User($db);
 
 	if (isset($_POST['user-submit'])) {
 		$user->user_id = $_SESSION['user_id'];
@@ -51,11 +57,11 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>หน้าแก้ไขข้อมูลส่วนตัว | Justice Project</title>
+	<title>ข้อมูลผู้ใช้งาน | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
-	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
-	<meta name="author" content="freehtml5.co" />
+	<meta name="description" content="Justice Deep South Project" />
+	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />
+	<meta name="author" content="Justice League Team by FMS@PSU" />
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -96,6 +102,9 @@
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+
 	</head>
 	<body>
 		
@@ -125,7 +134,12 @@
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
+							<li class="has-dropdown"><a href="#">เกี่ยวกับโครงการ</a>
+								<ul class="dropdown">
+									<li><a href="about.php">บทสรุปผู้บริหาร</a></li>
+									<li><a href="#">รายชื่อโรงเรียนที่เข้าร่วมโครงการ</a></li>
+								</ul>
+							</li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
@@ -236,7 +250,7 @@
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
+						<small class="block">&copy; 2018 <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small>
 						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>

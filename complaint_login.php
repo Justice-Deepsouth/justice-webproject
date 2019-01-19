@@ -2,18 +2,6 @@
 	session_start();
 	ob_start();
 
-	include_once 'php/dbconnect.php';
-	include_once 'php/article.php';
-
-		// get connection
-	$database = new Database();
-	$db = $database->getConnection();
-
-		// pass connection to property_types table
-	$article = new Article($db);
-	$active = true;
-	$Aresult = $article->readall($active);
-
 	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// admin
 		if ($_SESSION['user_type'] == 0) {
@@ -23,6 +11,24 @@
 		}
 	}
 
+	include_once 'php/dbconnect.php';
+	include_once 'php/article.php';
+	include_once 'php/setting.php';
+
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
+
+	// pass connection to property_types table
+	$article = new Article($db);
+	$active = true;
+	$Aresult = $article->readall($active);
+
+	// pass connection to settings table
+	$setting = new Setting($db);
+	$Sresult = $setting->readone();
+	$Srow = mysqli_fetch_array($Sresult);
+
 	ob_end_flush();
 ?>
 
@@ -31,11 +37,11 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>เข้าสู่ระบบ | Justice Project</title>
+	<title>เข้าสู่ระบบ | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Justice Project" />
-	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
-	<meta name="author" content="Ruchdee" />
+	<meta name="description" content="Justice Deep South Project" />
+	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />
+	<meta name="author" content="Justice League Team by FMS@PSU" />
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -76,6 +82,9 @@
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+
 	</head>
 	<body>
 		
@@ -105,7 +114,12 @@
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li class="active"><a href="#">ร้องเรียน</a></li>
-							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
+							<li class="has-dropdown"><a href="#">เกี่ยวกับโครงการ</a>
+								<ul class="dropdown">
+									<li><a href="about.php">บทสรุปผู้บริหาร</a></li>
+									<li><a href="#">รายชื่อโรงเรียนที่เข้าร่วมโครงการ</a></li>
+								</ul>
+							</li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
@@ -114,7 +128,7 @@
 									echo "<li class='has-dropdown'>";
 									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
 									echo "<ul class='dropdown'>";
-									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
 									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
 									echo "</ul></li>";
 								}
@@ -192,9 +206,9 @@
 						culpa amet.</p>
 				</div>
 				<div class="col-md-3 col-md-push-1">
-					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
+					<h4>กิจกรรมที่ผ่านมา (อัลบั้มภาพ) </h4>
 					<ul class="fh5co-footer-links">
-						<li><a href="#">บทความอื่นๆ 1</a></li>
+						<li><a href="gallery/09-11-2017/">กิจกรรมวันที่ 9 พ.ย. 2560</a></li>
 						<li><a href="#">บทความอื่นๆ 2</a></li>
 						<li><a href="#">บทความอื่นๆ 3</a></li>
 						<li><a href="#">บทความอื่นๆ 4</a></li>
@@ -202,25 +216,16 @@
 					</ul>
 				</div>
 	
-				<div class="col-md-3 col-md-push-1">
+				<div class="col-md-4 col-md-push-1">
 					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
 					<ul class="fh5co-footer-links">
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 1</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 2</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
+						<li><a href="https://www.moj.go.th/" target="_blank">กระทรวงยุติธรรม</a></li>
+						<li><a href="https://www.psu.ac.th/th/" target="_blank">มหาวิทยาลัยสงขลานครินทร์</a></li>
+						<li><a href="http://huso.pn.psu.ac.th/th/" target="_blank">คณะมนุษยศาสตร์และสังคมศาสตร์</a></li>
 					</ul>
 				</div>
 	
-				<div class="col-md-3">
-					<h4>ติดต่อโครงการ</h4>
-					<ul class="fh5co-footer-links">
-						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
-						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
-						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
-						<li><a href="">gettemplates.co</a></li>
-					</ul>
+				<div class="col-md-2">
 				</div>
 	
 			</div>
@@ -228,7 +233,7 @@
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
+						<small class="block">&copy; <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small>
 						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>
