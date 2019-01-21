@@ -1,41 +1,41 @@
 <?php
-	session_start();
-	ob_start();
+session_start();
+ob_start();
 
-	include_once 'php/dbconnect.php';
-	include_once 'php/activity.php';
-	include_once 'php/article.php';
+include_once 'php/dbconnect.php';
+include_once 'php/activity.php';
+include_once 'php/article.php';
 
 		// get connection
-	$database = new Database();
-	$db = $database->getConnection();
+$database = new Database();
+$db = $database->getConnection();
 
 		// pass connection to property_types table
-	$activity = new Activity($db);
+$activity = new Activity($db);
 
-	$data = $activity->readall();
-	$total_rows = $activity->getTotalRows();
 
 		// pass connection to property_types table
-	$article = new Article($db);
-	$active = true;
-	$Aresult = $article->readall($active);
+$article = new Article($db);
+$active = true;
+$Aresult = $article->readall($active);
 
-	// define how many results you want per page
-	$results_per_page = 10;
-	// determine number of total pages available
-	$number_of_pages = ceil($total_rows / $results_per_page);
+$data = $activity->readall();
+$total_rows = $activity->getTotalRows();
+// define how many results you want per page
+$results_per_page = 10;
+// determine number of total pages available
+$number_of_pages = ceil($total_rows / $results_per_page);
 
-	// determine which page number visitor is currently on
-	if (!isset($_GET['page'])) {
-		$page = 1;
-	} else {
-		$page = $_GET['page'];
-	}
-	// determine the sql LIMIT starting number for the results on the displaying page
-	$this_page_first_result = ($page - 1) * $results_per_page;
+// determine which page number visitor is currently on
+if (!isset($_GET['page'])) {
+	$page = 1;
+} else {
+	$page = $_GET['page'];
+}
+// determine the sql LIMIT starting number for the results on the displaying page
+$this_page_first_result = ($page - 1) * $results_per_page;
 
-	ob_end_flush();
+ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -109,14 +109,15 @@
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 							<a href="article_list.php">บทความ</a>
-								<?php if(mysqli_fetch_array($Aresult) == ""){
-								}else{
+								<?php if (mysqli_fetch_array($Aresult) == "") {
+							} else {
 								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-										} ?>
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) {
+										echo "<li><a href='article.php?ar_id=" . $Arow['article_id'] . "'>" . $Arow['article_title'] . "</a></li>";
+									} ?>
 									</ul>
-								<?php } ?>
+								<?php 
+						} ?>
 							</li>
 							<li class="active"><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
@@ -207,49 +208,78 @@
     
 		<div id="fh5co-blog">
                 
-			<div class="row">
-            <?php while ($row = mysqli_fetch_array($data)) { ?>
+		<div class="row">
+
+  <?php 
+	$result = mysqli_fetch_array($data, MYSQLI_ASSOC);
+	if ($result['activity_id'] != "") {
+
+		?>
+		<center><h2>กิจกรรม</h2></center>
+			<?php while ($row = mysqli_fetch_array($data)) { ?>
+
 				<div class="col-md-4">
 					<div class="fh5co-blog animate-box">
                         <?php 
-                        if ($row['activity_image'] != "") {
-                           echo "<a href='#' class='blog-bg' style='background-image: url(activity_img/$row[activity_image])'></a>";
-                        } else {
-                            echo "<a href='#' class='blog-bg' style='background-image: url(images/no_image.jpg)'></a>";
-                        }
-                      
-                        ?>
+						if ($row['activity_image'] != "") {
+							echo "<a href='#' class='blog-bg' style='background-image: url(activity_img/$row[activity_image])'></a>";
+						} else {
+							echo "<a href='#' class='blog-bg' style='background-image: url(images/no_image.jpg)'></a>";
+						}
+						?>
 						<div class="blog-text">
 							<i class="icon-calendar"></i> &nbsp;
-							<?php 
-							echo $row['activity_sdate'];
-					// $strDat = $row['activity_sdate'];
-					// $sDate = $activity->DateThai($strDat);
-					// echo $sDate;
-					?>
+						<?php 
+						$row['activity_sdate'];
+						$strDat = $row['activity_sdate'];
+						$sDate = $activity->DateThai($strDat);
+						echo $sDate;
+						?>
 					-
 					 <?php 
-					echo $row['activity_edate'];
-					// $strDat = $row['activity_edate'];
-					// $eDate = $activity->DateThai($strDat);
-					// echo $eDate;
+					$row['activity_edate'];
+					$strDat = $row['activity_edate'];
+					$eDate = $activity->DateThai($strDat);
+					echo $eDate;
 					?>
 							<h3><a href="activities_detail.php?activity_id=<?php echo $row['activity_id']; ?>"><?php echo $row["activity_name"]; ?></a></h3>
 							<p><?php 
-							$desc = $row["activity_desc"];
-							$detail = substr($desc, 0,30);
-							echo $detail;
-							 ?></p>
+									$desc = $row["activity_desc"];
+									$detail = substr($desc, 0, 30);
+									echo $detail;
+									?></p>
 							<ul class="stuff">
 
 								<li><a href="activities_detail.php?activity_id=<?php echo $row['activity_id']; ?>">รายละเอียดเพิ่มเติม<i class="icon-arrow-right22"></i></a></li>
 							</ul>
 						</div> 
 					</div>
-                </div>
-            <?php } ?>
-			
-			</div>
+				</div>
+
+            <?php 
+										} ?>
+					<?php
+
+			} else {
+				echo "<h4>ไม่มีกิจกรรมในขณะนี้</h4>";
+			}
+			?>		
+
+
+	  
+	</div>
+	<center><?php
+							
+							// display the links to the pages
+					for ($page = 1; $page <= $number_of_pages; $page++) {
+						echo '
+						<ul class="pagination">
+							<li><a href="activities_show.php?page=' . $page . '">' . $page . '</a></li>					
+						</ul>';
+					}
+							// exit(0);
+					?></center>
+	</div>
 		</div>
 	</div><!-- END container-wrap -->
 
