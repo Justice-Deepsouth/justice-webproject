@@ -2,18 +2,25 @@
 	session_start();
 	ob_start();
 
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+		// only admin type can access
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		}
+	} else {
+		header("Location: ../index.php");
+	}
+
 	include_once '../php/dbconnect.php';
 	include_once '../php/user.php';
+	include_once '../php/article.php';
+	include_once '../php/setting.php';
 
 	// get connection
 	$database = new Database();
 	$db = $database->getConnection();
 
-	if (!isset($_SESSION['user_session_id'])) {
-		header("Location: ../index.php");
-	}
-
-	// pass connection to property_types table
+	// pass connection to users table
 	$user = new User($db);
 
 	if (isset($_POST['name-search'])) {
@@ -23,10 +30,15 @@
 		$total_rows = $user->getTotalRows();
 	}
 		
-	// pass connection to property_types table
+	// pass connection to articles table
 	$article = new Article($db);
 	$active = true;
 	$Aresult = $article->readall($active);
+
+	// pass connection to settings table
+	$setting = new Setting($db);
+	$Sresult = $setting->readone();
+	$Srow = mysqli_fetch_array($Sresult);
 
 	ob_end_flush();
 ?>
@@ -37,9 +49,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>หน้าหลักผู้ดูแลระบบ | Justice Project</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
-	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
-	<meta name="author" content="freehtml5.co" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<meta name="author" content="" />
 
 
   	<!-- Facebook and Twitter integration -->
@@ -81,6 +93,9 @@
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 
+	<link rel="icon" type="image/png" href="../favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="../favicon-16x16.png" sizes="16x16" />
+
 	</head>
 	<body>
 
@@ -92,7 +107,7 @@
 			<div class="top-menu">
 				<div class="row">
 					<div class="col-xs-2">
-						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo_7.jpg"></a></div>
+						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo2.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
 						<ul>
@@ -110,7 +125,12 @@
 							</li>
 							<li><a href="../activities_show.php">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="../about.php">เกี่ยวกับโครงการ</a></li>
+							<li class="has-dropdown"><a href="#">เกี่ยวกับโครงการ</a>
+								<ul class="dropdown">
+									<li><a href="about.php">บทสรุปผู้บริหาร</a></li>
+									<li><a href="#">รายชื่อโรงเรียนที่เข้าร่วมโครงการ</a></li>
+								</ul>
+							</li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php
 								if (!isset($_SESSION['user_session_id'])) {
@@ -119,7 +139,7 @@
 									echo "<li class='has-dropdown'>";
 									echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
 									echo "<ul class='dropdown'>";
-									echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='../user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
 									echo "<li><a href='../php/user_logout.php'>ออกจากระบบ</a></li>";
 									echo "</ul></li>";
 								}
@@ -253,7 +273,7 @@
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
+						<small class="block">&copy; 2018 <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small>
 							<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>
