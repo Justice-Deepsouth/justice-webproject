@@ -108,7 +108,7 @@
 								}else{
 								?> <ul class="dropdown">
 										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+											echo "<li><a href='article_detail.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
 										} ?>
 									</ul>
 								<?php } ?>
