@@ -167,7 +167,7 @@
 			   			<div class="row">
 				   			<div class="col-md-6 col-md-offset-3 slider-text slider-text-bg">
 				   				<div class="slider-text-inner text-center">
-				   					<h1>กิจกรรมที่ผ่าน (อัลบั้มภาพ)</h1>
+				   					<h1>กิจกรรมที่ผ่านมา (อัลบั้มภาพ)</h1>
 				   				</div>
 				   			</div>
 				   		</div>
