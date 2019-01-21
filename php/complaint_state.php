@@ -26,7 +26,7 @@ class Complaint_state {
     }
 
     function readallforone(){
-        $query = "SELECT * FROM " . $this->table_name . " WHERE NOT complaint_state_id <= " . $this->complaint_state_id;
+        $query = "SELECT * FROM " . $this->table_name . " WHERE complaint_state_status != 0 AND NOT complaint_state_id <= " . $this->complaint_state_id;
         $result = mysqli_query($this->conn, $query);
         return $result;
     }
