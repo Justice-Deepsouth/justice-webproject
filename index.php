@@ -2,38 +2,44 @@
 session_start();
 ob_start();
 
-include_once 'php/dbconnect.php';
-include_once 'php/activity.php';
-include_once 'php/article.php';
+	include_once 'php/dbconnect.php';
+	include_once 'php/activity.php';
+	include_once 'php/article.php';
+	include_once 'php/setting.php';
 
 	// get connection
-$database = new Database();
-$db = $database->getConnection();
+  $database = new Database();
+  $db = $database->getConnection();
 
 	// pass connection to property_types table
-$activity = new Activity($db);
+  $activity = new Activity($db);
 
-$result = $activity->readone_index();
-$data = $activity->readall();
-$total_rows = $activity->getTotalRows();
+  $result = $activity->readone_index();
+  $data = $activity->readall();
+  $total_rows = $activity->getTotalRows();
 
 	// pass connection to property_types table
-$article = new Article($db);
-$active = true;
-$Aresult = $article->readall($active);
+  $article = new Article($db);
+  $active = true;
+  $Aresult = $article->readall($active);
 
-ob_end_flush();
+	// pass connection to settings table
+	$setting = new Setting($db);
+	$Sresult = $setting->readone();
+	$Srow = mysqli_fetch_array($Sresult);
+
+	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
 <html>
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Justice Deep South Project</title>
+	<title>หน้าแรก | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Justice Deep South Project" />
-	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
-	<meta name="author" content="freehtml5.co" />
+	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />
+	<meta name="author" content="Justice League Team by FMS@PSU" />
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -77,23 +83,9 @@ ob_end_flush();
 	<!-- <style rel="stylesheet" type="text/css">
 		#fh5co-logo {font-family: 'Chakra Petch', sans-serif;}
 	</style> -->
-	<link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png">
-	<link rel="icon" type="image/png" sizes="192x192"  href="images/favicon/android-icon-192x192.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
-	<link rel="manifest" href="images/favicon/manifest.json">
-	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
-	<meta name="theme-color" content="#ffffff">
+
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
 
 	</head>
 	<body>
@@ -125,7 +117,12 @@ ob_end_flush();
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="about.php">เกี่ยวกับโครงการ</a></li>
+							<li class="has-dropdown"><a href="#">เกี่ยวกับโครงการ</a>
+								<ul class="dropdown">
+									<li><a href="about.php">บทสรุปผู้บริหาร</a></li>
+									<li><a href="#">รายชื่อโรงเรียนที่เข้าร่วมโครงการ</a></li>
+								</ul>
+							</li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
 						if (!isset($_SESSION['user_session_id'])) {
@@ -134,7 +131,7 @@ ob_end_flush();
 							echo "<li class='has-dropdown'>";
 							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
 							echo "<ul class='dropdown'>";
-							echo "<li><a href='#'>ข้อมูลผู้ใช้งาน</a></li>";
+							echo "<li><a href='user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
 							echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
 							echo "</ul></li>";
 						}
@@ -398,9 +395,9 @@ ob_end_flush();
 					<p>Facilis ipsum reprehenderit nemo molestias. Aut cum mollitia reprehenderit. Eos cumque dicta adipisci architecto culpa amet.</p>
 				</div>
 				<div class="col-md-3 col-md-push-1">
-					<h4>บทความอื่นๆ (ลิงค์จากเว็บอื่น) </h4>
+					<h4>กิจกรรมที่ผ่านมา (อัลบั้มภาพ) </h4>
 					<ul class="fh5co-footer-links">
-						<li><a href="#">บทความอื่นๆ 1</a></li>
+						<li><a href="gallery/09-11-2017/">กิจกรรมวันที่ 9 พ.ย. 2560</a></li>
 						<li><a href="#">บทความอื่นๆ 2</a></li>
 						<li><a href="#">บทความอื่นๆ 3</a></li>
 						<li><a href="#">บทความอื่นๆ 4</a></li>
@@ -408,25 +405,16 @@ ob_end_flush();
 					</ul>
 				</div>
 
-				<div class="col-md-3 col-md-push-1">
+				<div class="col-md-4 col-md-push-1">
 					<h4>ลิงค์ที่เกี่ยวข้อง</h4>
 					<ul class="fh5co-footer-links">
+						<li><a href="https://www.moj.go.th/" target="_blank">กระทรวงยุติธรรม</a></li>
 						<li><a href="https://www.psu.ac.th/th/" target="_blank">มหาวิทยาลัยสงขลานครินทร์</a></li>
-						<li><a href="http://huso.pn.psu.ac.th/th/" target="_blank">คณะมนุษยศาสตร์และสังคมศาสตร์ ม.อ.</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 3</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 4</a></li>
-						<li><a href="#">ลิงค์ที่เกี่ยวข้อง 5</a></li>
+						<li><a href="http://huso.pn.psu.ac.th/th/" target="_blank">คณะมนุษยศาสตร์และสังคมศาสตร์</a></li>
 					</ul>
 				</div>
 
-				<div class="col-md-3">
-					<h4>ติดต่อโครงการ</h4>
-					<ul class="fh5co-footer-links">
-						<li>เลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</li>
-						<li><a href="tel://1234567920">+ 1235 2355 98</a></li>
-						<li><a href="mailto:info@yoursite.com">info@yoursite.com</a></li>
-						<li><a href="">gettemplates.co</a></li>
-					</ul>
+				<div class="col-md-2">
 				</div>
 
 			</div>
@@ -434,7 +422,7 @@ ob_end_flush();
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small> 
+						<small class="block">&copy; 2018 <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small> 
 						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>
