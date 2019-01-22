@@ -28,12 +28,19 @@
 		$result = $activity->readone();
 
 		while ($row = mysqli_fetch_array($result)) {
-			$file_path = '../activity_img/' . $row['activity_image'];
-			if (unlink($file_path)) {
+			
+			if ($row['activity_image'] != "") {
+				$file_path = '../activity_img/' . $row['activity_image'];
+				unlink($file_path);
+				if ($activity->delete()) {
+					header("Location: activities_list.php");
+				}
+			}else {
 				if ($activity->delete()) {
 					header("Location: activities_list.php");
 				}
 			}
+			
 		}
 	}
 

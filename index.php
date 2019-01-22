@@ -1,6 +1,6 @@
 <?php 
-	session_start();
-	ob_start();
+session_start();
+ob_start();
 
 	include_once 'php/dbconnect.php';
 	include_once 'php/activity.php';
@@ -8,20 +8,20 @@
 	include_once 'php/setting.php';
 
 	// get connection
-	$database = new Database();
-	$db = $database->getConnection();
+  $database = new Database();
+  $db = $database->getConnection();
 
 	// pass connection to property_types table
-	$activity = new Activity($db);
+  $activity = new Activity($db);
 
-	$result = $activity->readone_index();
-	$data = $activity->readall();
-	$total_rows = $activity->getTotalRows();
+  $result = $activity->readone_index();
+  $data = $activity->readall();
+  $total_rows = $activity->getTotalRows();
 
 	// pass connection to property_types table
-	$article = new Article($db);
-	$active = true;
-	$Aresult = $article->readall($active);
+  $article = new Article($db);
+  $active = true;
+  $Aresult = $article->readall($active);
 
 	// pass connection to settings table
 	$setting = new Setting($db);
@@ -105,14 +105,15 @@
 							<li class="active"><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="article_list.php">บทความ</a>
-								<?php if(mysqli_fetch_array($Aresult) == ""){
-								}else{
+								<?php if (mysqli_fetch_array($Aresult) == "") {
+							} else {
 								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-										} ?>
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) {
+										echo "<li><a href='article.php?ar_id=" . $Arow['article_id'] . "'>" . $Arow['article_title'] . "</a></li>";
+									} ?>
 									</ul>
-								<?php } ?>
+								<?php 
+						} ?>
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
@@ -282,38 +283,69 @@
 		<?php $row = mysqli_fetch_array($result, MYSQLI_ASSOC); ?>
 		<div id="fh5co-blog" class="blog-flex">
 		<?php 
-                        if ($row['activity_image'] != "") {
-						
-						 echo "<div class='featured-blog' style='background-image: url(activity_img/$row[activity_image]'>" ;
-                        } else {
-						
-							echo "<div class='featured-blog' style='background-image: url(images/no_image.jpg)'>" ;
-                         }
-                      
-                        ?>
-			<!-- <div class="featured-blog" style="background-image: url(<?php echo $row["activity_image"]; ?>)"> -->
+		if ($row['activity_id'] !="") {
+
+		?>
+		<?php 
+	if ($row['activity_image'] != "") {
+
+		echo "<div class='featured-blog' style='background-image: url(activity_img/$row[activity_image]'>";
+	} else {
+
+		echo "<div class='featured-blog' style='background-image: url(images/no_image.jpg)'>";
+	}
+
+	?>
+			
 				<div class="desc-t">
 					<div class="desc-tc">
 					<h3><span class="featured-head"><?php echo $row["activity_name"]; ?></span></h3>
 						<h3><a href="#">วันที่ 
 						<?php 
-						echo $row['activity_sdate'];
-					// $strDat = $row['activity_sdate'];
-					// $sDate = $activity->DateThai($strDat);
-					// echo $sDate;
+				
+					$strDat = $row['activity_sdate'];
+					$sDate = $activity->DateThai($strDat);
+					echo $sDate;
 					?>
 					 ถึง 
 					 <?php 
-					 echo $row['activity_edate'];
-					// $strDat = $row['activity_edate'];
-					// $eDate = $activity->DateThai($strDat);
-					// echo $eDate;
+			
+					$strDat = $row['activity_edate'];
+					$eDate = $activity->DateThai($strDat);
+					echo $eDate;
 					?><br>
-				 สถานที่จัด<?php echo $row["activity_place"]; ?></a></h3>
+				 สถานที่จัด &nbsp;<?php echo $row["activity_place"]; ?></a></h3>
 						<span><a href="#" class="read-button">รายละเอียดเพิ่มเติม</a></span>
 					</div>
 				</div>
 			</div>
+			<?php
+			# code...
+		} else {
+
+		?>
+			<?php 
+	if ($row['activity_image'] != "") {
+
+		echo "<div class='featured-blog' style='background-image: url(activity_img/$row[activity_image]'>";
+	} else {
+
+		echo "<div class='featured-blog' style='background-image: url(images/no_image.jpg)'>";
+	}
+
+	?>
+			<!-- <div class="featured-blog" style="background-image: url(<?php echo $row["activity_image"]; ?>)"> -->
+				<div class="desc-t">
+					<div class="desc-tc">
+					<h3><span class="featured-head"></span></h3>
+				
+						
+			
+					</div>
+				</div>
+			</div>
+<?php 			# code...
+		}?>
 			<div class="blog-entry fh5co-light-grey">
 				<div class="row animate-box">
 					<div class="col-md-12">
@@ -321,25 +353,25 @@
 					</div>
 				</div>
 				<?php 
-				 $result_last = $activity->getLast_Activity_ID();
-				while ($sort = mysqli_fetch_array( $result_last)) { 
-					?>
+			$result_last = $activity->getLast_Activity_ID();
+			while ($sort = mysqli_fetch_array($result_last)) {
+				?>
 				<div class="row">
 					<div class="col-md-12 animate-box">
 						<a href="#" class="blog-post">
 						<?php 
-                        if ($sort['activity_image'] != "") {
-						 echo "<span class='img' style='background-image: url(activity_img/$sort[activity_image])'></span>";
-						
-                        } else {
-							echo "<span class='img' style='background-image: url(images/no_image.jpg);'></span>";
-                        }
-                      
-                        ?>
+					if ($sort['activity_image'] != "") {
+						echo "<span class='img' style='background-image: url(activity_img/$sort[activity_image])'></span>";
+
+					} else {
+						echo "<span class='img' style='background-image: url(images/no_image.jpg);'></span>";
+					}
+
+					?>
 							<!-- <span class="img" style="background-image: url(activity_img/<?php echo $sort["activity_image"]; ?>);"></span> -->
 							<div class="desc">
 								<h3><?php echo $sort["activity_name"]; ?></h3>
-								<span class="cat"><?php echo $sort['activity_sdate'];?> - <?php echo  $sort['activity_sdate'];?></span>
+								<span class="cat"><?php echo $sort['activity_sdate']; ?> - <?php echo $sort['activity_sdate']; ?></span>
 							</div>
 
 						</a>
@@ -347,7 +379,8 @@
 				
 
 				</div>
-		<?php	} ?>
+		<?php	
+} ?>
 		
 		<a class="btn btn-primary btn-demo" href="activities_show.php">รายละเอียดเพิ่มเติม</a>
 			</div>

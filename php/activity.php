@@ -53,6 +53,9 @@ class Activity
         $result = mysqli_query($this->conn, $query);
         return $result;
     } //read all complainant
+
+ 
+
     //read one record
     function readone()
     {
@@ -154,33 +157,43 @@ class Activity
         $strYear = date("Y", strtotime($strDate)) + 543;
         $strMonth = date("n", strtotime($strDate));
         $strDay = date("j", strtotime($strDate));
-        $strMonthCut = array("", "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม");
+        $strMonthCut = array("", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.");
         $strMonthThai = $strMonthCut[$strMonth];
         $strDate = "$strDay $strMonthThai $strYear";
         return $strDate;
     }
             // get last complaint_id
-            function getLast_Activity_ID() {
-                $query = "SELECT * FROM " . $this->table_name . " ORDER BY activity_id DESC LIMIT 1";
-                $result = mysqli_query($this->conn, $query);
-                $row = mysqli_fetch_array($result);
-                $LastActivity_ID = $row['activity_id'];
+    function getLast_Activity_ID()
+    {
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY activity_id DESC LIMIT 1";
+        $result = mysqli_query($this->conn, $query);
+        $row = mysqli_fetch_array($result);
+        $LastActivity_ID = $row['activity_id'];
 
-                $query_last = "SELECT * FROM " . $this->table_name . " WHERE NOT activity_id = '". $LastActivity_ID . "'ORDER BY activity_id DESC LIMIT 3";
-                $result_last = mysqli_query($this->conn,  $query_last);
+        $query_last = "SELECT * FROM " . $this->table_name . " WHERE NOT activity_id = '" . $LastActivity_ID . "'ORDER BY activity_id DESC LIMIT 3";
+        $result_last = mysqli_query($this->conn, $query_last);
                 // $data = mysqli_fetch_array($result_last); 
                 // $TripleActivity_ID = $data['activity_id'];  
-                return  $result_last ;
-            }
+        return $result_last;
+    }
 
          //read all records
-         function readone_index()
-         {
+    function readone_index()
+    {
 
-             $query = "SELECT * FROM " . $this->table_name . " ORDER BY activity_id DESC LIMIT 1";
-             $result = mysqli_query($this->conn, $query);
-             return $result;
-         }
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY activity_id DESC LIMIT 1";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
+                  //read all records
+    function read_interestACT()
+    {
+
+        $query = "SELECT * FROM " . $this->table_name . " ORDER BY activity_id DESC LIMIT 10";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
 }
 
 ?>

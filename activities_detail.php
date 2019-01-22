@@ -151,9 +151,9 @@
 		  	</div>
 		</aside>		
 		<div id="fh5co-about">
-			<div class="row animate-box">
-				<div class="col-md-8 col-md-offset-2 text-center heading-section">
-					<h3><?php echo $row['activity_name']; ?></h3>
+		<div class="row">
+  <div class="col-lg-8">
+  <h3><?php echo $row['activity_name']; ?></h3>
                     <?php 
                         if ($row['activity_image'] != "") {
                            echo "<img src='activity_img/$row[activity_image]'  class='img-fluid' alt='Responsive image'>";
@@ -181,10 +181,24 @@
 					$eDate = $activity->DateThai($strDat);
 					echo $eDate;
 					?></p>
-				</div>
-			</div>
+  </div>
+  <div class="col-lg-4">
+  <h3>กิจกรรมที่น่าสนใจ</h3>
+  <?php
+      //show 10 Activity
+	$data = $activity->read_interestACT();
+	while ($sort = mysqli_fetch_array($data)) {
 
-		</div>
+  ?>
+
+<?php 
+echo "<a href='activities_detail.php?activity_id=$sort[activity_id]'>$sort[activity_name]</a>";
+echo "<br>";?>
+	<?php }?>
+  </div>
+</div>
+			
+		</div>				
 	</div><!-- END container-wrap -->
 
 	<div class="container-wrap">
