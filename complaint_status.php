@@ -10,10 +10,8 @@
 		}
 	} else {
 		header("Location: index.php");
-
 	}
 
-	
     // set current timezone
     date_default_timezone_set("Asia/Bangkok");
 
@@ -24,6 +22,7 @@
 	include_once 'php/complaint_photo.php';
 	include_once 'php/complaint_video.php';
 	include_once 'php/article.php';
+	include_once 'php/user.php';
 
     // get connection
     $database = new Database();
@@ -39,7 +38,7 @@
 		$result = $complaint->readall($active);
 		$total_rows = $complaint->getTotalRows();
 	} else {
-		// read all records for complainant
+		// read all records for a specific complainant
 		$active = true;
 		$result = $complaint->readall($active);
 		$total_rows = $complaint->getTotalRows();	
@@ -71,13 +70,15 @@
 				$complaint_video->deleteall();
 			}
 		}
-			if ($complaint->delete()) {
-				header("Location: complaint_status.php");
-			}
+		if ($complaint->delete()) {
+			header("Location: complaint_status.php");
+		}
 	}
 
 	$complaint_progress = new Complaint_progress($db);
 	$complaint_state = new Complaint_state($db);
+	$user = new User($db);
+
 	// update complaint_state_id and insert complaint_progress
     if (isset($_POST['complaint-state-submit'])) {
 		$complaint->complaint_id = $_POST['complaint-id'];
@@ -89,9 +90,26 @@
 			$complaint_progress->user_id = $_SESSION['user_id'];
 			$complaint_progress->complaint_state_id = $_POST['complaint-state-id'];
 			$complaint_progress->created_date = date("Y/m/d H:i:s");
+
 			if ($complaint_progress->create()) {
-				header("Location: complaint_status.php");
-			} 
+				// get complaint title, user_id from complaints table
+				//echo "<script>console.log(" .json_encode($complaint->complaint_id) .")</script>";
+				$result_comp = $complaint->readone();
+				$row_comp = mysqli_fetch_array($result_comp);
+				$complaint_progress->complaint_title = $row_comp['complaint_title'];
+				//echo "<script>console.log(" .json_encode($row_comp['complaint_title']) .")</script>";
+				$user->user_id = $row_comp['user_id'];
+				// get user name, email from users table
+				$result_user = $user->readoneforupdate();
+				$row_user = mysqli_fetch_array($result_user);
+				$complaint_progress->receiver_name = $row_user['user_name'];
+				$complaint_progress->receiver_email = $row_user['user_email'];
+
+				// send e-mail
+				if ($complaint_progress->send_email_progress()) {
+					header("Location: complaint_status.php");
+				}
+			}
         }
 	}
 
@@ -104,7 +122,7 @@
         }
 	}
 
-	// pass connection to property_types table
+	// pass connection to article table
 	$article = new Article($db);
 	$active = true;
 	$Aresult = $article->readall($active);
@@ -198,7 +216,7 @@
 									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
 								} else {
 									echo "<li class='has-dropdown'>";
-									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . $_SESSION['user_type'] . "</a>";
+									echo "<a href='#'>คุณ " .  $_SESSION['user_id'] . "</a>";
 									echo "<ul class='dropdown'>";
 									echo "<li><a href='user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
 									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
@@ -433,11 +451,12 @@
                 </div> 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
-				</div>
-                        
+				</div>      
             </div> 
         </div>
     </div><!-- /.modal -->
+
+	<!-- modal add complaint status -->
 	<div id = "showstate" class = "modal fade" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true" style = "display: none;">
 	<form role="form" id="complaint-states" method="post" action="complaint_status.php">
         <div class = "modal-dialog"> 
