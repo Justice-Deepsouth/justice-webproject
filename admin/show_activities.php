@@ -1,25 +1,25 @@
 <?php
-session_start();
+    session_start();
 
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
 	} */
 	
     // set current timezone
-date_default_timezone_set("Asia/Bangkok");
+    date_default_timezone_set("Asia/Bangkok");
 
-include_once '../php/dbconnect.php';
-include_once '../php/activity.php';
+    include_once '../php/dbconnect.php';
+    include_once '../php/activity.php';
 
     // get connection
-$database = new Database();
-$db = $database->getConnection();
+    $database = new Database();
+    $db = $database->getConnection();
 
     // pass connection to property_states table
-$activity = new Activity($db);
-$activity->activity_id = $_POST['activity_id'];
-$result = $activity->readone();
-$row = mysqli_fetch_array($result);
+    $activity = new Activity($db);
+    $activity->activity_id = $_POST['activity_id'];
+    $result = $activity->readone();
+    $row = mysqli_fetch_array($result);
 ?>
 <div class="table-responsive">
     <table class="table table-striped table-bordered">

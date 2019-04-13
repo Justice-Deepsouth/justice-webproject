@@ -19,10 +19,9 @@ class Complaint_photo
     // create contact information
     function create()
     {
-
-       // write statement
+        // write statement
         $stmt = mysqli_prepare($this->conn, "INSERT INTO " . $this->table_name . " (complaint_photo_id,complaint_photo_name,complaint_id) VALUES (?,?,?)");
-         // bind parameters
+        // bind parameters
         mysqli_stmt_bind_param($stmt, 'sss', $this->complaint_photo_id, $this->complaint_photo_name, $this->complaint_id); 
         /* execute prepared statement */
         if (mysqli_stmt_execute($stmt)) {
@@ -32,7 +31,7 @@ class Complaint_photo
         }
     }  //create()
 
-        // update record
+    // update record
     function update()
     {
         $query = "UPDATE " . $this->table_name . " SET complaint_photo_name = ?, complaint_id = ? WHERE complaint_photo_id = ?";
