@@ -18,7 +18,6 @@
     $complaint_state = new Complaint_state($db);
 
     $data = array();
-    $i = 0;
     foreach ($result as $row) {
         // get complaint_state_desc
         $complaint_state->complaint_state_id = $row['complaint_state_id'];
