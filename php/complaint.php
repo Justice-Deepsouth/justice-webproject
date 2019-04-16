@@ -121,6 +121,26 @@ class Complaint {
 
         return $ccomplaint_id;
     }
-    
+
+    // chart - complaintsbymonth
+    function getComplaintsByMonth() {
+        $query = "SELECT SUBSTRING(complaint_id,1,7) AS comp_month_year, COUNT(*) AS comp_amt FROM " . $this->table_name . " GROUP BY SUBSTRING(complaint_id, 1,7) ORDER BY complaint_id DESC LIMIT 6";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
+    // chart - complaintsbytype
+    function getComplaintsByType() {
+        $query = "SELECT complaint_type_id, COUNT(*) AS comp_amt FROM " . $this->table_name . " GROUP BY complaint_type_id ORDER BY complaint_type_id";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
+
+    // chart - complaintsbystatus
+    function getComplaintsByStatus() {
+        $query = "SELECT complaint_state_id, COUNT(*) AS comp_amt FROM " . $this->table_name . " GROUP BY complaint_state_id ORDER BY complaint_state_id";
+        $result = mysqli_query($this->conn, $query);
+        return $result;
+    }
 }
 ?>
