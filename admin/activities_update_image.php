@@ -8,11 +8,11 @@
     include_once '../php/dbconnect.php';
     include_once '../php/activity.php';
     
-        // get connection
+    // get connection
     $database = new Database();
     $db = $database->getConnection();
     
-        // pass connection to property_states table
+    // pass connection to property_states table
     $activity = new Activity($db);
 
     if (isset($_POST['edit_image-submit'])) {

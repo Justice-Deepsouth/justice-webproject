@@ -178,6 +178,7 @@
 								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
 								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 								<li><a href="articles_list.php"><i class="icon-settings"></i><span> ข้อมูลบทความ</span></a></li>
+								<li><a href="complaint_summary.php"><i class="icon-settings"></i><span> รายงานข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
@@ -301,6 +302,5 @@
 		gtag('js', new Date());
 		gtag('config', 'UA-130573850-1');
 	</script>
-
 	</body>
 </html>

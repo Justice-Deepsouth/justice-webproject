@@ -23,22 +23,18 @@
 ?>
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
-
 		<tr>
 			<th>กิจกรรม</th>
 			<td><?php echo $row['activity_name']; ?></td>
 		</tr>
-
 		<tr>
 			<th>รายละเอียดกิจกรรม</th>
 			<td><?php echo wordwrap($row['activity_desc'], 60, "\n", true); ?></td>
 		</tr>
-
         <tr>
 			<th>สถานที่จัดกิจกรรม</th>
 			<td><?php echo $row['activity_place']; ?></td>
 		</tr>
-
         <tr>
             <th>วันเริ่มกิจกรรม</th>
             <td>
@@ -55,7 +51,6 @@
                 ?>
             </td>
         </tr>
-
         <tr>
              <th>วันสิ้นสุดกิจกรรม</th>
              <td>
@@ -72,15 +67,11 @@
                 ?>
             </td>
         </tr>
-
         <tr>
 			<th>รูปภาพกิจกรรม</th>
             <td>
                 <img src='../activity_img/<?php echo $row['activity_image'] ?>' name='activity-image' class='img-thumbnail' width='250' height='250' />
-
             </td>
 		</tr>
-
 	</table>
-
 </div> 

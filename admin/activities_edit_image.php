@@ -1,6 +1,7 @@
 <?php
 	session_start();
 	ob_start();
+
     /* if (!isset($_SESSION['user_session_id'])) {
         header("Location: ../index.php");
 	} */
@@ -33,7 +34,7 @@
 			echo "<img src='../activity_img/$row[activity_image]' name='activity-oldImage' width='250' height='250' />";
 		} else{}		
 	?>
-	<br> <br>
+	<br><br>
 	<h4>รูปที่ต้องการแก้ไข</h4>
 	<div class="col-md-12">
 		<div id="image_preview"></div>

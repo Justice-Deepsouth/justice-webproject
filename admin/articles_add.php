@@ -26,8 +26,6 @@
 
     // form is submitted
     if (isset($_POST['article-submit'])) {
-
-
 		$article->article_title = $_POST['article-title'];
 		$article->article_desc = $_POST['article-desc'];
 		$article->article_status = $_POST['article-status'];
@@ -186,6 +184,7 @@
 								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
 								<li><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 								<li class="active"><a href="articles_list.php"><i class="icon-settings"></i><span> ข้อมูลบทความ</span></a></li>
+								<li><a href="complaint_summary.php"><i class="icon-settings"></i><span> รายงานข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->

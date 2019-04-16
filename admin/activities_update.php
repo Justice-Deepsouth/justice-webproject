@@ -1,21 +1,18 @@
 <?php
-session_start();
-ob_start();
+	session_start();
+	ob_start();
 
     // set current timezone
     date_default_timezone_set("Asia/Bangkok");
 
-if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
-    if ($_SESSION['user_type'] != 0) {
-        header("Location: ../index.php");
-    }
-} else {
-    header("Location: ../index.php");
-}
-
- // form is submitted
-
+    	if ($_SESSION['user_type'] != 0) {
+        	header("Location: ../index.php");
+    	}
+	} else {
+    	header("Location: ../index.php");
+	}
 
     include_once '../php/dbconnect.php';
 	include_once '../php/activity.php';
@@ -26,14 +23,12 @@ if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
     $db = $database->getConnection();
 
     // pass connection to property_states table
-    $activity = new Activity($db);
+	$activity = new Activity($db);
+	$active =$activity->activity_id = $_GET['activity_id'];
+	$result = $activity->readone($active);
+	$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-
-		$active =$activity->activity_id = $_GET['activity_id'];
-		$result = $activity->readone($active);
-		$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-		if (isset($_POST['activity-submit'])) {
+	if (isset($_POST['activity-submit'])) {
 		$activity->user_id =  $_SESSION['user_id'];
 		$activity->activity_name = $_POST['activity-name'];
 		$activity->activity_desc = $_POST['activity-desc'];
@@ -54,8 +49,9 @@ if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 	$active = true;
 	$Aresult = $article->readall($active);
 
-ob_end_flush();
+	ob_end_flush();
 ?>
+
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -192,6 +188,7 @@ ob_end_flush();
 								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
 								<li class="active"><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
 								<li><a href="articles_list.php"><i class="icon-settings"></i><span> ข้อมูลบทความ</span></a></li>
+								<li><a href="complaint_summary.php"><i class="icon-settings"></i><span> รายงานข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->

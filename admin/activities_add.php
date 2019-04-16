@@ -1,118 +1,108 @@
 <?php
-session_start();
-ob_start();
-	
-    // set current timezone
-date_default_timezone_set("Asia/Bangkok");
-
-    /* if (!isset($_SESSION['user_session_id']) && !isset($_SESSION['user_state'])) {
-		if ($_SESSION['user_state'] != 0) {
-			header("Location: ../index.php");
-		}
-	} */
-
-include_once '../php/dbconnect.php';
-include_once '../php/activity.php';
-include_once '../php/article.php';
-// get connection
-$database = new Database();
-$db = $database->getConnection();
-	// pass connection to property_types table
-$activity = new Activity($db);
-    // set current timezone
-date_default_timezone_set("Asia/Bangkok");
-if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
+	session_start();
+	ob_start();
+		
+	// set current timezone
+	date_default_timezone_set("Asia/Bangkok");
+	if (isset($_SESSION['user_session_id']) && isset($_SESSION['user_type'])) {
 		// only admin type can access
-	if ($_SESSION['user_type'] != 0) {
+		if ($_SESSION['user_type'] != 0) {
+			header("Location: ../index.php");
+		} 
+	} else {
 		header("Location: ../index.php");
 	}
-} else {
-	header("Location: ../index.php");
-}
 
+	include_once '../php/dbconnect.php';
+	include_once '../php/activity.php';
+	include_once '../php/article.php';
 
+	// get connection
+	$database = new Database();
+	$db = $database->getConnection();
+	// pass connection to property_types table
+	$activity = new Activity($db);
 
-if (isset($_POST['activity-submit'])) {
+	if (isset($_POST['activity-submit'])) {
+		$fileName = $_FILES['activity-image']['name'];
+		$fileTmpName = $_FILES['activity-image']['tmp_name'];
+		$fileSize = $_FILES['activity-image']['size'];
+		$fileError = $_FILES['activity-image']['error'];
+		$fileType = $_FILES['activity-image']['type'];
 
-	$fileName = $_FILES['activity-image']['name'];
-	$fileTmpName = $_FILES['activity-image']['tmp_name'];
-	$fileSize = $_FILES['activity-image']['size'];
-	$fileError = $_FILES['activity-image']['error'];
-	$fileType = $_FILES['activity-image']['type'];
+		$fileExt = explode('.', $fileName);
+		$fileActualExt = strtolower(end($fileExt));
+		//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
+		$type = strrchr($fileName, ".");
 
-	$fileExt = explode('.', $fileName);
-	$fileActualExt = strtolower(end($fileExt));
-			//เอาชื่อไฟล์เก่าออกให้เหลือแต่นามสกุล
-	$type = strrchr($fileName, ".");
+		//ตั้งชื่อไฟล์ใหม่โดยชื่อกิจกรรมไว้หน้าชื่อไฟล์เดิม
+		$img = "img-" . $_POST['activity-name'];
+		$newname = $img . $type;
+		//อนุญาตให้นามสกุลนี้บันทึกได้
+		$allowed = array('jpg', 'jpeg', 'png', 'JPG');
 
-		        //ตั้งชื่อไฟล์ใหม่โดยชื่อกิจกรรมไว้หน้าชื่อไฟล์เดิม
-	$img = "img-" . $_POST['activity-name'];
-	$newname = $img . $type;
-				//อนุญาตให้นามสกุลนี้บันทึกได้
-	$allowed = array('jpg', 'jpeg', 'png', 'JPG');
-
-	if ($_POST['activity-edate'] > $_POST['activity-sdate']) {
-		if ($fileSize >0) {
-			if (in_array($fileActualExt, $allowed)) {
-				if ($fileError === 0) {
-					if ($fileSize <= 100000000) {
-						$fileDestination = '../activity_img/' . $newname;
-						move_uploaded_file($fileTmpName, $fileDestination);
-					 //ข้อมูลที่จะบันทึก
-						$activity->activity_name = $_POST['activity-name'];
-						$activity->activity_desc = $_POST['activity-desc'];
-						$activity->activity_place = $_POST['activity-place'];
-						$activity->activity_sdate = $_POST['activity-sdate'];
-						$activity->activity_edate = $_POST['activity-edate'];
-						$activity->activity_image = $newname;
-						$activity->user_id = $_SESSION['user_id'];
-						if ($activity->create()) {
-							echo "<div class='alert alert-success text-center'>บันทึกข้อมูลกิจกรรมสำเร็จ</div>";
-							header("Location: activities_list.php");
+		if ($_POST['activity-edate'] > $_POST['activity-sdate']) {
+			if ($fileSize >0) {
+				if (in_array($fileActualExt, $allowed)) {
+					if ($fileError === 0) {
+						if ($fileSize <= 100000000) {
+							$fileDestination = '../activity_img/' . $newname;
+							move_uploaded_file($fileTmpName, $fileDestination);
+						//ข้อมูลที่จะบันทึก
+							$activity->activity_name = $_POST['activity-name'];
+							$activity->activity_desc = $_POST['activity-desc'];
+							$activity->activity_place = $_POST['activity-place'];
+							$activity->activity_sdate = $_POST['activity-sdate'];
+							$activity->activity_edate = $_POST['activity-edate'];
+							$activity->activity_image = $newname;
+							$activity->user_id = $_SESSION['user_id'];
+							if ($activity->create()) {
+								echo "<div class='alert alert-success text-center'>บันทึกข้อมูลกิจกรรมสำเร็จ</div>";
+								header("Location: activities_list.php");
+							} else {
+								echo "<div class='alert alert-danger text-center'>บันทึกข้อมูลกิจกรรมไม่สำเร็จ</div>";
+								header("Refresh:3; url=activities_add.php");
+							}
 						} else {
-							echo "<div class='alert alert-danger text-center'>บันทึกข้อมูลกิจกรรมไม่สำเร็จ</div>";
+							echo "<div class='alert alert-danger text-center'ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
 							header("Refresh:3; url=activities_add.php");
-						}
+						} //$fileSize
 					} else {
-						echo "<div class='alert alert-danger text-center'ไฟล์มีขนาดใหญ่เกินกว่าที่กำหนด</div>";
+						echo "<div class='alert alert-danger text-center' มีปัญหาการอัพโหลดไฟล์</div>";
 						header("Refresh:3; url=activities_add.php");
-					} //$fileSize
+					} //$fileError
 				} else {
-					echo "<div class='alert alert-danger text-center' มีปัญหาการอัพโหลดไฟล์</div>";
+					echo "<div class='alert alert-danger text-center'คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
 					header("Refresh:3; url=activities_add.php");
-				} //$fileError
+				} //$fileActualExt, $allowed
 			} else {
-				echo "<div class='alert alert-danger text-center'คุณไม่สามารถอัพโหลดไฟล์ประเภทนี้ได้</div>";
-				header("Refresh:3; url=activities_add.php");
-			} //$fileActualExt, $allowed
+				//ข้อมูลที่จะบันทึกไม่มีรูปภาพ
+				$activity->activity_name = $_POST['activity-name'];
+				$activity->activity_desc = $_POST['activity-desc'];
+				$activity->activity_place = $_POST['activity-place'];
+				$activity->activity_sdate = $_POST['activity-sdate'];
+				$activity->activity_edate = $_POST['activity-edate'];
+				$activity->activity_image = null;
+				$activity->user_id = $_SESSION['user_id'];
+				// $activity->created_date = date("Y/m/d h:i:sa");
+
+				if ($activity->create()) {
+					echo "<div class='alert alert-success text-center'>บันทึกข้อมูลกิจกรรมสำเร็จ</div>";
+					header("Location: activities_list.php");
+				} else {
+					echo "<div class='alert alert-success text-center'>บันทึกข้อมูลกิจกรรมไม่สำเร็จ</div>";
+					header("Refresh:3; url=activities_add.php");
+				} //$activity->create()ไม่มีรูปภาพ
+			}//$newname != ""
 		} else {
-	//ข้อมูลที่จะบันทึกไม่มีรูปภาพ
-			$activity->activity_name = $_POST['activity-name'];
-			$activity->activity_desc = $_POST['activity-desc'];
-			$activity->activity_place = $_POST['activity-place'];
-			$activity->activity_sdate = $_POST['activity-sdate'];
-			$activity->activity_edate = $_POST['activity-edate'];
-			$activity->activity_image = null;
-			$activity->user_id = $_SESSION['user_id'];
-   // $activity->created_date = date("Y/m/d h:i:sa");
+			echo "<div class='alert alert-danger text-center'>วันเริ่มงานไม่สามารถมากกว่าวันสิ้นสุดงาน</div>";
+			header("Refresh:3; url=activities_add.php");
+		} //$_POST['activity-edate'] > $_POST['activity-sdate']
+	} // isset($_POST['activity-submit']
 
-			if ($activity->create()) {
-				echo "<div class='alert alert-success text-center'>บันทึกข้อมูลกิจกรรมสำเร็จ</div>";
-				header("Location: activities_list.php");
-			} else {
-				echo "<div class='alert alert-success text-center'>บันทึกข้อมูลกิจกรรมไม่สำเร็จ</div>";
-				header("Refresh:3; url=activities_add.php");
-			} //$activity->create()ไม่มีรูปภาพ
-		}//$newname != ""
-	} else {
-		echo "<div class='alert alert-danger text-center'>วันเริ่มงานไม่สามารถมากกว่าวันสิ้นสุดงาน</div>";
-		header("Refresh:3; url=activities_add.php");
-	} //$_POST['activity-edate'] > $_POST['activity-sdate']
-} // isset($_POST['activity-submit']
-
-ob_end_flush();
-
+	ob_end_flush();
 ?>
+
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -246,6 +236,8 @@ ob_end_flush();
 								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
 								<li><a href="settings_update.php"><i class="icon-settings"></i><span> ข้อมูลการตั้งค่า</span></a></li>
 								<li class="active"><a href="activities_list.php"><i class="icon-settings"></i><span> ข้อมูลกิจกรรม</span></a></li>
+								<li><a href="articles_list.php"><i class="icon-settings"></i><span> ข้อมูลบทความ</span></a></li>
+								<li><a href="complaint_summary.php"><i class="icon-settings"></i><span> รายงานข้อร้องเรียน</span></a></li>
 							</ul>
 						</aside>
 					</section><!-- /#sidebar -->
