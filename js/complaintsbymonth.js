@@ -1,6 +1,7 @@
 $(document).ready(function(){
     $.ajax({
-        url: "http://localhost/justice-project/admin/complaintsbymonth.php",
+        //url: "http://localhost/justice-project/admin/complaintsbymonth.php",
+        url: "../admin/complaintsbymonth.php",
         method: "GET",
         success: function(data) {
             console.log(data);
