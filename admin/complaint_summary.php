@@ -13,6 +13,7 @@
 
     include_once '../php/dbconnect.php';
     include_once '../php/article.php';
+	include_once '../php/setting.php';
 
     // get connection
     $database = new Database();
@@ -25,6 +26,11 @@
 	$active = true;
 	$Aresult = $article->readall($active);
 
+	// pass connection to settings table
+	$setting = new Setting($db);
+	$Sresult = $setting->readone();
+	$Srow = mysqli_fetch_array($Sresult);
+
 	ob_end_flush();
 ?>
 <!DOCTYPE HTML>
@@ -32,11 +38,11 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>หน้าหลักผู้ดูแลระบบ | Justice Project</title>
+	<title>หน้ารายงานข้อร้องเรียน | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="Free HTML5 Website Template by freehtml5.co" />
-	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
-	<meta name="author" content="freehtml5.co" />
+	<meta name="description" content="Justice Deep South Project" />
+	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />
+	<meta name="author" content="Justice League Team by FMS@PSU" />
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -73,6 +79,9 @@
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
 
+	<link rel="icon" type="image/png" href="../favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="../favicon-16x16.png" sizes="16x16" />
+
     <link rel="stylesheet" href="../css/Chart.min.css">
     <script src="../js/Chart.min.js"></script>
 
@@ -93,19 +102,28 @@
 						<ul>
 							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-							<a href="../article_list.php">บทความ</a>
-								<?php if(mysqli_fetch_array($Aresult) == ""){
-								}else{
-								?> <ul class="dropdown">
+								<a href="../article_list.php">บทความ</a>
+									<?php
+									if($Aresult == ""){
+									}else{
+									?>
+										<ul class="dropdown">
 										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='../article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+											echo "<li><a href='../article_detail.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
 										} ?>
-									</ul>
-								<?php } ?>
+										</ul>
+									<?php
+									}
+									?>
 							</li>
 							<li><a href="../activities_show.php">กิจกรรม</a></li>
 							<li><a href="../complaint_login.php">ร้องเรียน</a></li>
-							<li><a href="../about.php">เกี่ยวกับโครงการ</a></li>
+							<li class="has-dropdown"><a href="#">เกี่ยวกับโครงการ</a>
+								<ul class="dropdown">
+									<li><a href="../about.php">บทสรุปผู้บริหาร</a></li>
+									<li><a href="#">รายชื่อโรงเรียนที่เข้าร่วมโครงการ</a></li>
+								</ul>
+							</li>
 							<li><a href="../contact.php">ติดต่อ</a></li>
 							<?php 
 								if (!isset($_SESSION['user_session_id'])) {
@@ -129,7 +147,7 @@
 		<aside id="fh5co-hero">
 			<div class="flexslider">
 				<ul class="slides">
-			   	<li style="background-image: url(../images/DSC_9377.jpg);">
+				<li style="background-image: url(../images/DSC_9377.jpg);">
 			   		<div class="overlay-gradient"></div>
 			   		<div class="container-fluids">
 			   			<div class="row">
@@ -141,7 +159,7 @@
 				   			</div>
 				   		</div>
 			   		</div>
-			   	</li>		   	
+			   	</li>
 			  	</ul>
 		  	</div>
 		</aside>		
@@ -155,7 +173,7 @@
 						</header>
 						<aside>
 							<ul class="sidebar-navigation">
-								<li><a href="#"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
+								<li><a href="admin_main.php"><i class="icon-settings"></i><span> ข้อมูลการติดต่อ</span></a></li>
 								<li><a href="complaint_types_list.php"><i class="icon-settings"></i><span> ประเภทข้อร้องเรียน</span></a></li>
 								<li><a href="complaint_states_list.php"><i class="icon-settings"></i><span> สถานะข้อร้องเรียน</span></a></li>
 								<li><a href="users_list.php"><i class="icon-settings"></i><span> ข้อมูลผู้ใช้งาน</span></a></li>
@@ -195,11 +213,11 @@
 	</div><!-- END container-wrap -->
 
 	<div class="container-wrap">
-		<footer id="fh5co-footer" role="contentinfo">
+	<footer id="fh5co-footer" role="contentinfo">
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 (Project Name). All Rights Reserved.</small>
+						<small class="block">&copy; 2018 <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small> 
 						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>

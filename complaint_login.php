@@ -102,15 +102,19 @@
 						<ul>
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-							<a href="article_list.php">บทความ</a>
-								<?php if(mysqli_fetch_array($Aresult) == ""){
-								}else{
-								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-										} ?>
-									</ul>
-								<?php } ?>
+								<a href="article_list.php">บทความ</a>
+									<?php
+										if($Aresult == ""){
+										}else{
+										?>
+											<ul class="dropdown">
+											<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+												echo "<li><a href='article_detail.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+											} ?>
+											</ul>
+										<?php
+										}
+									?>
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li class="active"><a href="#">ร้องเรียน</a></li>
