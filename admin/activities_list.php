@@ -44,8 +44,8 @@
 			
 		}
 	}
-
-	$data = $activity->readall();
+	$active = true;
+	$data = $activity->readall($active);
 	$total_rows = $activity->getTotalRows();
 	// define how many results you want per page
 	$results_per_page = 10;
@@ -141,11 +141,11 @@
 						<div id="fh5co-logo"><a href="../index.php"><img src="../images/logo2.png"></a></div>
 					</div>
 					<div class="col-xs-10 text-right menu-1">
-					<ul>
+						<ul>
 							<li><a href="../index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-								<a href="../article_list.php">บทความ</a>
-									<?php
+							<a href="../article_list.php">บทความ</a>
+							<?php
 									if($Aresult == ""){
 									}else{
 									?>
@@ -329,7 +329,7 @@
 			<div class="row copyright">
 				<div class="col-md-12 text-center">
 					<p>
-						<small class="block">&copy; 2018 <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small> 
+					<small class="block">&copy; 2018 <?php echo $Srow['project_name_en']; ?>. All Rights Reserved.</small> 
 						<!-- <small class="block">Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Available at <a href="http://themewagon.com/" target="_blank">Themewagon</a> Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a></small> -->
 					</p>
 					<p>

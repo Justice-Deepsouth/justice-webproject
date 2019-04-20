@@ -34,7 +34,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Justice Deep South Project</title>
+	<title>หน้ารายละเอียดกิจกรรม | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Justice Deep South Project" />
 	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />

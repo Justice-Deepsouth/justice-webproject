@@ -24,37 +24,28 @@ class Activity
         $this->conn = $db;
     }
 
+ 
     //read all records
-    // function readall($act)
-    // {
-    //     if ($act) {
-    //         $query = "SELECT * FROM " . $this->table_name .   " WHERE activity_id = '" . $this->user_id . "' ORDER BY activity_name desc";
-    //     } else {
-    //         $query = "SELECT * FROM " . $this->table_name . " ORDER BY activity_id DESC";
-    //     }
-    //     $result = mysqli_query($this->conn, $query);
-    //     return $result;
-    // }
-            //page
-    function readall()
-    {
-        
-                // define how many results you want per page
-        $results_per_page = 10;
+    function readall($act){
+        if ($act) {
+            $results_per_page = 10;
         // determine which page number visitor is currently on
         if (!isset($_GET['page'])) {
             $page = 1;
         } else {
             $page = $_GET['page'];
         } 
-                // determine the sql LIMIT starting number for the results on the displaying page
+        // determine the sql LIMIT starting number for the results on the displaying page
         $this_page_first_result = ($page - 1) * $results_per_page;
-        $query = "SELECT * FROM " . $this->table_name . " WHERE activity_id ORDER BY activity_name DESC LIMIT  $this_page_first_result , $results_per_page ";
+        
+        $query = "SELECT * FROM " . $this->table_name . " WHERE activity_id ORDER BY activity_id  DESC LIMIT 10";
+        $result = mysqli_query($this->conn, $query);
+    } else {
+            $query = "SELECT * FROM " . $this->table_name . " ORDER activity_id";
+        }
         $result = mysqli_query($this->conn, $query);
         return $result;
-    } //read all complainant
-
- 
+    }
 
     //read one record
     function readone()
