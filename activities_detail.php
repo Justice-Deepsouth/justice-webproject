@@ -34,7 +34,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Justice Deep South Project</title>
+	<title>หน้ารายละเอียดกิจกรรม | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Justice Deep South Project" />
 	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />
@@ -104,15 +104,19 @@
 						<ul>
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-							<a href="article_list.php">บทความ</a>
-								<?php if(mysqli_fetch_array($Aresult) == ""){
-								}else{
-								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
-											echo "<li><a href='article.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
-										} ?>
-									</ul>
-								<?php } ?>
+								<a href="article_list.php">บทความ</a>
+									<?php
+										if($Aresult == ""){
+										}else{
+										?>
+											<ul class="dropdown">
+											<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+												echo "<li><a href='article_detail.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+											} ?>
+											</ul>
+										<?php
+										}
+									?>
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>

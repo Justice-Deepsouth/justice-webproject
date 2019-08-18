@@ -12,9 +12,6 @@
 	$db = $database->getConnection();
 
 	// pass connection to property_types table
-	$activity = new Activity($db);
-
-	// pass connection to property_types table
 	$article = new Article($db);
 	$active = true;
 	$Aresult = $article->readall($active);
@@ -24,21 +21,22 @@
 	$Sresult = $setting->readone();
 	$Srow = mysqli_fetch_array($Sresult);
 
-	$data = $activity->readall();
-	$total_rows = $activity->getTotalRows();
-	// define how many results you want per page
-	$results_per_page = 10;
-	// determine number of total pages available
-	$number_of_pages = ceil($total_rows / $results_per_page);
-
-	// determine which page number visitor is currently on
-	if (!isset($_GET['page'])) {
-		$page = 1;
-	} else {
-		$page = $_GET['page'];
-	}
-	// determine the sql LIMIT starting number for the results on the displaying page
-	$this_page_first_result = ($page - 1) * $results_per_page;
+// pass connection to property_types table
+$activity = new Activity($db);
+$active = true;
+$data = $activity->readall($active);
+$total_rows = $activity->getTotalRows();
+$results_per_page = 10;
+// determine number of total pages available
+			$number_of_pages = ceil($total_rows / $results_per_page);
+// determine which page number visitor is currently on
+			if (!isset($_GET['page'])) {
+				$page = 1;
+			} else {
+				$page = $_GET['page'];
+			}
+// determine the sql LIMIT starting number for the results on the displaying page
+$this_page_first_result = ($page - 1) * $results_per_page;
 
 	ob_end_flush();
 ?>
@@ -47,11 +45,11 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Justice Deep South Project</title>
+	<title>หน้ารวมกิจกรรม | <?php echo $Srow['project_name_en']; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Justice Deep South Project" />
-	<meta name="keywords" content="Justice, Deepsouth, Thailand, Prince of Songkla University" />
-	<meta name="author" content="freehtml5.co" />
+	<meta name="keywords" content="Justice, Deepsouth, Thailand, Faculty of Humanities and Social Sciences, Prince of Songkla University" />
+	<meta name="author" content="Justice League Team by FMS@PSU" />
 
   	<!-- Facebook and Twitter integration -->
 	<meta property="og:title" content=""/>
@@ -112,16 +110,19 @@
 						<ul>
 							<li><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
-							<a href="article_list.php">บทความ</a>
-								<?php if (mysqli_fetch_array($Aresult) == "") {
-							} else {
-								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) {
-										echo "<li><a href='article.php?ar_id=" . $Arow['article_id'] . "'>" . $Arow['article_title'] . "</a></li>";
-									} ?>
-									</ul>
-								<?php 
-						} ?>
+								<a href="article_list.php">บทความ</a>
+									<?php
+											if($Aresult == ""){
+											}else{
+											?>
+												<ul class="dropdown">
+												<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+													echo "<li><a href='article_detail.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+												} ?>
+												</ul>
+											<?php
+											}
+									?>
 							</li>
 							<li class="active"><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
@@ -219,11 +220,6 @@
                 
 		<div class="row">
 
-  <?php 
-	$result = mysqli_fetch_array($data, MYSQLI_ASSOC);
-	if ($result['activity_id'] != "") {
-
-		?>
 		<center><h2>กิจกรรม</h2></center>
 			<?php while ($row = mysqli_fetch_array($data)) { ?>
 
@@ -266,11 +262,7 @@
 				</div>
 
             <?php } ?>
-			<?php
-			} else {
-				echo "<h4>ไม่มีกิจกรรมในขณะนี้</h4>";
-			}
-			?>
+
 	</div>
 	<center><?php
 							

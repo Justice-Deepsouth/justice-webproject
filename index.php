@@ -18,15 +18,14 @@ ob_start();
   $data = $activity->readall();
   $total_rows = $activity->getTotalRows();
 
-	// pass connection to property_types table
   $article = new Article($db);
   $active = true;
   $Aresult = $article->readall($active);
 
-	// pass connection to settings table
-	$setting = new Setting($db);
-	$Sresult = $setting->readone();
-	$Srow = mysqli_fetch_array($Sresult);
+  // pass connection to settings table
+  $setting = new Setting($db);
+  $Sresult = $setting->readone();
+  $Srow = mysqli_fetch_array($Sresult);
 
 	ob_end_flush();
 ?>
@@ -105,15 +104,18 @@ ob_start();
 							<li class="active"><a href="index.php">หน้าแรก</a></li>
 							<li class="has-dropdown">
 								<a href="article_list.php">บทความ</a>
-								<?php if (mysqli_fetch_array($Aresult) == "") {
-							} else {
-								?> <ul class="dropdown">
-										<?php while ($Arow = mysqli_fetch_array($Aresult)) {
-										echo "<li><a href='article.php?ar_id=" . $Arow['article_id'] . "'>" . $Arow['article_title'] . "</a></li>";
-									} ?>
-									</ul>
-								<?php 
-						} ?>
+									<?php
+									if($Aresult == ""){
+									}else{
+									?>
+										<ul class="dropdown">
+										<?php while ($Arow = mysqli_fetch_array($Aresult)) { 
+											echo "<li><a href='article_detail.php?ar_id=" .  $Arow['article_id'] . "'>" .  $Arow['article_title'] . "</a></li>";
+										} ?>
+										</ul>
+									<?php
+									}
+									?>
 							</li>
 							<li><a href="activities_show.php">กิจกรรม</a></li>
 							<li><a href="complaint_login.php">ร้องเรียน</a></li>
@@ -125,17 +127,17 @@ ob_start();
 							</li>
 							<li><a href="contact.php">ติดต่อ</a></li>
 							<?php 
-						if (!isset($_SESSION['user_session_id'])) {
-							echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
-						} else {
-							echo "<li class='has-dropdown'>";
-							echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
-							echo "<ul class='dropdown'>";
-							echo "<li><a href='user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
-							echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
-							echo "</ul></li>";
-						}
-						?>
+								if (!isset($_SESSION['user_session_id'])) {
+									echo "<li><a href='complaint_login.php'>เข้าสู่ระบบ</a></li>";
+								} else {
+									echo "<li class='has-dropdown'>";
+									echo "<a href='#'>คุณ " . $_SESSION['user_id'] . "</a>";
+									echo "<ul class='dropdown'>";
+									echo "<li><a href='user_info.php'>ข้อมูลผู้ใช้งาน</a></li>";
+									echo "<li><a href='php/user_logout.php'>ออกจากระบบ</a></li>";
+									echo "</ul></li>";
+								}
+							?>
 						</ul>
 					</div>
 				</div>
