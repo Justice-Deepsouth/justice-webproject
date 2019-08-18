@@ -77,7 +77,7 @@ class User
     // update user
     function update()
     {
-        $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, user_organization = ?, user_type = ?, user_status = ?, created_date = ?, modified_date = ? WHERE  user_id = ?";
+        $query = "UPDATE " . $this->table_name . " SET user_name = ?,  user_email = ?, user_organization = ?, user_type = ?, user_status = ?, created_date = ?, modified_date = ? WHERE user_id = ?";
         // statement
         $stmt = mysqli_prepare($this->conn, $query);
         // bind parameters
